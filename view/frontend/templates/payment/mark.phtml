@@ -1,0 +1,14 @@
+<?php
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+$url = $block->escapeUrl($block->getPaymentAcceptanceMarkHref());
+echo get_class($block);
+?>Test 
+<img src="<?php echo $block->escapeUrl($block->getPaymentAcceptanceMarkSrc()) ?>"
+     alt="<?php echo $block->escapeHtml(__('Acceptance Mark')); ?>" class="icon"/>
+<?php if ($block->getPaymentWhatIs()) {
+        echo $block->escapeHtml(__($block->getPaymentWhatIs()));
+} ?>
+</a>

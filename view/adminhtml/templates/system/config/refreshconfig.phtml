@@ -1,0 +1,34 @@
+
+
+<script type="text/javascript">
+    //<![CDATA[
+require(['jquery'], function(){
+  
+    jQuery(".refresh_config").click(function(){
+        new Ajax.Request('<?php echo $block->getAjaxCheckUrl() ?>', {
+            method:     'get',
+            onSuccess: function(response){
+                
+                if (response.responseText.isJSON()) {
+                    response = response.responseText.evalJSON();
+                    result = response.messages;
+                }
+
+                if (result){
+                   jQuery(".page-main-actions").after("<div id='messages'>" + result + "</div>");
+                }
+            }
+        });
+    })
+
+    //]]>
+});
+
+</script>
+ 
+<?php echo $this->getButtonHtml() ?>
+<div class="actions ">
+    <button class="refresh_config" type="button" id="<?php echo $block->getHtmlId() ?>">
+        <span><?php echo $block->escapeHtml($block->getButtonLabel()) ?></span>
+    </button>
+</div>

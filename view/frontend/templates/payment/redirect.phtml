@@ -1,0 +1,15 @@
+<?php 
+$code = $block->getMethodCode();
+?>
+<fieldset class="fieldset zipmoney items redirect" style="display:none;"
+          id="payment_form_<?php echo $block->escapeHtml($code); ?>">
+    <div><?php echo $block->escapeHtml($block->getRedirectMessage()); ?></div>
+    <?php  ?>
+    <?php if ($code): ?>
+        <input type="checkbox" id="<?php /* @noEscape */ echo $code; ?>" value="1" class="checkbox"
+               name="payment[<?php /* @noEscape */ echo $code; ?>]">
+        <label for="<?php /* @noEscape */ echo $code; ?>" class="label">
+           
+        </label>
+    <?php endif; ?>
+</fieldset>

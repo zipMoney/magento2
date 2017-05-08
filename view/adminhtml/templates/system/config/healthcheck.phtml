@@ -1,0 +1,84 @@
+<script type="text/javascript">
+    //<![CDATA[
+require(['jquery'], function(){
+  
+    jQuery(".health_check").click(function(){    
+    
+            jQuery("#messages").html("");
+
+            new Ajax.Request('<?php echo $this->getAjaxHealthCheckUrl(ZipMoney\ZipMoneyPayment\Block\Adminhtml\System\Config\Field\HealthCheck::HEALTH_CHECK_TYPE_API_ENDPOINT) ?>', {
+                method:     'get',
+                onSuccess: render_msg
+            });
+
+            new Ajax.Request('<?php echo $this->getAjaxHealthCheckUrl(ZipMoney\ZipMoneyPayment\Block\Adminhtml\System\Config\Field\HealthCheck::HEALTH_CHECK_TYPE_SUBSCRIBE_ENDPOINT) ?>', {
+                method:     'get',
+                onSuccess: render_msg
+                    
+            });
+
+            new Ajax.Request('<?php echo $this->getAjaxHealthCheckUrl(ZipMoney\ZipMoneyPayment\Block\Adminhtml\System\Config\Field\HealthCheck::HEALTH_CHECK_TYPE_CONFIG_OPTIONS) ?>', {
+                method:     'get',
+                onSuccess: render_msg
+            });
+    });
+
+
+    function render_msg(response)
+    {
+
+        var response = response.responseText.evalJSON();
+
+        if(response){
+
+            if(jQuery("#messages").children().length < 1)
+              jQuery(".page-main-actions").after("<div id='messages'><div class='messages'></div</div>");
+                    
+            var text = response.message;
+              
+            if( typeof response.message == 'object'){
+                text = '';              
+                for(var i = 0; i < response.message.length; i++){
+                  text += response.message[i];
+
+                if(i!=response.message.length-1)
+                    text+="<br/>";
+                }
+            } 
+
+            if(response.success){ 
+              
+                if($$("div#messages .messages .success").length < 1)
+                    $$("div#messages .messages")[0].insert("<div class='message message-success'>" + text + "</div>");
+                else
+                    $$("div#messages .messages .success")[0].insert(" <br> " + text);
+               
+            } else  if(response.type){  
+            
+                if($$("div#messages .messages .notice").length < 1)
+                    $$("div#messages .messages")[0].insert("<div class='message message-notice'>" + text + "</div>");
+                else
+                    $$("div#messages .messages .notice")[0].insert(" <br> " + text);
+               
+            } else {
+                  
+                if($$("div#messages .messages .error").length < 1)
+                     $$("div#messages .messages")[0].insert("<div class='message message-error'>" + text + "</div>");
+                else
+                     $$("div#messages .messages .error")[0].insert(" <br> " + text);
+            }    
+    }
+
+  }
+
+    //]]>
+});
+
+</script>
+ 
+<?php echo $this->getButtonHtml() ?>
+<div class="actions ">
+    <button class="health_check" type="button" id="<?php echo $block->getHtmlId() ?>">
+        <span><?php echo $block->escapeHtml($block->getButtonLabel()) ?></span>
+    </button>
+</div>

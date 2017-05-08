@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!--
+/**
+* ZipMoney_ZipMoneyPayment Config definitions
+*
+* @category    ZipMoney
+* @package     ZipMoney_ZipMoneyPayment
+* @author      Sagar Bhandari
+* @copyright   ZipMoney (http://zipmoney.com.au)
+* @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+*/
+-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default> 
+
+        <payment>  
+            <!-- Following  are common configs -->
+            <zipmoneypayment>                  
+                <active>0</active>
+                <payment_action>Authorization</payment_action>
+                <min_order_total>0</min_order_total>                
+                <title>zipMoney - Buy Now Pay Later</title>          
+                <model>ZipMoney\ZipMoneyPayment\Model\Payment</model>                     
+            </zipmoneypayment>
+        </payment>
+    </default>
+</config>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="magento2-gateway" default="build" basedir=".">
+    <property name="vendor-dir" value="${project.basedir}/vendor/"/>
+    <property name="composer-json-build" value="composer.json.build"/>
+    <import file="${vendor-dir}webgig/magento2-phing-setup/build.xml" />
+
+    <target name="info">
+        <echo message="magento2.base_dir = ${magento2.base_dir} .. ${bin.magento}" />
+    </target>
+
+    <target name="clean" depends="install-deps" description="Remove Magento directory">
+        <delete dir="${magento2.base_dir}" />
+    </target>  
+
+    <target name="test" depends="setup-extension, install" description="Remove Magento directory">
+        <exec command="php ${magento2.base_dir} dev:tests:run unit " passthru="true" checkreturn="true" />
+    </target>
+    
+    <target name="composer-setup" description="Swaps composer.json ">
+        <exec command="mv composer.json ${composer-json-old}" passthru="true" checkreturn="true" />
+        <exec command="composer init" passthru="true" checkreturn="true" />
+        <exec command="/usr/local/bin/composer require composer/composer:~1.0@dev phing/phing:~2.11@dev webgig/magento2-phing-setup:1.0.*" passthru="true" checkreturn="true" />
+        <exec command="/usr/local/bin/composer install" passthru="true" checkreturn="true" />
+    </target>
+
+    <target name="prepare-extension-setup" description="Creates symlink in the app/code/">
+        <exec command="mkdir -p ${magento2.base_dir}/app/code/ZipMoney/ZipMoneyPayment" passthru="true" checkreturn="true" />
+        <exec command="cp -R $(pwd)/Block/ $(pwd)/Controller/ $(pwd)/etc/ $(pwd)/Helper/ $(pwd)/Logger/ $(pwd)/Model/ $(pwd)/Observer/ $(pwd)/Setup/ $(pwd)/Test/ $(pwd)/view/  $(pwd)/registration.php ./magento2/app/code/ZipMoney/ZipMoneyPayment/" passthru="true" checkreturn="true" />
+        <exec command="cp -R ${composer-json-build} ./magento2/app/code/ZipMoney/ZipMoneyPayment/composer.json" passthru="true" checkreturn="true" />
+        <exec command="cd ./magento2 &amp;&amp;  /usr/local/bin/composer require zipmoney/zipmoney-php:1.0.*" passthru="true" checkreturn="true" />
+    </target>
+
+    <target name="setup-extension" description="Creates symlink in the app/code/">
+        <exec command="php ${magento2.base_dir} module:enable ZipMoney_ZipMoneyPayment" passthru="true" checkreturn="true" />
+        <exec command="php ${magento2.base_dir} setup:upgrade" passthru="true" checkreturn="true" />
+    </target>  
+   
+    <target name="package" description="Package module into a magento package">
+        <propertyregex property="tagname" subject="${env.branch}" pattern="^(\*|\d+(\.\d+){0,2}(\.\*)?)$"  match="$1" casesensitive="false" defaultvalue="false"/>                
+        <echo msg="${tagname}" />
+        <if>
+            <ispropertytrue property="tagname" />
+            <then>
+                <echo msg="Is a tag" />
+                <exec command="tar -zcvf ${package.name}-v${env.branch}.tar.gz -C ${magento2.base_dir}/app/code/ZipMoney/ZipMoneyPayment ." passthru="true" checkreturn="true" />
+            </then>
+            <else>
+                <echo msg="Is not a tag, so not creating a package" />
+            </else>
+        </if>
+    </target>
+
+    <target name="deploy" description="Deploy to s3">
+        <propertyregex property="tagname" subject="${env.branch}" pattern="^(\*|\d+(\.\d+){0,2}(\.\*)?)$"  match="$1" casesensitive="false" defaultvalue="false"/>                
+        <echo msg="${tagname}" />
+        <if>
+            <ispropertytrue property="tagname" />
+            <then>
+                <echo msg="Is a tag" />
+                <exec command="aws s3 cp ${package.name}-v${env.branch}.tar.gz s3://zm-software-assets/Plugins/Magento2/${package.name}-v${env.branch}.tar.gz  --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers" passthru="true" checkreturn="true" />
+            </then>
+            <else>
+                <echo msg="Is not a tag, so not deploying to s3" />
+            </else>
+        </if>
+    </target>
+
+    <target name="really-clean" description="Remove composer install dependencies, Magento directory">
+        <delete dir="${magento2.base_dir}" />
+        <delete dir="${project.basedir}/vendor" />
+    </target>
+
+    <target name="package" description="Package module into a magento connect package">
+        <exec dir="${magento.base_dir}" command="../build.sh ${build}" passthru="true" checkreturn="true" />
+    </target>
+</project>
