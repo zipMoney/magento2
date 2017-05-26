@@ -86,9 +86,10 @@ class InstallData implements InstallDataInterface
         /**
          * Add 'NEW_ATTRIBUTE' attributes for order
          */
-        $options = ['type' => 'varchar', 'visible' => false, 'required' => false];
-        $salesSetup->addAttribute('order_payment', 'zipmoney_charge_id', ['label' => 'zipMoney Checkout Id', 'type' => 'int', 'visible' => false, 'required' => false]);   
-        $quoteSetup->addAttribute('quote', 'zipmoney_checkout_id', $options);   
+        $salesSetup->addAttribute('order_payment', 'zipmoney_charge_id', 
+            ['label' => 'zipMoney Checkout Id', 'type' => 'varchar', 'visible' => false, 'required' => false]);   
+        $quoteSetup->addAttribute('quote', 'zipmoney_checkout_id', 
+            ['type' => 'varchar', 'visible' => false, 'required' => false]);   
         
         $rewriteCollection = $this->urlRewrite->getCollection()
                                               ->addFieldToFilter('target_path', "zipmoney");

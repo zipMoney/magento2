@@ -6,23 +6,42 @@ use \ZipMoney\ZipMoneyPayment\Model\Config;
 use \ZipMoney\ZipMoneyPayment\Model\Checkout\AbstractCheckout;
 
 class Checkout extends AbstractCheckout
-{ 
+{   
+   /**
+   * @var Magento\Checkout\Helper\Data
+   */
+  protected $_checkoutHelper;
+  
 
   protected $_apiClass = '\zipMoney\Api\CheckoutsApi';
+
+  protected $_redirectUrl  = null;
+
+  protected $_checkoutId  = null;
+
 
   const STATUS_MAGENTO_AUTHORIZED = "zip_authorised";
 
   public function __construct(    
-    \Magento\Customer\Model\Session $customerSession,
-    \Magento\Checkout\Model\Session $checkoutSession,
+    \Magento\Customer\Model\Session $customerSession,    
+    \Magento\Checkout\Model\Session $checkoutSession,   
     \Magento\Checkout\Helper\Data $checkoutHelper,    
-    \Magento\Framework\Json\Helper\Data $jsonHelper,
+    \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
+    \Magento\Sales\Model\OrderFactory $orderFactory,
+    \Magento\Customer\Model\CustomerFactory $customerFactory,
+    \Magento\Checkout\Model\PaymentInformationManagement $paymentInformationManagement,
+    \Magento\Customer\Api\AccountManagementInterface $accountManagement,
+    \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
+    \Magento\Framework\Message\ManagerInterface $messageManager,
     \ZipMoney\ZipMoneyPayment\Helper\Payload $payloadHelper,
-    \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,
+    \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,    
+    \ZipMoney\ZipMoneyPayment\Helper\Data $helper,
     \ZipMoney\ZipMoneyPayment\Model\Config $config,
     array $data = []
   )
   { 
+    $this->_checkoutHelper = $checkoutHelper;
+
    
     if (isset($data['quote'])) {
       if($data['quote'] instanceof \Magento\Quote\Model\Quote){
@@ -32,7 +51,8 @@ class Checkout extends AbstractCheckout
       }
     }
 
-    parent::__construct($customerSession, $checkoutSession, $checkoutHelper, $jsonHelper, $payloadHelper, $logger, $config);
+  
+    parent::__construct( $customerSession,$checkoutSession, $customerFactory,$quoteRepository, $payloadHelper, $logger, $helper, $config);
     
     // Set the api class
     $this->setApi($this->_apiClass);
@@ -79,17 +99,18 @@ class Checkout extends AbstractCheckout
       throw new \Magento\Framework\Exception\LocalizedException(__('Cannot process the order due to zero amount.'));
     }
 
-    $this->_quote->reserveOrderId()->save();
+    $this->_quote->reserveOrderId();
+    $this->_quoteRepository->save($this->_quote);
 
     $request = $this->_payloadHelper->getCheckoutPayload($this->_quote);
 
-    $this->_logger->debug("Checkout Request:- ".$this->_jsonHelper->jsonEncode($request));
+    $this->_logger->debug("Checkout Request:- ".$this->_payloadHelper->jsonEncode($request));
 
     try {
 
       $checkout = $this->getApi()->checkoutsCreate($request);
 
-      $this->_logger->debug("Checkout Response:- ".$this->_jsonHelper->jsonEncode($checkout));
+      $this->_logger->debug("Checkout Response:- ".$this->_payloadHelper->jsonEncode($checkout));
 
       if(isset($checkout->error)){
         throw new \Magento\Framework\Exception\LocalizedException(__('Cannot get redirect URL from zipMoney.'));
@@ -97,12 +118,14 @@ class Checkout extends AbstractCheckout
 
       $this->_checkoutId  = $checkout->getId();
 
-      $this->_quote->setZipmoneyCid($this->_checkoutId)
-                   ->save();
+      $this->_quote->setZipmoneyCheckoutId($this->_checkoutId);
+      $this->_quoteRepository->save($this->_quote);
 
-      $this->_redirectUrl = $checkout->getUri();
+      $this->_redirectUrl = $checkout->getUri();      
     } catch(\zipMoney\ApiException $e){
       $this->_logger->debug("Errors:- ".json_encode($e->getResponseBody()));      
+      $this->_logger->debug("Errors:- ".json_encode($e->getCode()));      
+      $this->_logger->debug("Errors:- ".json_encode($e->getResponseObject()));      
       throw new \Magento\Framework\Exception\LocalizedException(__('An error occurred while to requesting the redirect url.'));
     } 
 

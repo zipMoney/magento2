@@ -26,8 +26,7 @@ define(
         'Magento_Checkout/js/model/full-screen-loader',          
         'Magento_Checkout/js/model/payment/additional-validators',
         'mage/storage',
-        'zipMoneyCheckoutJs',
-         ( (inContextCheckoutEnabled && isLive && 'zipMoneyIframeJs') || ( inContextCheckoutEnabled && 'zipMoneyIframeJsSandbox') || '' ) // exposes the "zipMoney" variable
+        'zipMoneyCheckoutJs'
     ],
     function (Component, placeZipOrderAction, setPaymentMethodAction, Messages,ko,quote,$,errorProcessor,fullScreenLoader,additionalValidators,storage) {
         'use strict';
@@ -38,7 +37,14 @@ define(
             defaults: {
                 template: 'ZipMoney_ZipMoneyPayment/payment/zipmoney'
             },
-            initChildren: function () {                
+            setupWidget: function () {                    
+                console.log(11);
+                if(window.$zmJs!=undefined){
+                    console.log(22);
+                    window.$zmJs._collectWidgetsEl(window.$zmJs);
+                }
+            },
+            initChildren: function () {         
                 this.messageContainer = new Messages();
                 this.createMessagesComponent();
                 return this;
@@ -60,10 +66,6 @@ define(
                         .done(
                             placeZipOrderAction(this.getData(),this.messageContainer)
                         );
-                 
-                    // $(".zipmoney-overlay img[src*='close']").click(function(){
-                    //     fullScreenLoader.stopLoader();
-                    // });
                 }
                 
             return true;
@@ -76,7 +78,8 @@ define(
                 return window.checkoutConfig.payment.zipmoneypayment.title;
             }, 
             getContinueText:function(){
-                return window.checkoutConfig.payment.zipmoneypayment.product == "zipPay" ? "Continue to zipPay" : "Continue to zipMoney";
+                return "Continue";
+                //window.checkoutConfig.payment.zipmoneypayment.product == "zipPay" ? "Continue to zipPay" : "Continue to zipMoney";
             },
             getCode: function() {
                 return window.checkoutConfig.payment.zipmoneypayment.code;

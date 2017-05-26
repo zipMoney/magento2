@@ -1,7 +1,7 @@
 <?php
 namespace ZipMoney\ZipMoneyPayment\Helper;
 use \Magento\Checkout\Model\Type\Onepage;
-
+use \Magento\Sales\Model\Order;
 use \zipMoney\Model\CreateCheckoutRequest as CheckoutRequest;
 use \zipMoney\Model\CreateChargeRequest as ChargeRequest;
 use \zipMoney\Model\CreateRefundRequest as RefundRequest;
@@ -102,6 +102,8 @@ class Payload extends \Magento\Framework\App\Helper\AbstractHelper
 
   protected $_quoteFactory;
   protected $_urlBuilder;
+  protected $_helper;
+  protected $_isVirtual  = true;
 
   public function __construct(        
       \Magento\Framework\App\Helper\Context $context,        
@@ -119,7 +121,8 @@ class Payload extends \Magento\Framework\App\Helper\AbstractHelper
       \ZipMoney\ZipMoneyPayment\Model\StoreScope $storeScope,
       \ZipMoney\ZipMoneyPayment\Model\Config $config,    
       \Magento\Sales\Model\ResourceModel\Order\Payment\Transaction\Collection $transactionCollection,
-      \ZipMoney\ZipMoneyPayment\Helper\Logger $logger
+      \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,
+      \ZipMoney\ZipMoneyPayment\Helper\Data $helper
 
   ) {
     parent::__construct($context);
@@ -140,6 +143,7 @@ class Payload extends \Magento\Framework\App\Helper\AbstractHelper
     $this->_logger = $logger;
     $this->_quoteFactory = $quoteFactory;
     $this->_urlBuilder = $urlBuilder;
+    $this->_helper = $helper;
   }
   
   public function setQuote($quote)
@@ -188,8 +192,6 @@ class Payload extends \Magento\Framework\App\Helper\AbstractHelper
                 ->setOrder($this->getOrderDetails(new CheckoutOrder))
                 ->setMetadata($this->getMetadata())
                 ->setConfig($this->getCheckoutConfiguration());
-
-              
     return $checkoutReq;
   }
 
@@ -299,6 +301,11 @@ class Payload extends \Magento\Framework\App\Helper\AbstractHelper
   {    
     $shipping = new OrderShipping;
 
+    if($this->_isVirtual){   
+      $shipping->setPickup(true);   
+      return $shipping;   
+    }
+
     if($this->getQuote()){
       $shipping_address = $this->getQuote()->getShippingAddress();
     } else if($this->getOrder()) {
@@ -314,15 +321,14 @@ class Payload extends \Magento\Framework\App\Helper\AbstractHelper
         }
       }
     }
-    
+
+
     if($shipping_address){      
       if($address = $this->_getAddress($shipping_address)){     
         $shipping->setPickup(false)
                  ->setAddress($address);
       }  
-    } else {        
-      $shipping->setPickup(true);
-    }
+    } 
 
     return $shipping;
   }
@@ -331,25 +337,38 @@ class Payload extends \Magento\Framework\App\Helper\AbstractHelper
   {
     $reference = 0;
     $cart_reference = 0;
-
+    $orderItems = $this->getOrderItems(); 
     if($quote = $this->getQuote()){
-      $shipping_address = $quote->getShippingAddress();
+
+      $address = $quote->getShippingAddress();   
+      /**   
+       *  If cart has only virtual items    
+       */     
+      if($this->_isVirtual){    
+        $address = $quote->getBillingAddress();   
+      }
+
       $reference = $quote->getReservedOrderId() ? $quote->getReservedOrderId() : '0';
       $cart_reference = $quote->getId();
-      $shipping_amount = $shipping_address ? $shipping_address->getShippingInclTax():0.00;
-      $discount_amount = $shipping_address ? $shipping_address->getDiscountAmount():0.00;
-      $tax_amount = $shipping_address ? $shipping_address->getTaxAmount():0.00;
+      $shipping_amount = $address ? $address->getShippingInclTax():0.00;
+      $discount_amount = $address ? $address->getDiscountAmount():0.00;
+      $tax_amount = $address ? $address->getTaxAmount():0.00;
       $grand_total = $quote->getGrandTotal() ? $quote->getGrandTotal() : 0.00;
       $currency = $quote->getQuoteCurrencyCode() ? $quote->getQuoteCurrencyCode() : null;
+      $gift_cards_amount = $quote->getGiftCardsAmount() ? $quote->getGiftCardsAmount() : 0; 
     } else if($order = $this->getOrder()){
       $reference = $order->getIncrementId() ? $order->getIncrementId() : '0';
       $shipping_amount = $order->getShippingAmount() ? $order->getShippingAmount()  + $order->getShippingTaxAmount() : 0;
       $discount_amount = $order->getDiscountAmount() ? $order->getDiscountAmount() : 0;
-      $tax_amount = $order->getTaxAmount() ? $order->getTaxAmount() : 0;
-     }
-  
-    $orderItems = $this->getOrderItems();
+      $tax_amount = $order->getTaxAmount() ? $order->getTaxAmount() : 0;     
+      $gift_cards_amount = $order->getGiftCardsAmount() ? $order->getGiftCardsAmount() : 0;
+    }
     
+    $this->_logger->debug("Gift Card Amount:- " . $gift_cards_amount);  
+    
+    if($gift_cards_amount){   
+      $discount_amount -= $gift_cards_amount;   
+    }
 
     // Discount Item
     if($discount_amount <  0){
@@ -384,13 +403,11 @@ class Payload extends \Magento\Framework\App\Helper\AbstractHelper
             ->setShipping($this->getShippingDetails())
             ->setItems($orderItems);
 
-
     return $reqOrder;      
   }
 
   public function getOrderItems()
   {
-
     if($quote = $this->getQuote()){
       $items = $quote->getAllItems();
       $storeId   = $quote->getStoreId();
@@ -403,10 +420,16 @@ class Payload extends \Magento\Framework\App\Helper\AbstractHelper
 
     /** @var Mage_Sales_Model_Order_Item $oItem */
     foreach($items as $item) {
+
+        if (!$item->getProduct()->getIsVirtual()) {            
+          $this->_isVirtual = false;
+        }
+      
+        $this->_logger->debug($this->_helper->__("Product Id:- %s Is Virtual:- %s", $item->getProduct()->getId(), $item->getProduct()->getIsVirtual()? "Yes" : "No"));
        
         if($item->getParentItemId()) {
           continue;   // Only sends parent items to zipMoney
-        }
+        } 
         
         $orderItem = new OrderItem;
         
@@ -423,9 +446,6 @@ class Payload extends \Magento\Framework\App\Helper\AbstractHelper
         }
         
 
-        
-        //print_r($item->getData());
-
 
         $orderItem->setName($item->getName())
                   ->setAmount($item->getPriceInclTax() ? (float)$item->getPriceInclTax() : 0.00)
@@ -439,6 +459,7 @@ class Payload extends \Magento\Framework\App\Helper\AbstractHelper
         $itemsArray[] = $orderItem;
     }
 
+    $this->_logger->debug($this->_helper->__("Shipping Required:- %s", !$this->_isVirtual ? "Yes" : "No"));
 
 
    return $itemsArray;       
@@ -458,7 +479,9 @@ class Payload extends \Magento\Framework\App\Helper\AbstractHelper
     $quoteId = $this->getOrder()->getQuoteId();
 
     $quote = $this->_quoteFactory->create()->load($quoteId);
-    $checkout_id = $quote->getZipmoneyCid();
+    $checkout_id = $quote->getZipmoneyCheckoutId();
+      $this->_logger->debug($quoteId);
+      $this->_logger->debug($checkout_id);
 
     $authority = new Authority;
     $authority->setType('checkout_id')
@@ -533,20 +556,18 @@ class Payload extends \Magento\Framework\App\Helper\AbstractHelper
     if(!$customer || !$customer->getId()) {
       return null;
     }
-
-    $logCustomer = Mage::getModel('log/customer')->loadByCustomer($customer);
     $customerData = Array();
 
+    if($this->_customerSession->isLoggedIn() || $customer->getId()) {
+      $orderCollection = $this->_orderCollectionFactory->create($customer->getId())
+          ->addFieldToFilter(
+              'state',
+              [
+                ['eq' => Order::STATE_COMPLETE],
+                ['eq' => Order::STATE_CLOSED]
+              ]
+          );
 
-    if(Mage::helper('customer')->isLoggedIn() || $customer->getId()) {
-        // get customer merchant history
-      $orderCollection = Mage::getModel('sales/order')->getCollection()
-            ->addFieldToFilter('customer_id', array('eq' => array($customer->getId())))
-            ->addFieldToFilter('state', array(
-                array('eq' => Mage_Sales_Model_Order::STATE_COMPLETE),
-                array('eq' => Mage_Sales_Model_Order::STATE_CLOSED)
-            ));
-      
       $lifetimeSalesAmount           = 0;        // total amount of complete orders
       $maximumSaleValue              = 0;        // Maximum single order amount among complete orders
       $lifetimeSalesRefundedAmount   = 0;        // Total refunded amount (of closed orders)
@@ -556,13 +577,13 @@ class Payload extends \Magento\Framework\App\Helper\AbstractHelper
       $chargeBackBefore              = false;    // any payments that have been charged back by their bank or card provider.
                                                 //  A charge back is when a customer has said they did not make the payment, and the bank forces a refund of the amount
       foreach ($orderCollection AS $order) {
-        if ($order->getState() == Mage_Sales_Model_Order::STATE_COMPLETE) {
+        if ($order->getState() == Order::STATE_COMPLETE) {
             $orderNum++;
             $lifetimeSalesAmount += $order->getGrandTotal();
             if ($oOrder->getGrandTotal() > $maximumSaleValue) {
                 $maximumSaleValue = $order->getGrandTotal();
             }
-        } else if ($order->getState() == Mage_Sales_Model_Order::STATE_CLOSED) {
+        } else if ($order->getState() == Order::STATE_CLOSED) {
             $lifetimeSalesRefundedAmount += $order->getGrandTotal();
         }
       }
@@ -595,17 +616,20 @@ class Payload extends \Magento\Framework\App\Helper\AbstractHelper
       $shopper->setLastName($customer->getLastname());
       
       $statistics = new ShopperStatistics;
-
+      
       $statistics->setAccountCreated($customer->getCreatedAt())
-               ->setSalesTotalCount($lifetimeSalesAmount)
-               ->setSalesAvgAmount($averageSaleValue)
-               ->setSalesMaxAmount($maximumSaleValue)
-               ->setRefundsTotalAmount($lifetimeSalesRefundedAmount)
+               ->setSalesTotalCount((int)$orderNum)
+               ->setSalesTotalAmount((float)$lifetimeSalesAmount)
+               ->setSalesAvgAmount((float)$averageSaleValue)
+               ->setSalesMaxAmount((float)$maximumSaleValue)
+               ->setRefundsTotalAmount((float)$lifetimeSalesRefundedAmount)
                ->setPreviousChargeback($chargeBackBefore)
-               ->setCurrency(Mage::app()->getStore()->getCurrentCurrencyCode());
+               ->setCurrency($this->_storeManager->getStore()->getCurrentCurrencyCode());
 
-      if ($logCustomer->getLoginAtTimestamp()) {
-        $statistics->setLastLogin(date('Y-m-d H:i:s', $logCustomer->getLoginAtTimestamp()));
+      $lastLoginAt = $this->_customerLogger->get($customer->getId())->getLastLoginAt();
+      
+      if ($lastLoginAt) {
+        $statistics->setLastLogin($lastLoginAt);
       }      
 
       $shopper->setStatistics($statistics);
@@ -627,10 +651,8 @@ class Payload extends \Magento\Framework\App\Helper\AbstractHelper
     if(!$address) {
       return null;
     }
-    // print_r($address->getData());
-     $this->_logger->debug($address->getQuoteId());
 
-    if(!$address->getStreet1()
+    if(!$address->getStreet()
         || !$address->getCity()
         || !$address->getCountryId()
         || !$address->getPostcode()
@@ -640,16 +662,25 @@ class Payload extends \Magento\Framework\App\Helper\AbstractHelper
 
     $reqAddress = new Address;
 
-    if($address && $address->getId()) {
+    if($address && ( $address->getAddressId() || $address->getEntityId())) {
       $reqAddress->setFirstName($address->getFirstname());
       $reqAddress->setLastName($address->getLastname());
-      $reqAddress->setLine1($address->getStreet1());
-      $reqAddress->setLine2($address->getStreet2());
+      $street = $address->getStreet();
+
+      if(is_array($street)){
+        if(isset($street[0])){
+          $reqAddress->setLine1($street[0]);
+        }
+        if(isset($street[1])){
+          $reqAddress->setLine1($street[1]);
+        }
+      } else {
+        $reqAddress->setLine1($street);
+      }
+
       $reqAddress->setCountry($address->getCountryId());
       $reqAddress->setPostalCode($address->getPostcode());
       $reqAddress->setCity($address->getCity());
-
-     //$this->_logger->debug($address->getRegion());
 
       /**
        * If region_id is null, the state is saved in region directly, so the state can be got from region.
@@ -659,7 +690,8 @@ class Payload extends \Magento\Framework\App\Helper\AbstractHelper
         $reqAddress->setState($address->getRegionCode());
       } else {              
         $reqAddress->setState($address->getRegion());
-      }
+      }     
+
       return $reqAddress;
     }
 
@@ -669,7 +701,7 @@ class Payload extends \Magento\Framework\App\Helper\AbstractHelper
 
   protected function _getGenderText($gender)
   {
-      $genderText = Mage::getModel('customer/customer')->getResource()
+     $genderText = $this->_customerFactory->create()
           ->getAttribute('gender')
           ->getSource()
           ->getOptionText($gender);
@@ -691,13 +723,13 @@ class Payload extends \Magento\Framework\App\Helper\AbstractHelper
       $product = $this->getChildProduct($item);
       if (!$product || !$product->getData('thumbnail')
           || ($product->getData('thumbnail') == 'no_selection')
-          //|| (Mage::getStoreConfig("checkout/cart/configurable_product_image") == 'parent')
+          || ( $this->_config->getStoreConfig("checkout/cart/configurable_product_image") == 'parent')
           ) {
           $product =  $item->getProduct();
       }           
       $imageUrl = (string)$this->_imageHelper->init($product, 'thumbnail')->getUrl();
     } catch (Exception $e) {
-      $this->_logger->warn($this->__('An error occurred during getting item image for product ' . $product->getId() . '.'));
+      $this->_logger->warn($this->_helper->__('An error occurred during getting item image for product ' . $product->getId() . '.'));
       $this->_logger->error($e->getMessage());
       $this->_logger->debug($e->getTraceAsString());
     }
@@ -724,6 +756,18 @@ class Payload extends \Magento\Framework\App\Helper\AbstractHelper
     }  
     return $description;
   }
+
+
+  /**
+   * Returns the json_encoded string
+   *
+   * @return string
+   */
+  public function jsonEncode($object)
+  {
+    return json_encode(\zipMoney\ObjectSerializer::sanitizeForSerialization($object));
+  }
+
 
 
 }

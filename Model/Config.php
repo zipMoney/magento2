@@ -38,6 +38,17 @@ class Config implements ConfigInterface
   const PAYMENT_ZIPMONEY_INCONTEXT_CHECKOUT = 'incontext_checkout';
   const PAYMENT_ZIPMONEY_MINIMUM_TOTAL  = 'min_total';
 
+  const MARKETING_WIDGETS_HOMEPAGE_BANNER_ACTIVE = 'zipmoney_advert/homepage/banner';
+  const MARKETING_WIDGETS_PRODUCT_BANNER_ACTIVE = 'zipmoney_advert/productpage/banner';
+  const MARKETING_WIDGETS_CART_BANNER_ACTIVE = 'zipmoney_advert/cartpage/banner';
+  const MARKETING_WIDGETS_CATEGORY_BANNER_ACTIVE = 'zipmoney_advert/categorypage/banner';
+  
+  const MARKETING_WIDGETS_PRODUCT_IMAGE_ACTIVE = 'zipmoney_advert/productpage/widget';
+  const MARKETING_WIDGETS_CART_IMAGE_ACTIVE = 'zipmoney_advert/cartpage/widget';
+  
+  const MARKETING_WIDGETS_PRODUCT_TAGLINE_ACTIVE = 'zipmoney_advert/productpage/tagline';
+  const MARKETING_WIDGETS_CART_TAGLINE_ACTIVE    = 'zipmoney_advert/cartpage/tagline';
+
   const PAYMENT_METHOD_LOGO_ZIP = "http://d3k1w8lx8mqizo.cloudfront.net/logo/25px/";
 
   protected $_error_codes_map = array("account_insufficient_funds" => "MG2-0001",
@@ -103,7 +114,8 @@ class Config implements ConfigInterface
       \Magento\Store\Model\StoreManagerInterface $storeManager,   
       \Magento\Framework\App\Cache\TypeListInterface $cacheTypeList,
       \Magento\Config\Model\ResourceModel\Config $resourceConfig,        
-      \Magento\Framework\Message\ManagerInterface $messageManager,
+      \Magento\Framework\Message\ManagerInterface $messageManager,      
+      \Magento\Framework\UrlInterface $urlBuilder,
       \ZipMoney\ZipMoneyPayment\Helper\Api $apiHelper,       
       \ZipMoney\ZipMoneyPayment\Model\StoreScope $storeScope,   
       \ZipMoney\ZipMoneyPayment\Helper\Logger $logger
@@ -115,7 +127,9 @@ class Config implements ConfigInterface
     $this->_storeScope = $storeScope;
     $this->_resourceConfig = $resourceConfig;
     $this->_cacheTypeList = $cacheTypeList;
-    $this->_messageManager = $messageManager;
+    $this->_messageManager = $messageManager;    
+    $this->_urlBuilder     = $urlBuilder;
+
 
     $this->setStoreId($this->_storeManager->getStore()->getId());      
   }
@@ -229,7 +243,7 @@ class Config implements ConfigInterface
    * 
    * @return bool
    */
-  public function isCapture()
+  public function isCharge()
   {
     return trim($this->getConfigData(self::PAYMENT_ZIPMONEY_PAYMENT_ACTION)) === "capture";
   }
@@ -399,4 +413,59 @@ class Config implements ConfigInterface
     
     return $this;
   }
+
+  public function getPaymentAcceptanceMarkSrc()
+  {
+    return self::PAYMENT_METHOD_LOGO_ZIP.$this->getProduct().".png";
+  }
+
+   /**
+   * Return Order place redirect url
+   *
+   * @param string $checkout_flow
+   * @return string
+   */
+  public function getRedirectUrl()
+  {
+    $url = $this->_urlBuilder->getUrl('zipmoneypayment/complete');
+
+   return $url;
+  }
+  /**
+   * Return Order place redirect url
+   *
+   * @param string $checkout_flow
+   * @return string
+   */
+  public function getCheckoutUrl()
+  {
+   // $url = $this->_urlBuilder->getUrl('rest/default/V1/zipmoney/standard');
+    $url = $this->_urlBuilder->getUrl('zipmoneypayment/standard');
+
+   return $url;
+  }
+
+  /**
+   * Whether method is active or not
+   * 
+   * @param $method
+   * @param int $storeId
+   * @return bool
+   */
+  public function getStoreConfig($path, $storeId = null)
+  {   
+
+    if (!isset($storeId)) {
+      $storeId = $this->_storeId;
+    } 
+
+    $value = $this->_scopeConfig->getValue(
+          $path,
+          ScopeInterface::SCOPE_STORE,
+          $storeId
+    );
+
+    return  $value;
+  }
+
 }

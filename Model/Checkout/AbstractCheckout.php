@@ -6,7 +6,10 @@ use \ZipMoney\ZipMoneyPayment\Model\Config;
 
 abstract class AbstractCheckout
 { 
-
+  /**
+   * @var \Magento\Quote\Api\CartRepositoryInterface
+   */
+  protected $_quoteRepository;  
   /**
    * @var string
    */
@@ -21,16 +24,6 @@ abstract class AbstractCheckout
    */
   protected $_api;
   /**
-   * @var Magento\Checkout\Helper\Data
-   */
-  protected $_checkoutHelper;
-  
- /**
-   * @var Magento\Checkout\Helper\Data
-   */
-  protected $_jsonHelper;
-  
-  /**
    * @var \ZipMoney\ZipMoneyPayment\Helper\Payload
    */
   protected $_payloadHelper;
@@ -43,7 +36,11 @@ abstract class AbstractCheckout
   /**
    * @var \ZipMoney\ZipMoneyPayment\Model\Config
    */
-  protected $_config;
+  protected $_config; 
+  /**
+   * @var \ZipMoney\ZipMoneyPayment\Helper\Data
+   */
+  protected $_helper;
 
   /**
    * @var \Magento\Customer\Model\Session
@@ -55,24 +52,35 @@ abstract class AbstractCheckout
    */
   protected $checkoutSession;
 
+  /**
+   * @var \Magento\Checkout\Model\Session
+   */
+  protected $_customerFactory;
+  /**
+   * @const 
+   */
+  const STATUS_MAGENTO_AUTHORIZED = "zip_authorised";
+
+ 
 
   public function __construct(    
     \Magento\Customer\Model\Session $customerSession,
     \Magento\Checkout\Model\Session $checkoutSession,
-    \Magento\Checkout\Helper\Data $checkoutHelper,
-    \Magento\Framework\Json\Helper\Data $jsonHelper,
+    \Magento\Customer\Model\CustomerFactory $customerFactory,    
+    \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
     \ZipMoney\ZipMoneyPayment\Helper\Payload $payloadHelper,
-    \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,
+    \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,   
+    \ZipMoney\ZipMoneyPayment\Helper\Data $helper,
     \ZipMoney\ZipMoneyPayment\Model\Config $config        
   )
   {
-    $this->_checkoutHelper = $checkoutHelper;
     $this->_customerSession = $customerSession;
+    $this->_customerFactory = $customerFactory;
     $this->_checkoutSession = $checkoutSession;
-    $this->_jsonHelper = $jsonHelper;
+    $this->_quoteRepository = $quoteRepository;
     $this->_payloadHelper = $payloadHelper;
-    $this->_jsonHelper = $jsonHelper;
     $this->_logger  = $logger;
+    $this->_helper  = $helper;
     $this->_config  = $config;
 
     // Configure API Credentials
@@ -104,6 +112,19 @@ abstract class AbstractCheckout
   {
     return $this->_customerSession;
   }
+
+  /**
+   * Checks if customer exists by email
+   *
+   * @return int
+   */
+  protected function _lookupCustomerId()
+  {
+    return $this->_customerFactory->create()
+        ->loadByEmail($this->_quote->getCustomerEmail())
+        ->getId();
+  }
+
 
   /**
    * Get checkout method

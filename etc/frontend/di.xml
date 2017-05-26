@@ -15,14 +15,14 @@
     <type name="Magento\Checkout\Model\CompositeConfigProvider">
         <arguments>
             <argument name="configProviders" xsi:type="array">
-                <item name="zipmoney_config_provider" xsi:type="object">ZipMoney\ZipMoneyPayment\Model\ConfigProvider</item>
+                <item name="zipmoney_config_provider" xsi:type="object">ZipMoney\ZipMoneyPayment\Model\Ui\ConfigProvider</item>
             </argument>
         </arguments>
     </type>
 
-    <type name="\ZipMoney\ZipMoneyPayment\Block\InitLibrary">
+    <type name="\ZipMoney\ZipMoneyPayment\Block\Advert\RootEl">
       <arguments>
-          <argument name="template" xsi:type="string">root_el.phtml</argument>
+          <argument name="template" xsi:type="string">advert/root_el.phtml</argument>
       </arguments>
     </type>
 

@@ -10,14 +10,19 @@
                  class="payment-icon"/>
             <!-- zipMoney Logo -->
             <span data-bind="text: getTitle()"></span>
-            <a class="action action-help" data-zm-popup-asset="checkoutdialog" data-zm-widget="popup">
-                <!-- ko i18n: 'Learn More?' --><!-- /ko -->
-            </a>
         </label>
     </div>
 
 
-    <div class="payment-method-content">
+    <div class="payment-method-content">     
+        <!-- ko template: {afterRender: setupWidget } --><!--/ko-->
+        <div class="zip-checkout-description">
+            <span class="zip-checkout-description-text" data-zm-widget='inline' data-zm-asset='checkoutdescription'></span>
+            <a class="action action-help" data-zm-popup-asset="checkoutdialog" data-zm-widget="popup"  id="zipmoney-learn-more" style="display: inline !important">
+                <!-- ko i18n: 'Learn More?' --><!-- /ko -->
+            </a> 
+        </div>       
+
         <!-- ko foreach: getRegion('messages') -->
         <!-- ko template: getTemplate() --><!-- /ko -->
         <!--/ko-->
@@ -26,9 +31,6 @@
             <!-- ko template: getTemplate() --><!-- /ko -->
             <!--/ko-->
         </div>
-
-     
-
         <div class="checkout-agreements-block">
             <!-- ko foreach: $parent.getRegion('before-place-order') -->
             <!-- ko template: getTemplate() --><!-- /ko -->

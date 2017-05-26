@@ -20,35 +20,34 @@ define(
       initialize:function(paymentData, messageContainer){
         this.paymentData = paymentData;
         Zip.Checkout.init({
-          redirect: window.checkoutConfig.payment.zipmoneypayment.inContextCheckoutEnabled,
+          redirect: window.checkoutConfig.payment.zipmoneypayment.inContextCheckoutEnabled ? 0 : 1,
           checkoutUri: window.checkoutConfig.payment.zipmoneypayment.checkoutUri,
-          redirectUri: window.checkoutConfig.payment.zipmoneypayment.redirectUrl,
+          redirectUri: window.checkoutConfig.payment.zipmoneypayment.redirectUri,
           onComplete: this.onComplete.bind(this),
           onError: this.onError.bind(this),
           onCheckout: this.onCheckout.bind(this)
         });     
       },
       onComplete: function(response){    
-        fullScreenLoader.stopLoader();
         if(response.state == "approved" || response.state == "referred"){
-          location.href = this.super.options.redirectUrl + "?result=referred&checkoutId=" + response.checkoutId;
+          location.href = window.checkoutConfig.payment.zipmoneypayment.redirectUri + "?result="+response.state+"&checkoutId=" + response.checkoutId;
+        } else {
+          fullScreenLoader.stopLoader();
         }
       },
       onError: function(response){                      
         fullScreenLoader.stopLoader();
-        alert("An error occurred while getting the redirect url from zipMoney");
+        alert("An error occurred while getting the redirect url from zipMoney.");
       },
       onCheckout: function(resolve, reject, args){            
-        //fullScreenLoader.startLoader();
+        fullScreenLoader.startLoader();
         var payload = null;
         /** Checkout for guest and registered customer. */
     
         try{
-
           storage.get(
               window.checkoutConfig.payment.zipmoneypayment.checkoutUri
           ).done(function (data) {
-            console.log(data);
             resolve({
               data: {redirect_uri: data.redirect_uri}
             });
