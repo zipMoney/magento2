@@ -88,8 +88,8 @@ abstract class AbstractCheckout
     
     $apiConfig->setApiKey('Authorization', $this->_config->getMerchantPrivateKey())
               ->setApiKeyPrefix('Authorization', 'Bearer')
-              ->setEnvironment($this->_config->getEnvironment());
-             // ->setPlatform("Magento/".Mage::getVersion()." Zipmoney_ZipmoneyPayment/".$this->_helper->getExtensionVersion());
+              ->setEnvironment($this->_config->getEnvironment())
+              ->setPlatform("Magento/".$this->_helper->getMagentoVersion()."ZipMoney_ZipMoneyPayment/".$this->_helper->getExtensionVersion());
   }
 
 

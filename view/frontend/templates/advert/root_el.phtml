@@ -3,4 +3,4 @@ require([
     "zipMoneyWidgetJs"
 ]);
 </script>
-<div data-zm-merchant="<?php  echo $this->helper('\ZipMoney\ZipMoneyPayment\Helper\Api')->getMerchantPublicKey();?>" data-env="<?php  echo $this->helper('\ZipMoney\ZipMoneyPayment\Helper\Api')->getEnvironment();?>" data-require-checkout="false"></div>
+<div data-zm-merchant="<?php  echo $this->getMerchantPublicKey();?>" data-env="<?php  echo $this->getEnvironment();?>" data-require-checkout="false"></div>

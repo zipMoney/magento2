@@ -33,4 +33,16 @@ class RootEl extends \Magento\Framework\View\Element\Template
 
     parent::__construct($context, $data);
   }
+
+
+  public function getMerchantPublicKey()
+  {
+    return $this->_config->getMerchantPublicKey();
+  }
+
+
+  public function getEnvironment()
+  {
+    return $this->_config->getEnvironment();
+  }
 }

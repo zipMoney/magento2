@@ -1,10 +1,11 @@
 <?php
 namespace ZipMoney\ZipMoneyPayment\Helper;
 
+use \Magento\Framework\App\Helper\AbstractHelper;
 use ZipMoney\ZipMoneyPayment\Model\Config;
 use \ZipMoney\ZipMoneyPayment\Logger\Logger as ZipMoneyLogger;
 
-class Logger  extends \Magento\Framework\App\Helper\AbstractHelper
+class Logger  extends  AbstractHelper
 {  
 
 	protected $_modelFactory;  

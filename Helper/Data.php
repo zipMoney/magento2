@@ -1,6 +1,7 @@
 <?php
 namespace ZipMoney\ZipMoneyPayment\Helper;
 
+use \Magento\Framework\App\Helper\AbstractHelper;
 /**
  * @category  Zipmoney
  * @package   Zipmoney_ZipmoneyPayment
@@ -10,10 +11,12 @@ namespace ZipMoney\ZipMoneyPayment\Helper;
  * @link      http://www.zipmoney.com.au/
  */
 
-class Data extends  \ZipMoney\ZipMoneyPayment\Helper\AbstractHelper 
+class Data extends AbstractHelper 
 {
 
   private $_orderFactory  = null;
+  private $_moduleList  = null;
+  private $_productMetadata  = null;
 
   /**
    * Set quote and config instances
@@ -21,11 +24,15 @@ class Data extends  \ZipMoney\ZipMoneyPayment\Helper\AbstractHelper
   public function __construct(
     \Magento\Framework\App\Helper\Context $context,         
     \Magento\Framework\UrlInterface $urlBuilder,
-    \Magento\Sales\Model\OrderFactory $orderFactory,
+    \Magento\Sales\Model\OrderFactory $orderFactory,           
+    \Magento\Framework\App\ProductMetadataInterface $productMetadata,
+    \Magento\Framework\Module\ModuleListInterface $moduleList,
     \ZipMoney\ZipMoneyPayment\Model\Config\Proxy $config,
     \ZipMoney\ZipMoneyPayment\Helper\Logger $logger )
   {   
-    $this->_orderFactory = $orderFactory;
+    $this->_orderFactory = $orderFactory;        
+    $this->_productMetadata = $productMetadata;
+    $this->_moduleList = $moduleList;
     parent::__construct($context,$urlBuilder,$config,$logger);
   }
 
@@ -94,6 +101,17 @@ class Data extends  \ZipMoney\ZipMoneyPayment\Helper\AbstractHelper
   public function generateIdempotencyKey()
   {
     return uniqid();
+  }
+
+  public function getMagentoVersion()
+  {
+    return $this->_productMetadata->getVersion();
+  }
+
+  public function getExtensionVersion()
+  {
+    $moduleInfo = $this->_moduleList->getOne("ZipMoney_ZipMoneyPayment");
+    return $moduleInfo['setup_version'];
   }
 
 }

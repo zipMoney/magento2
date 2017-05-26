@@ -27,7 +27,7 @@ class AbstractTransaction
     
         $apiConfig->setApiKey('Authorization', $this->_config->getMerchantPrivateKey())
               ->setApiKeyPrefix('Authorization', 'Bearer')
-              ->setEnvironment($this->_config->getEnvironment());
-
+              ->setEnvironment($this->_config->getEnvironment())
+              ->setPlatform("Magento/".$this->_helper->getMagentoVersion()."ZipMoney_ZipMoneyPayment/".$this->_helper->getExtensionVersion());
     }
 }

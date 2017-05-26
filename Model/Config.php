@@ -88,10 +88,6 @@ class Config implements ConfigInterface
    */
   protected $_logger;
 
-  /**
-   * @var \ZipMoney\ZipMoneyPayment\Helper\Api
-   */
-  protected $_apiHelper;
 
   /**
    * @var \ZipMoney\ZipMoneyPayment\Model\StoreScope
@@ -116,14 +112,12 @@ class Config implements ConfigInterface
       \Magento\Config\Model\ResourceModel\Config $resourceConfig,        
       \Magento\Framework\Message\ManagerInterface $messageManager,      
       \Magento\Framework\UrlInterface $urlBuilder,
-      \ZipMoney\ZipMoneyPayment\Helper\Api $apiHelper,       
       \ZipMoney\ZipMoneyPayment\Model\StoreScope $storeScope,   
       \ZipMoney\ZipMoneyPayment\Helper\Logger $logger
   ) {
     $this->_scopeConfig  = $scopeConfig;
     $this->_storeManager = $storeManager;
     $this->_logger = $logger;
-    $this->_apiHelper = $apiHelper;
     $this->_storeScope = $storeScope;
     $this->_resourceConfig = $resourceConfig;
     $this->_cacheTypeList = $cacheTypeList;

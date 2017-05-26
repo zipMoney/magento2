@@ -1,5 +1,7 @@
 <?php
 namespace ZipMoney\ZipMoneyPayment\Helper;
+
+use \Magento\Framework\App\Helper\AbstractHelper;
 use \Magento\Checkout\Model\Type\Onepage;
 use \Magento\Sales\Model\Order;
 use \zipMoney\Model\CreateCheckoutRequest as CheckoutRequest;
@@ -18,9 +20,8 @@ use \zipMoney\Model\ShopperStatistics;
 use \zipMoney\Model\Metadata;
 use \zipMoney\Model\CheckoutConfiguration;
 
-class Payload extends \Magento\Framework\App\Helper\AbstractHelper
+class Payload extends  AbstractHelper
 {   
-
 
   /**
    * @var \Magento\Customer\Model\CustomerFactory

@@ -136,7 +136,7 @@
         </arguments>
     </virtualType>
 
-    <type name="ZipMoney\ZipMoneyPayment\Gateway\Command\CaptureStrategyCommand">
+    <!-- <type name="ZipMoney\ZipMoneyPayment\Gateway\Command\CaptureStrategyCommand">
         <arguments>
             <argument name="commandPool" xsi:type="object">ZipMoneyGatewayCommandPool</argument>
         </arguments>
@@ -152,5 +152,5 @@
         <arguments>
             <argument name="commandPool" xsi:type="object">ZipMoneyGatewayCommandPool</argument>
         </arguments>
-    </type>    
+    </type>     -->
 </config>
