@@ -8,49 +8,151 @@ use \zipMoney\Configuration;
 
 class Config implements ConfigInterface
 {
-   
-  const METHOD_CODE = 'zipmoneypayment';
+  /**
+   * Method Code
+   *
+   * @const
+   */
+  const METHOD_CODE = 'zipmoneypayment'; 
 
-  const CHECKOUT_FLOW_STANDARD = 'standard';
-  const CHECKOUT_FLOW_EXPRESS = 'express';
-
+  /**
+   * zipMoney Authorised Status
+   *
+   * @const
+   */
   const STATUS_MAGENTO_AUTHORIZED = "zip_authorised";
-  
-  const API_NAMESPACE = "\\zipMoney\\Api\\";    
 
-
-  const API_TYPE_CANCEL = "Cancel";    
-  const API_TYPE_CAPTURE = "Capture";    
-  const API_TYPE_CHECKOUT = "Checkout";     
-  const API_TYPE_CONFIGURE = "Configure";
-  const API_TYPE_QUERY = "Query";
-  const API_TYPE_QUOTE = "Quote";
-  const API_TYPE_REFUND = "Refund";
-  const API_TYPE_SETTINGS = "Settings";
-
+  /**
+   * Private Key
+   *
+   * @const
+   */
   const PAYMENT_ZIPMONEY_PRIVATE_KEY  = 'merchant_private_key';
+
+  /**
+   * Public Key
+   *
+   * @const
+   */
   const PAYMENT_ZIPMONEY_PUBLIC_KEY   = 'merchant_public_key';
+
+  /**
+   * API Envronment
+   *
+   * @const
+   */
   const PAYMENT_ZIPMONEY_ENVIRONMENT  = 'environment';
+ 
+  /**
+   * Payment Method Title
+   *
+   * @const
+   */
   const PAYMENT_ZIPMONEY_TITLE  = 'title';
+  
+  /**
+   * Product Type
+   *
+   * @const
+   */
   const PAYMENT_ZIPMONEY_PRODUCT  = 'product';
+  
+  /**
+   * Log Setting
+   *
+   * @const
+   */
   const PAYMENT_ZIPMONEY_LOG_SETTINGS  = 'log_settings';
+
+  /**
+   * Payment Action
+   *
+   * @const
+   */
   const PAYMENT_ZIPMONEY_PAYMENT_ACTION = 'payment_action';
+
+  /**
+   * Incontext Checkout
+   *
+   * @const
+   */
   const PAYMENT_ZIPMONEY_INCONTEXT_CHECKOUT = 'incontext_checkout';
+  
+  /**
+   * Minimum Order Total 
+   *
+   * @const
+   */
   const PAYMENT_ZIPMONEY_MINIMUM_TOTAL  = 'min_total';
 
-  const MARKETING_WIDGETS_HOMEPAGE_BANNER_ACTIVE = 'zipmoney_advert/homepage/banner';
-  const MARKETING_WIDGETS_PRODUCT_BANNER_ACTIVE = 'zipmoney_advert/productpage/banner';
-  const MARKETING_WIDGETS_CART_BANNER_ACTIVE = 'zipmoney_advert/cartpage/banner';
-  const MARKETING_WIDGETS_CATEGORY_BANNER_ACTIVE = 'zipmoney_advert/categorypage/banner';
+  /**
+   * Incontext Checkout
+   *
+   * @const
+   */
+  const ADVERTS_HOMEPAGE_BANNER_ACTIVE = 'zipmoney_advert/homepage/banner';
   
-  const MARKETING_WIDGETS_PRODUCT_IMAGE_ACTIVE = 'zipmoney_advert/productpage/widget';
-  const MARKETING_WIDGETS_CART_IMAGE_ACTIVE = 'zipmoney_advert/cartpage/widget';
+  /**
+   * Product Page Banner Active
+   *
+   * @const
+   */  
+  const ADVERTS_PRODUCT_BANNER_ACTIVE = 'zipmoney_advert/productpage/banner';
   
-  const MARKETING_WIDGETS_PRODUCT_TAGLINE_ACTIVE = 'zipmoney_advert/productpage/tagline';
-  const MARKETING_WIDGETS_CART_TAGLINE_ACTIVE    = 'zipmoney_advert/cartpage/tagline';
+  /**
+   * Cart Page Banner Active
+   *
+   * @const
+   */
+  const ADVERTS_CART_BANNER_ACTIVE = 'zipmoney_advert/cartpage/banner';
+  
+  /**
+   * Cateogyr Page Banner Active
+   *
+   * @const
+   */
+  const ADVERTS_CATEGORY_BANNER_ACTIVE = 'zipmoney_advert/categorypage/banner';
+  
+  /**
+   * Product Page Widget Active
+   *
+   * @const
+   */
+  const ADVERTS_PRODUCT_IMAGE_ACTIVE = 'zipmoney_advert/productpage/widget';
+  
+  /**
+   * Cart Page Widget Active
+   *
+   * @const
+   */
+  const ADVERTS_CART_IMAGE_ACTIVE = 'zipmoney_advert/cartpage/widget';
+  
+  /**
+   * Cart Page Tagline Active
+   *
+   * @const
+   */
+  const ADVERTS_PRODUCT_TAGLINE_ACTIVE = 'zipmoney_advert/productpage/tagline';
+  
+  /**
+   * Cart Page Tagline Active
+   *
+   * @const
+   */
+  const ADVERTS_CART_TAGLINE_ACTIVE    = 'zipmoney_advert/cartpage/tagline';
 
+  /**
+   * Payment Method Logo Url
+   *
+   * @const
+   */
   const PAYMENT_METHOD_LOGO_ZIP = "http://d3k1w8lx8mqizo.cloudfront.net/logo/25px/";
 
+  /**
+   * Error Codes Map
+   *
+   * @var array
+   */
   protected $_error_codes_map = array("account_insufficient_funds" => "MG2-0001",
                                  "account_inoperative" => "MG2-0002",
                                  "account_locked" => "MG3-0003",
@@ -65,7 +167,11 @@ class Config implements ConfigInterface
    * @var int
    */
   protected $_storeId;
-
+  
+  /**
+   *
+   * @var object
+   */
   protected $_methodInstance;
 
   /**
@@ -74,7 +180,7 @@ class Config implements ConfigInterface
   protected $_scopeConfig;
 
   /**
-   * @var \\Magento\Store\Model\StoreManagerInterface
+   * @var \Magento\Store\Model\StoreManagerInterface
    */
   protected $_storeManager;
   
@@ -87,12 +193,6 @@ class Config implements ConfigInterface
    * @var \ZipMoney\ZipMoneyPayment\Helper\Logger
    */
   protected $_logger;
-
-
-  /**
-   * @var \ZipMoney\ZipMoneyPayment\Model\StoreScope
-   */
-  protected $_storeScope;
 
   /**
    * @var \Magento\Framework\App\Cache\TypeListInterface
@@ -112,13 +212,11 @@ class Config implements ConfigInterface
       \Magento\Config\Model\ResourceModel\Config $resourceConfig,        
       \Magento\Framework\Message\ManagerInterface $messageManager,      
       \Magento\Framework\UrlInterface $urlBuilder,
-      \ZipMoney\ZipMoneyPayment\Model\StoreScope $storeScope,   
       \ZipMoney\ZipMoneyPayment\Helper\Logger $logger
   ) {
     $this->_scopeConfig  = $scopeConfig;
     $this->_storeManager = $storeManager;
     $this->_logger = $logger;
-    $this->_storeScope = $storeScope;
     $this->_resourceConfig = $resourceConfig;
     $this->_cacheTypeList = $cacheTypeList;
     $this->_messageManager = $messageManager;    
@@ -128,9 +226,8 @@ class Config implements ConfigInterface
     $this->setStoreId($this->_storeManager->getStore()->getId());      
   }
   
-
   /**
-   * Whether method is active or not
+   * Checks whether method is active or not
    * 
    * @param $method
    * @param int $storeId
@@ -138,24 +235,21 @@ class Config implements ConfigInterface
    */
   public function isMethodActive($method, $storeId = null)
   {   
-
     if (!isset($storeId)) {
       $storeId = $this->_storeId;
     } 
 
     $isEnabled = false;
-
     $isEnabled = $this->_scopeConfig->isSetFlag(
           'payment/' . self::METHOD_CODE .'/active',
           ScopeInterface::SCOPE_STORE,
           $storeId
     );
-
     return  $isEnabled;
   }
 
   /**
-   * Returns Merchant Id
+   * Returns the payment method title
    * 
    * @return int
    */
@@ -165,7 +259,7 @@ class Config implements ConfigInterface
   }
 
   /**
-   * Returns Merchant Id
+   * Returns Merchant Private Key
    * 
    * @return int
    */
@@ -175,16 +269,14 @@ class Config implements ConfigInterface
   }
   
   /**
-   * Returns Merchant key
+   * Returns Merchant Public key
    * 
    * @return string
    */
   public function getMerchantPublicKey()
   {
     return $this->getConfigData(self::PAYMENT_ZIPMONEY_PUBLIC_KEY);
-
   }
-  
 
   /**
    * Returns Api Environment
@@ -197,13 +289,15 @@ class Config implements ConfigInterface
   }
 
   /**
-   * Check if in-context checkout is active
-   * @return bool
+   * Returns method log url
+   *
+   * @return string
    */
   public function getMethodLogo()
   {   
     return  self::PAYMENT_METHOD_LOGO_ZIP.strtolower($this->getProduct()).".png";
   }
+
   /**
    * Returns Product
    * 
@@ -216,6 +310,7 @@ class Config implements ConfigInterface
 
   /**
    * Check if in-context checkout is active
+   *
    * @return bool
    */
   public function isInContextCheckout()
@@ -224,7 +319,8 @@ class Config implements ConfigInterface
   }
  
   /**
-   * Check if in-context checkout is active
+   * Returns the minimum order total
+   *
    * @return bool
    */
   public function getOrderTotalMinimum()
@@ -241,28 +337,31 @@ class Config implements ConfigInterface
   {
     return trim($this->getConfigData(self::PAYMENT_ZIPMONEY_PAYMENT_ACTION)) === "capture";
   }
-
   
   /**
-   * Is Capture
+   * Returns the log setting
    * 
-   * @return bool
+   * @return int
    */
   public function getLogSetting($storeId = null)
   {
     return $this->getConfigData(self::PAYMENT_ZIPMONEY_LOG_SETTINGS,$storeId);
   }
 
-
+  /**
+   * Returns the mapped error code
+   * 
+   * @return int
+   */
   public function getMappedErrorCode($errorCode)
   {
     if(!in_array($errorCode, array_keys($this->_error_codes_map)))
     {
-      return false;
+      return;
     }
-
     return $this->_error_codes_map[$errorCode];
   }
+
   /**
    * Retrieve information from payment configuration
    *
@@ -315,7 +414,7 @@ class Config implements ConfigInterface
    * Sets method instance used for retrieving method specific data
    *
    * @param MethodInterface $method
-   * @return $this
+   * @return \ZipMoney\ZipMoneyPayment\Model
    */
   public function setMethodInstance($methodInstance)
   {
@@ -338,14 +437,14 @@ class Config implements ConfigInterface
    * Sets method code
    *
    * @param string $methodCode
-   * @return void
+   * @return string
    */
   public function getMethodCode()
   {
-    if(isset($this->_methodCode))
+    if(isset($this->_methodCode)){
       return $this->_methodCode;
-    else
-      return false;
+    }
+
   }
 
   /**
@@ -363,7 +462,7 @@ class Config implements ConfigInterface
    * Store ID setter
    *
    * @param int $storeId
-   * @return $this
+   * @return \ZipMoney\ZipMoneyPayment\Model
    */
   public function setStoreId($storeId)
   {
@@ -372,51 +471,18 @@ class Config implements ConfigInterface
   }
 
   /**
-   *  Save config
-   * 
-   * @param $vPath
-   * @param $value
-   * @param null $iMerchantId
-   * @return $this
+   * Returns the logo url
+   *
+   * @return string
    */
-  public function saveConfigByMatchedScopes($path, $value, $merchantId = null)
-  {
-    if ($merchantId === null) {
-      $merchantId = $this->getMerchantId();
-    }
-
-    $matched = $this->_storeScope->getMatchedScopes($merchantId);
-
-    if (!is_array($matched)) {
-      return $this;
-    }
-
-    $path = $this->_getCommonConfigPath($path);
-
-    /**
-     * save the config to each matched scope
-     */
-    foreach ($matched as $scopeArr) {
-      if (!is_array($scopeArr)) {
-        continue;
-      }
-      $scope = isset($scopeArr['scope']) ? $scopeArr['scope'] : 'default';
-      $scopeId = isset($scopeArr['scope_id']) ? $scopeArr['scope_id'] : 0;
-      $this->_resourceConfig->saveConfig($path, $value, $scope, $scopeId);
-    }
-    
-    return $this;
-  }
-
   public function getPaymentAcceptanceMarkSrc()
   {
     return self::PAYMENT_METHOD_LOGO_ZIP.$this->getProduct().".png";
   }
 
    /**
-   * Return Order place redirect url
+   * Return Redirect Url
    *
-   * @param string $checkout_flow
    * @return string
    */
   public function getRedirectUrl()
@@ -425,10 +491,10 @@ class Config implements ConfigInterface
 
    return $url;
   }
+
   /**
-   * Return Order place redirect url
+   * Return Checkout Url
    *
-   * @param string $checkout_flow
    * @return string
    */
   public function getCheckoutUrl()
@@ -440,11 +506,11 @@ class Config implements ConfigInterface
   }
 
   /**
-   * Whether method is active or not
+   * Returns the config
    * 
-   * @param $method
+   * @param $path
    * @param int $storeId
-   * @return bool
+   * @return mixed
    */
   public function getStoreConfig($path, $storeId = null)
   {   
@@ -461,5 +527,4 @@ class Config implements ConfigInterface
 
     return  $value;
   }
-
 }

@@ -10,6 +10,15 @@ use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
 
+/**
+ * @category  Zipmoney
+ * @package   Zipmoney_ZipmoneyPayment
+ * @author    Sagar Bhandari <sagar.bhandari@zipmoney.com.au>
+ * @copyright 2017 zipMoney Payments Pty Ltd.
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link      http://www.zipmoney.com.au/
+ */
+
 class CaptureDataBuilder extends AbstractDataBuilder
 {   
 
@@ -22,9 +31,6 @@ class CaptureDataBuilder extends AbstractDataBuilder
     public function build(array $buildSubject)
     {   
         $amount =  \Magento\Payment\Gateway\Helper\SubjectReader::readAmount($buildSubject);
-
-        // print_r($amount);
-        // exit;
 
         if (!isset($buildSubject['payment'])
             || !$buildSubject['payment'] instanceof PaymentDataObjectInterface

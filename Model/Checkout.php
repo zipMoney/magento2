@@ -7,16 +7,19 @@ use \ZipMoney\ZipMoneyPayment\Model\Checkout\AbstractCheckout;
 
 class Checkout extends AbstractCheckout
 {   
-   /**
+  /**
    * @var Magento\Checkout\Helper\Data
    */
   protected $_checkoutHelper;
-  
 
-  protected $_apiClass = '\zipMoney\Api\CheckoutsApi';
-
+  /**
+   * @var string
+   */
   protected $_redirectUrl  = null;
-
+ 
+  /**
+   * @var string
+   */
   protected $_checkoutId  = null;
 
 
@@ -37,10 +40,12 @@ class Checkout extends AbstractCheckout
     \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,    
     \ZipMoney\ZipMoneyPayment\Helper\Data $helper,
     \ZipMoney\ZipMoneyPayment\Model\Config $config,
+    \zipMoney\Api\CheckoutsApi $api,
     array $data = []
   )
   { 
     $this->_checkoutHelper = $checkoutHelper;
+    $this->_api = $api;
 
    
     if (isset($data['quote'])) {
@@ -50,25 +55,20 @@ class Checkout extends AbstractCheckout
         throw new \Magento\Framework\Exception\LocalizedException(__('Quote instance is required.'));
       }
     }
-
   
     parent::__construct( $customerSession,$checkoutSession, $customerFactory,$quoteRepository, $payloadHelper, $logger, $helper, $config);
-    
-    // Set the api class
-    $this->setApi($this->_apiClass);
   }
 
 
   /**
    * Create quote in Zip side if not existed, and request for redirect url
    *
-   * @param $quote
-   * @return null
-   * @throws Mage_Core_Exception
+   * @param  \Magento\$quote
+   * @return \zipMoney\Model\Checkout
+   * @throws \Magento\Framework\Exception\LocalizedException
    */
   public function start()
   {
-
     if (!$this->_quote || !$this->_quote->getId()) {
       throw new \Magento\Framework\Exception\LocalizedException(__('The quote does not exist.'));
     }
@@ -132,16 +132,23 @@ class Checkout extends AbstractCheckout
     return $checkout;
   }
 
-
+  /**
+   * Returns the zipMoney Redirect Url
+   *
+   * @return string
+   */
   public function getRedirectUrl()
   {
     return $this->_redirectUrl;
   }
-
+  
+  /**
+   * Returns the zipMoney Checkout Id
+   *
+   * @return string
+   */
   public function getCheckoutId()
   {
     return $this->_checkoutId;
   }
-
-
 }

@@ -2,10 +2,19 @@
 namespace  ZipMoney\ZipMoneyPayment\Block;
 
 use Magento\Framework\View\Element\Template;
- 
+
+/**
+ * @category  Zipmoney
+ * @package   Zipmoney_ZipmoneyPayment
+ * @author    Sagar Bhandari <sagar.bhandari@zipmoney.com.au>
+ * @copyright 2017 zipMoney Payments Pty Ltd.
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link      http://www.zipmoney.com.au/
+ */
+
 class Referred extends Template
 {   
- /**
+  /**
    * @const string
    */
   const REFERRED_HEADER = 'payment/zipmoneypayment/zipmoney_messages/referred_header';
@@ -28,6 +37,11 @@ class Referred extends Template
       parent::__construct($context, $data);
   }
 
+  /**
+   * Prepares the layout.
+   *
+   * @return \Magento\Framework\View\Element\AbstractBlock
+   */
   protected function _prepareLayout()
   {
    $text = $this->_config->getStoreConfig(self::REFERRED_HEADER);
@@ -39,7 +53,6 @@ class Referred extends Template
    $this->pageConfig->getTitle()->set(__($text));
 
    return parent::_prepareLayout();
-
   }
 
   /**

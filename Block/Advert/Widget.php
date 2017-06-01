@@ -9,7 +9,9 @@ use \ZipMoney\ZipMoneyPayment\Model\Config;
 
 class Widget extends  AbstractAdvert implements CatalogBlock\ShortcutInterface
 {   
-
+  /**
+   * @const string
+   */
   const ADVERT_TYPE = "widget";
   
   /**
@@ -28,26 +30,6 @@ class Widget extends  AbstractAdvert implements CatalogBlock\ShortcutInterface
   }
 
   /**
-   * Check is "OR" label position before shortcut
-   *
-   * @return bool
-   */
-  public function isOrPositionBefore()
-  {
-    return $this->getShowOrPosition() == CatalogBlock\ShortcutButtons::POSITION_BEFORE;
-  }
-
-  /**
-   * Check is "OR" label position after shortcut
-   *
-   * @return bool
-   */
-  public function isOrPositionAfter()
-  {
-    return $this->getShowOrPosition() == CatalogBlock\ShortcutButtons::POSITION_AFTER;
-  }
-
-  /**
    * Get shortcut alias
    *
    * @return string
@@ -56,4 +38,5 @@ class Widget extends  AbstractAdvert implements CatalogBlock\ShortcutInterface
   {
     return $this->_alias;
   }
+
 }

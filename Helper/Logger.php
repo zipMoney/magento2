@@ -2,14 +2,21 @@
 namespace ZipMoney\ZipMoneyPayment\Helper;
 
 use \Magento\Framework\App\Helper\AbstractHelper;
-use ZipMoney\ZipMoneyPayment\Model\Config;
+use \ZipMoney\ZipMoneyPayment\Model\Config;
 use \ZipMoney\ZipMoneyPayment\Logger\Logger as ZipMoneyLogger;
+
+/**
+ * @category  Zipmoney
+ * @package   Zipmoney_ZipmoneyPayment
+ * @author    Sagar Bhandari <sagar.bhandari@zipmoney.com.au>
+ * @copyright 2017 zipMoney Payments Pty Ltd.
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link      http://www.zipmoney.com.au/
+ */
 
 class Logger  extends  AbstractHelper
 {  
-
-	protected $_modelFactory;  
-
+  
 	/**
 	 * @var \ZipMoney\ZipMoneyPayment\Model\Config\Proxy
 	 */
@@ -38,44 +45,20 @@ class Logger  extends  AbstractHelper
     $this->_config = $config;    
 	}
  
-  /**
-   * Returns the mapped log level
-   *
-   * @param  $logLevel
-   * @return string
-   */
-	protected function _mapLogLevel($logLevel)
-	{   
-
-		if(strlen($logLevel) <=2){  
-			$max_level  = count($this->_logLevelsMap) - 1 ;
-
-			if($logLevel > $max_level )
-				return $this->_logLevelsMap[$max_level];
-			else
-				return $this->_logLevelsMap[$logLevel];
-		}
-		 
-		return $logLevel;
-	}
 		
 	/**
    * Writes the log to the logfile
    *
-   * @param  $message, $logLevel, $storeId
+   * @param  string $message, int $logLevel, int $storeId
    * @return bool
    */
 	protected function _log($message, $logLevel = ZipMoneyLogger::INFO, $storeId = null)
 	{      
-		$logLevel = $this->_mapLogLevel($logLevel);
-    $logSetting = $this->_config->getLogSetting($storeId);
+    $configLevel = $this->_config->getLogSetting($storeId);
 
-		if ($logSetting < 0) {
+		if ($configLevel < 0) {
 			return false;
 		}
-				
-		// Config levels are always in the old (Magento 1 format)    
-		$configLevel = $this->_mapLogLevel($logSetting);
 
 		// errors are always logged.
 		if ($configLevel > 400) {
@@ -85,7 +68,6 @@ class Logger  extends  AbstractHelper
 		if ($logLevel < $configLevel) {
 			return false;
 		}
-		
 		$logFunc =  $this->_logger->getLevelName($logLevel);
 		$this->_logger->$logFunc($message);			
 		return true;
@@ -94,7 +76,7 @@ class Logger  extends  AbstractHelper
 	/**
    * Logs the info message to the logfile
    *
-   * @param  $message, $storeId
+   * @param  string $message, int $storeId
    */	
 	public function info($message, $storeId = null)
 	{      
@@ -104,7 +86,7 @@ class Logger  extends  AbstractHelper
 	/**
    * Logs the debug message to the logfile
    *
-   * @param  $message, $storeId
+   * @param  string $message, int $storeId
    */	
 	public function debug($message, $storeId = null)
 	{    
@@ -114,7 +96,7 @@ class Logger  extends  AbstractHelper
 	/**
    * Logs the warn message to the logfile
    *
-   * @param  $message, $storeId
+   * @param  string $message, int $storeId
    */	
 	public function warn($message, $storeId = null)
 	{      
@@ -124,7 +106,7 @@ class Logger  extends  AbstractHelper
 	/**
    * Logs the notice message to the logfile
    *
-   * @param  $message, $storeId
+   * @param  string $message, int $storeId
    */	
 	public function notice($message, $storeId = null)
 	{      
@@ -134,7 +116,7 @@ class Logger  extends  AbstractHelper
 	/**
    * Logs the error message to the logfile
    *
-   * @param  $message, $storeId
+   * @param string $message, int $storeId
    */
 	public function error($message, $storeId = null)
 	{      
@@ -144,7 +126,7 @@ class Logger  extends  AbstractHelper
 	/**
    * Logs the critical message to the logfile
    *
-   * @param  $message, $storeId
+   * @param string $message, int $storeId
    */
 	public function critical($message, $storeId = null)
 	{      
@@ -154,7 +136,7 @@ class Logger  extends  AbstractHelper
 	/**
    * Logs the alert message to the logfile
    *
-   * @param  $message, $storeId
+   * @param string $message, int $storeId
    */
 	public function alert($message, $storeId = null)
 	{      
@@ -164,7 +146,7 @@ class Logger  extends  AbstractHelper
   /**
    * Logs the emergency message to the logfile
    *
-   * @param  $message, $storeId
+   * @param string $message, int $storeId
    */
 	public function emergency($message, $storeId = null)
 	{      

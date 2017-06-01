@@ -1,20 +1,26 @@
 <?php
-/**
- * Copyright © 2016 Magento. All rights reserved.
- * See COPYING.txt for license details.
- */
 namespace ZipMoney\ZipMoneyPayment\Gateway\Validator;
 
 use Magento\Payment\Gateway\Validator\AbstractValidator;
 use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\SamplePaymentGateway\Gateway\Http\Client\ClientMock;
 
+/**
+ * @category  Zipmoney
+ * @package   Zipmoney_ZipmoneyPayment
+ * @author    Sagar Bhandari <sagar.bhandari@zipmoney.com.au>
+ * @copyright 2017 zipMoney Payments Pty Ltd.
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link      http://www.zipmoney.com.au/
+ */
+
+
 class CaptureResponseValidator extends AbstractValidator
 {
     const RESULT_CODE = 'RESULT_CODE';
 
     /**
-     * Performs validation of result code
+     * Performs validation of response
      *
      * @param array $validationSubject
      * @return ResultInterface

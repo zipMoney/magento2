@@ -7,28 +7,66 @@ use \Magento\Sales\Model\Order;
 use \ZipMoney\ZipMoneyPayment\Model\Config;
 use \ZipMoney\ZipMoneyPayment\Model\Checkout\AbstractCheckout;
 
+/**
+ * @category  Zipmoney
+ * @package   Zipmoney_ZipmoneyPayment
+ * @author    Sagar Bhandari <sagar.bhandari@zipmoney.com.au>
+ * @copyright 2017 zipMoney Payments Pty Ltd.
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link      http://www.zipmoney.com.au/
+ */
+
 class Charge extends AbstractCheckout
 { 
-  protected $_quoteManagement;
+  /**
+   * @var \Magento\Quote\Api\CartManagementInterface
+   */
+  protected $_quoteManagement; 
+
+  /**
+   * @var \Magento\Customer\Api\AccountManagementInterface
+   */
   protected $_accountManagement;
+
+  /**
+   * @var \Magento\Framework\Message\ManagerInterface
+   */
   protected $_messageManager;
+
+  /**
+   * @var \Magento\Customer\Model\Url
+   */
   protected $_customerUrl;
+
+  /**
+   * @var \Magento\Customer\Api\CustomerRepositoryInterface
+   */
   protected $_customerRepository;
+
+  /**
+   * @var \Magento\Sales\Model\Order\Email\Sender\OrderSender
+   */
   protected $_orderSender;
+
+  /**
+   * @var \Magento\Sales\Api\OrderRepositoryInterface
+   */
   protected $_orderRepository;
+
+  /**
+   * @var \Magento\Sales\Api\OrderPaymentRepositoryInterface
+   */
   protected $_orderPaymentRepository;
+
   /**
    * @var \Magento\Framework\DataObject\Copy
    */
   protected $_objectCopyService;
+
   /**
    * @var \Magento\Framework\Api\DataObjectHelper
    */
   protected $_dataObjectHelper;
-  /**
-   * @var string
-   */
-  protected $_apiClass = '\zipMoney\Api\ChargesApi';
 
   /**
    * Set quote and config instances
@@ -54,6 +92,7 @@ class Charge extends AbstractCheckout
     \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,
     \ZipMoney\ZipMoneyPayment\Helper\Data $helper,
     \ZipMoney\ZipMoneyPayment\Model\Config $config,
+    \zipMoney\Api\ChargesApi $api,
     array $data = []
   )
   { 
@@ -67,6 +106,7 @@ class Charge extends AbstractCheckout
     $this->_orderPaymentRepository = $orderPaymentRepository;        
     $this->_objectCopyService = $objectCopyService;
     $this->_dataObjectHelper = $dataObjectHelper;
+    $this->_api = $api;
 
     parent::__construct( $customerSession, $checkoutSession, $customerFactory, $quoteRepository, $payloadHelper, $logger, $helper, $config);
 
@@ -77,24 +117,12 @@ class Charge extends AbstractCheckout
         throw new \Magento\Framework\Exception\LocalizedException(__('Order instance is required.'));
       }
     }
-
-    $this->setApi($this->_apiClass);
-
-    if (isset($params['api_class'])) {
-      if(class_exists($params['api_class'])){
-        $this->_apiClass = $params['api_class'];
-        $this->setApi($this->_apiClass);
-      } else {
-        throw new \Magento\Framework\Exception\LocalizedException("Invalid Api Class [ ".$params['api_class']." ]");
-      }
-    }
-
   }
 
   /**
    * Prepare quote for guest checkout order submit
    *
-   * @return Zipmoney_ZipmoneyPayment_Model_Charge
+   * @return \ZipMoney\ZipMoneyPayment\Model\Charge
    */
   protected function _prepareGuestQuote()
   {
@@ -107,10 +135,9 @@ class Charge extends AbstractCheckout
   }
 
   /**
-   * Prepare quote for customer registration and customer order submit
-   * and restore magento customer data from quote
+   * Prepare quote for customer registration
    *
-   * @return Zipmoney_ZipmoneyPayment_Model_Charge
+   * @return \ZipMoney\ZipMoneyPayment\Model\Charge
    */
   protected function _prepareNewCustomerQuote()
   {
@@ -119,13 +146,6 @@ class Charge extends AbstractCheckout
     $shipping   = $quote->isVirtual() ? null : $quote->getShippingAddress();
 
     $this->_logger->info($this->_helper->__('Creating new customer with email %s', $quote->getCustomerEmail()));
-
-    // $customerId = $this->_lookupCustomerId($quote->getCustomerEmail());
-    // if ($customerId) {
-    //   $this->_logger->info($this->_helper->__('The email has already been used for customer (id: %s) ', $customerId));
-    //   $this->_getCustomerSession()->loginById($customerId);
-    //   return $this->_prepareCustomerQuote();
-    // }
 
     $customer = $quote->getCustomer();
    // $customer->setEmail($billing->getEmail());
@@ -172,10 +192,11 @@ class Charge extends AbstractCheckout
     return $this;
   }
 
+ 
   /**
-   * Prepare quote for customer order submit
+   * Prepare quote for customer
    *
-   * @return Zipmoney_ZipmoneyPayment_Model_Charge
+   * @return \ZipMoney\ZipMoneyPayment\Model\Charge
    */
   protected function _prepareCustomerQuote()
   {
@@ -230,7 +251,7 @@ class Charge extends AbstractCheckout
   /**
    * Involve new customer to system
    *
-   * @return $this
+   * @return \ZipMoney\ZipMoneyPayment\Model\Charge
    */
   protected function _involveNewCustomer()
   {
@@ -270,7 +291,7 @@ class Charge extends AbstractCheckout
   /**
    * Make sure addresses will be saved without validation errors
    *
-   * @throws Mage_Core_Exception
+   * @throws \Magento\Framework\Exception\LocalizedException
    */
   protected function _verifyOrderState()
   {
@@ -284,7 +305,7 @@ class Charge extends AbstractCheckout
   /**
    * Checks if transaction exists 
    *
-   * @throws Mage_Core_Exception
+   * @throws \Magento\Framework\Exception\LocalizedException
    */
   protected function _checkTransactionExists($txnId)
   {
@@ -299,10 +320,8 @@ class Charge extends AbstractCheckout
   }
   
   /**
-   * Checks if transaction exists 
+   * Authorises the charge
    *
-   * @param string $txnId
-   * @throws Mage_Core_Exception
    */
   protected function _authorise($txnId)
   {
@@ -322,8 +341,9 @@ class Charge extends AbstractCheckout
 
     $this->_logger->info($this->_helper->__("Payment Authorised"));
 
-    $this->_order->setStatus(self::STATUS_MAGENTO_AUTHORIZED)
-                 ->save();
+    $this->_order->setStatus(self::STATUS_MAGENTO_AUTHORIZED);
+              
+    $this->_orderRepository->save($this->_order);           
 
     if ($this->_order->getCanSendNewEmailFlag()) {
       try {
@@ -338,8 +358,8 @@ class Charge extends AbstractCheckout
    * Captures the charge
    *
    * @param string $txnId
-   * @param boolean $isAuthAndCapture
-   * @throws Mage_Core_Exception
+   * @param bool $isAuthAndCapture
+   * @throws \Magento\Framework\Exception\LocalizedException
    */
   protected function _capture($txnId, $isAuthAndCapture = false)
   {
@@ -405,7 +425,7 @@ class Charge extends AbstractCheckout
 
     $this->_logger->info($this->_helper->__("Payment Captured"));
 
-    $this->_order->save();
+    $this->_orderRepository->save($this->_order);           
 
     // Invoice
     $invoice = $payment->getCreatedInvoice();
@@ -422,18 +442,16 @@ class Charge extends AbstractCheckout
       $this->_order->addStatusHistoryComment(__('Notified customer about invoice #%s.', $invoice->getIncrementId()))
                    ->setIsCustomerNotified(true);
       
-      $this->_orderRepository->save($this->_order);           
-                   
+      $this->_orderRepository->save($this->_order);                    
     }
   }
 
   /**
    * Handles the charge response and captures/authorises the charge based on state
    *
-   * @param zipMoney\Model\Charge $charge
-   * @param boolean $isAuthAndCapture
-   * @return zipMoney\Model\Charge 
-   * @throws Mage_Core_Exception
+   * @param \zipMoney\Model\Charge $charge
+   * @param bool $isAuthAndCapture
+   * @return \zipMoney\Model\Charge 
    */
   protected function _chargeResponse($charge, $isAuthAndCapture)
   {
@@ -463,7 +481,7 @@ class Charge extends AbstractCheckout
   /**
    * Charges the customer against the order
    *
-   * @return zipMoney\Model\Charge 
+   * @return \zipMoney\Model\Charge 
    * @throws \Magento\Framework\Exception\LocalizedException
    */
   public function charge()
@@ -482,12 +500,12 @@ class Charge extends AbstractCheckout
 
       $this->_logger->debug("Charge Response:- ".$this->_helper->json_encode($charge));
 
-      if(isset($response->error)){      
+      if(isset($charge->error)){      
         throw new \Magento\Framework\Exception\LocalizedException(__('Could not create the charge'));
       }
 
       if(!$charge->getState() || !$charge->getId()){
-        throw new \Magento\Framework\Exception\LocalizedException($this->_helper->__('Invalid Charge'));
+        throw new \Magento\Framework\Exception\LocalizedException(__('Invalid Charge'));
       }
 
       $this->_logger->debug($this->_helper->__("Charge State:- %s",$charge->getState()));
@@ -523,14 +541,10 @@ class Charge extends AbstractCheckout
    * Places the order.
    *
    * @return zipMoney\Model\Charge 
-   * @throws Mage_Sales_Model_Order
+   * @throws \Magento\Sales\Model\Order
    */
   public function placeOrder()
   {
-  
-   // $this->_order =  $this->_orderRepository->get(17);
-    //return $this->_order;
-
     $checkoutMethod = $this->getCheckoutMethod();
 
     $this->_logger->debug(

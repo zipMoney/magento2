@@ -2,6 +2,7 @@
 namespace ZipMoney\ZipMoneyPayment\Helper;
 
 use \Magento\Framework\App\Helper\AbstractHelper;
+
 /**
  * @category  Zipmoney
  * @package   Zipmoney_ZipmoneyPayment
@@ -13,9 +14,20 @@ use \Magento\Framework\App\Helper\AbstractHelper;
 
 class Data extends AbstractHelper 
 {
+  
+  /**
+   * @var \Magento\Sales\Model\OrderFactory
+   */
+  private $_orderFactory  = null; 
 
-  private $_orderFactory  = null;
+  /**
+   * @var \Magento\Framework\Module\ModuleListInterface
+   */
   private $_moduleList  = null;
+  
+  /**
+   * @var \Magento\Framework\App\ProductMetadataInterface
+   */
   private $_productMetadata  = null;
 
   /**
@@ -36,7 +48,11 @@ class Data extends AbstractHelper
     parent::__construct($context,$urlBuilder,$config,$logger);
   }
 
-
+  /**
+   * Prints the string with the given arguments
+   *
+   * @return string
+   */
   public function __()
   {
     $args = func_get_args();
@@ -56,9 +72,9 @@ class Data extends AbstractHelper
   }
 
    /**
-   * @param $oQuote
+   * @param \Magento\Quote\Model\Quote $quote
    * @return bool
-   * @throws Mage_Core_Exception
+   * @throws \Magento\Framework\Exception\LocalizedException
    */
   protected function _activateQuote($quote)
   {
@@ -83,7 +99,7 @@ class Data extends AbstractHelper
   /**
    * Deactivates the quote 
    * 
-   * @param Mage_Sales_Model_Quote $quote 
+   * @param \Magento\Quote\Model\Quote $quote 
    * @return bool
    */
   protected function _deactivateQuote($quote)
@@ -98,16 +114,31 @@ class Data extends AbstractHelper
     return false;
   }
 
+  /**
+   * Generates uniq key
+   * 
+   * @return string
+   */
   public function generateIdempotencyKey()
   {
     return uniqid();
   }
 
+  /**
+   * Returns Magento Version
+   * 
+   * @return string
+   */
   public function getMagentoVersion()
   {
     return $this->_productMetadata->getVersion();
   }
 
+  /**
+   * Returns Module Version
+   * 
+   * @return string
+   */
   public function getExtensionVersion()
   {
     $moduleInfo = $this->_moduleList->getOne("ZipMoney_ZipMoneyPayment");

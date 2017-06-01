@@ -4,6 +4,15 @@ namespace ZipMoney\ZipMoneyPayment\Controller\Complete;
 use Magento\Checkout\Model\Type\Onepage;
 use ZipMoney\ZipMoneyPayment\Controller\Standard\AbstractStandard;
 
+/**
+ * @category  Zipmoney
+ * @package   Zipmoney_ZipmoneyPayment
+ * @author    Sagar Bhandari <sagar.bhandari@zipmoney.com.au>
+ * @copyright 2017 zipMoney Payments Pty Ltd.
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link      http://www.zipmoney.com.au/
+ */
+
 class Index extends AbstractStandard
 {   
 
@@ -15,23 +24,9 @@ class Index extends AbstractStandard
   protected $_validResults = array('approved','declined','cancelled','referred');
 
   /**
-   * Charges Api Class
-   *
-   * @var string
-   */  
-  protected $_apiClass  = '\zipMoney\Client\Api\ChargesApi';
-  
-  /**
-   * Charge Model
-   *
-   * @var string
-   */
-  protected $_chargeModel = 'zipmoneypayment/charge';
-  
-  /**
    * Return from zipMoney and handle the result of the application
    *
-   * @throws Mage_Core_Exception
+   * @throws \Magento\Framework\Exception\LocalizedException
    */
   public function execute() 
   {
@@ -110,5 +105,4 @@ class Index extends AbstractStandard
         break;
     }
   }
-  
 }

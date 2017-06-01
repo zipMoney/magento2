@@ -5,6 +5,14 @@ use Magento\Catalog\Block as CatalogBlock;
 use Magento\Paypal\Helper\Shortcut\ValidatorInterface;
 use \ZipMoney\ZipMoneyPayment\Model\Config;
 
+/**
+ * @category  Zipmoney
+ * @package   Zipmoney_ZipmoneyPayment
+ * @author    Sagar Bhandari <sagar.bhandari@zipmoney.com.au>
+ * @copyright 2017 zipMoney Payments Pty Ltd.
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link      http://www.zipmoney.com.au/
+ */
 
 abstract class AbstractAdvert extends \Magento\Framework\View\Element\Template 
 {
@@ -22,11 +30,6 @@ abstract class AbstractAdvert extends \Magento\Framework\View\Element\Template
    * @var \Magento\Framework\Registry
    */
   protected $_registry; 
- 
-  /**
-   * @var \Magento\Checkout\Model\Cart
-   */
-  protected $_cart; 
 
   /**
    * @var string
@@ -56,14 +59,12 @@ abstract class AbstractAdvert extends \Magento\Framework\View\Element\Template
     \Magento\Framework\View\Element\Template\Context $context,       
     \ZipMoney\ZipMoneyPayment\Model\Config $config,
     \Magento\Framework\Registry $registry,      
-    \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,              
-    \Magento\Checkout\Model\Cart $cart,
+    \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,             
     array $data = []
   ) {
     parent::__construct($context, $data);
 
     $this->_config = $config;
-    $this->_cart = $cart;
     $this->_registry = $registry;
     $this->_logger   = $logger;
 

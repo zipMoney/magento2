@@ -2,26 +2,24 @@
 namespace ZipMoney\ZipMoneyPayment\Model\Config\Source;
 
 /**
- * Copyright © 2016 zipMoney. All rights reserved.
+ * @category  Zipmoney
+ * @package   Zipmoney_ZipmoneyPayment
+ * @author    Sagar Bhandari <sagar.bhandari@zipmoney.com.au>
+ * @copyright 2017 zipMoney Payments Pty Ltd.
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link      http://www.zipmoney.com.au/
  */
 
-/**
- * Used in creating options for sandbox|production config value selection
- *
- */
-
-
-class Environment implements \Magento\Framework\Option\ArrayInterface {
+class Environment implements \Magento\Framework\Option\ArrayInterface 
+{
     
-    /**
-     * Options getter
-     *
-     * @return array
-     */
-    public function toOptionArray() {
-        
-        return [['value' => 'sandbox', 'label' => __('Sandbox')], ['value' => 'production', 'label' => __('Production')]];
-
-    }
+  /**
+   * Options getter
+   *
+   * @return array
+   */
+  public function toOptionArray() {
+    return [['value' => 'sandbox', 'label' => __('Sandbox')], ['value' => 'production', 'label' => __('Production')]];
+  }
 
 }

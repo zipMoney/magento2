@@ -18,31 +18,37 @@ use Magento\Payment\Gateway\Validator\ValidatorInterface;
 use Psr\Log\LoggerInterface;
 
 /**
+ * @category  Zipmoney
+ * @package   Zipmoney_ZipmoneyPayment
+ * @author    Sagar Bhandari <sagar.bhandari@zipmoney.com.au>
+ * @copyright 2017 zipMoney Payments Pty Ltd.
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link      http://www.zipmoney.com.au/
+ */
+
+/**
  * Class CaptureStrategyCommand
  */
 class InitializeStrategyCommand   implements CommandInterface
 {
    
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-    public function __construct(
-        LoggerInterface $logger
-    ) {
-        $this->logger = $logger;
-    }
+  /**
+   * @var LoggerInterface
+   */
+  private $logger;
+
+  public function __construct(
+      LoggerInterface $logger
+  ) {
+      $this->logger = $logger;
+  }
 
 
-    /**
-     * Executes command basing on business object
-     *
-     * @param array $commandSubject
-     * @return void
-     * @throws CommandException
-     */
-    public function execute(array $commandSubject)
-    {
-    }
-
+  /**
+   * Executes command basing on business object
+   *
+   * @param array $commandSubject
+   * @return void
+   */
+  public function execute(array $commandSubject){}
 }

@@ -4,6 +4,15 @@ namespace ZipMoney\ZipMoneyPayment\Model\Checkout;
 use \Magento\Checkout\Model\Type\Onepage;
 use \ZipMoney\ZipMoneyPayment\Model\Config;
 
+/**
+ * @category  Zipmoney
+ * @package   Zipmoney_ZipmoneyPayment
+ * @author    Sagar Bhandari <sagar.bhandari@zipmoney.com.au>
+ * @copyright 2017 zipMoney Payments Pty Ltd.
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link      http://www.zipmoney.com.au/
+ */
+
 abstract class AbstractCheckout
 { 
   /**
@@ -11,18 +20,20 @@ abstract class AbstractCheckout
    */
   protected $_quoteRepository;  
   /**
-   * @var string
+   * @var \Magento\Quote\Model\Quote
    */
   protected $_quote;
 
   /**
-   * @var string
+   * @var \Magento\Sales\Model\Order
    */
   protected $_order;
+
   /**
    * @var string
    */
   protected $_api;
+
   /**
    * @var \ZipMoney\ZipMoneyPayment\Helper\Payload
    */
@@ -50,18 +61,17 @@ abstract class AbstractCheckout
   /**
    * @var \Magento\Checkout\Model\Session
    */
-  protected $checkoutSession;
+  protected $_checkoutSession;
 
   /**
-   * @var \Magento\Checkout\Model\Session
+   * @var \Magento\Customer\Model\CustomerFactory
    */
   protected $_customerFactory;
+
   /**
    * @const 
    */
   const STATUS_MAGENTO_AUTHORIZED = "zip_authorised";
-
- 
 
   public function __construct(    
     \Magento\Customer\Model\Session $customerSession,
@@ -104,7 +114,7 @@ abstract class AbstractCheckout
   }
 
   /**
-   * Return checkout session object
+   * Return customer session object
    *
    * @return \Magento\Checkout\Model\Session
    */
@@ -114,7 +124,7 @@ abstract class AbstractCheckout
   }
 
   /**
-   * Checks if customer exists by email
+   * Checks if customer exists
    *
    * @return int
    */
@@ -124,7 +134,6 @@ abstract class AbstractCheckout
         ->loadByEmail($this->_quote->getCustomerEmail())
         ->getId();
   }
-
 
   /**
    * Get checkout method
@@ -146,12 +155,11 @@ abstract class AbstractCheckout
     return $this->_quote->getCheckoutMethod();
   }
 
-
-  public function getCharge()
-  {
-    return $this->_charge;
-  }
-
+  /**
+   * Returns api instance
+   *
+   * @return object
+   */
   public function getApi()
   {
     if(null === $this->_api){
@@ -161,7 +169,11 @@ abstract class AbstractCheckout
     return $this->_api;
   }
 
-
+  /**
+   * Sets api instance
+   *
+   * @return \ZipMoney\ZipMoneyPayment\Model\Checkout\AbstractCheckout
+   */
   public function setApi($api)
   {
     if(is_object($api)) {
@@ -169,15 +181,25 @@ abstract class AbstractCheckout
     } else if(is_string($api)) {
       $this->_api = new $api;
     }
-
     return $this;
   }
 
+  /**
+   * Returns quote object
+   *
+   * @return \Magento\Quote\Model\Quote 
+   */
   public function getQuote()
   {
     return $this->_quote;
   }
 
+  /**
+   * Sets quote object
+   *
+   * @param \Magento\Quote\Model\Quote  $quote
+   * @return \ZipMoney\ZipMoneyPayment\Model\Checkout\AbstractCheckout
+   */
   public function setQuote($quote)
   {
     if ($quote) {
@@ -186,11 +208,22 @@ abstract class AbstractCheckout
     return $this;
   }
 
+  /**
+   * Returns order object
+   *
+   * @return \Magento\Sales\Model\Order  $order
+   */
   public function getOrder()
   {
     return $this->_order;
   }
 
+  /**
+   * Sets order object
+   *
+   * @param \Magento\Sales\Model\Order  $order
+   * @return \ZipMoney\ZipMoneyPayment\Model\Checkout\AbstractCheckout
+   */
   public function setOrder($order)
   {
     if ($order) {
@@ -199,9 +232,13 @@ abstract class AbstractCheckout
     return $this;
   } 
 
+  /**
+   * Generates uniq id
+   *
+   * @return string
+   */
   public function genIdempotencyKey()
   {
     return uniqid();
   }
-
 }

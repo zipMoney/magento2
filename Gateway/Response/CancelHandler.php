@@ -8,33 +8,19 @@ namespace ZipMoney\ZipMoneyPayment\Gateway\Response;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 
+/**
+ * @category  Zipmoney
+ * @package   Zipmoney_ZipmoneyPayment
+ * @author    Sagar Bhandari <sagar.bhandari@zipmoney.com.au>
+ * @copyright 2017 zipMoney Payments Pty Ltd.
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link      http://www.zipmoney.com.au/
+ */
+
 class CancelHandler implements HandlerInterface
 {
-    const TXN_ID = 'TXN_ID';
-
     /**
-     * @var ConfigInterface
-     */
-    private $_helper;
-    /**
-     * @var OrderRepository
-     */
-    private $_order;
-
-    /**
-     * @param ConfigInterface $config
-     */
-    public function __construct(        
-        \Magento\Sales\Model\Order $order,
-        \ZipMoney\ZipMoneyPayment\Helper\Data $helper,
-        \ZipMoney\ZipMoneyPayment\Helper\Logger $logger
-    ) {
-        $this->_helper = $helper;
-        $this->_logger = $logger;
-        $this->_order = $order;
-    }
-    /**
-     * Handles transaction id
+     * Handles charge cancel response
      *
      * @param array $handlingSubject
      * @param array $response

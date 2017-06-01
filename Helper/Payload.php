@@ -20,6 +20,14 @@ use \zipMoney\Model\ShopperStatistics;
 use \zipMoney\Model\Metadata;
 use \zipMoney\Model\CheckoutConfiguration;
 
+/**
+ * @category  Zipmoney
+ * @package   Zipmoney_ZipmoneyPayment
+ * @author    Sagar Bhandari <sagar.bhandari@zipmoney.com.au>
+ * @copyright 2017 zipMoney Payments Pty Ltd.
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link      http://www.zipmoney.com.au/
+ */
 class Payload extends  AbstractHelper
 {   
 
@@ -57,14 +65,6 @@ class Payload extends  AbstractHelper
    * @var \Magento\Customer\Model\Logger
    */
   protected $_customerLogger;
-
- 
-  protected $_apiRequest;
-  
-  /**
-   * @var \ZipMoney\ZipMoneyPayment\Model\StoreScope
-   */
-  protected $_storeScope;
   
   /**
    * @var \Magento\Store\Model\StoreManagerInterface
@@ -92,18 +92,33 @@ class Payload extends  AbstractHelper
   protected $_transactionCollection;
 
   /**
-   * @var Mage_Customer_Model_Session
+   * @var \Magento\Quote\Model\Quote
    */
   protected $_quote;
 
   /**
-   * @var Mage_Customer_Model_Session
+   * @var \Magento\Sales\Model\Order
    */
   protected $_order;
-
+  
+  /**
+   * @var \Magento\Quote\Model\QuoteFactory
+   */
   protected $_quoteFactory;
+  
+  /**
+   * @var \Magento\Framework\UrlInterface
+   */
   protected $_urlBuilder;
+  
+  /**
+   * @var \ZipMoney\ZipMoneyPayment\Helper\Data
+   */
   protected $_helper;
+  
+  /**
+   * @var bool
+   */
   protected $_isVirtual  = true;
 
   public function __construct(        
@@ -119,7 +134,6 @@ class Payload extends  AbstractHelper
       \Magento\Framework\App\Request\Http $request, 
       \Magento\Quote\Model\QuoteFactory $quoteFactory, 
       \Magento\Framework\UrlInterface $urlBuilder,     
-      \ZipMoney\ZipMoneyPayment\Model\StoreScope $storeScope,
       \ZipMoney\ZipMoneyPayment\Model\Config $config,    
       \Magento\Sales\Model\ResourceModel\Order\Payment\Transaction\Collection $transactionCollection,
       \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,
@@ -135,7 +149,6 @@ class Payload extends  AbstractHelper
     $this->_orderCollectionFactory = $orderCollectionFactory;
     $this->_customerSession = $customerSession;
     $this->_customerLogger = $customerLogger;
-    $this->_storeScope = $storeScope;
     $this->_storeManager = $storeManager;
     $this->_request = $request;
     $this->_url = $context->getUrlBuilder();
@@ -147,6 +160,12 @@ class Payload extends  AbstractHelper
     $this->_helper = $helper;
   }
   
+  /**
+   * Sets checkout quote object
+   *
+   * @param \Magento\Quote\Model\Quote $quote
+   * @return \ZipMoney\ZipMoneyPayment\Helper\Payload
+   */
   public function setQuote($quote)
   {
     if($quote){
@@ -155,6 +174,11 @@ class Payload extends  AbstractHelper
     return $this;
   }
 
+  /**
+   * Sets checkout quote object
+   *
+   * @return \Magento\Quote\Model\Quote $quote
+   */
   public function getQuote()
   {
     if($this->_quote){      
@@ -165,6 +189,12 @@ class Payload extends  AbstractHelper
     return $this->_quote;
   }
 
+  /**
+   * Sets checkout quote object
+   *
+   * @param \Magento\Sales\Model\Order $order
+   * @return \ZipMoney\ZipMoneyPayment\Helper\Payload
+   */
   public function setOrder($order)
   { 
     if($order){
@@ -174,6 +204,11 @@ class Payload extends  AbstractHelper
     return $this;
   }
 
+  /**
+   * Sets checkout quote object
+   *
+   * @return \Magento\Sales\Model\Order $order
+   */
   public function getOrder()
   {
     if($this->_order){
@@ -182,6 +217,12 @@ class Payload extends  AbstractHelper
     return null;
   }
 
+  /**
+   * Prepares the checkout payload
+   *
+   * @param \Magento\Quote\Model\Quote $quote
+   * @return \zipMoney\Model\CreateCheckoutRequest
+   */
   public function getCheckoutPayload($quote)
   {
     $checkoutReq = new CheckoutRequest();
@@ -196,7 +237,12 @@ class Payload extends  AbstractHelper
     return $checkoutReq;
   }
 
-
+  /**
+   * Prepares the charge payload
+   *
+   * @param \Magento\Sales\Model\Order $order
+   * @return \zipMoney\Model\CreateChargeRequest
+   */
   public function getChargePayload($order)
   {
     $chargeReq = new ChargeRequest();
@@ -218,6 +264,14 @@ class Payload extends  AbstractHelper
     return $chargeReq;
   }
 
+  /**
+   * Prepares the refund payload
+   *
+   * @param \Magento\Sales\Model\Order $order
+   * @param float $amount
+   * @param string $reason
+   * @return \zipMoney\Model\CreateRefundRequest
+   */
   public function getRefundPayload($order, $amount, $reason )
   {
     $chargeReq = new RefundRequest();
@@ -234,7 +288,13 @@ class Payload extends  AbstractHelper
     return $chargeReq;
   }
 
-
+  /**
+   * Prepares the capture charge payload
+   *
+   * @param \Magento\Sales\Model\Order $order
+   * @param float $amount
+   * @return \zipMoney\Model\CaptureChargeRequest
+   */
   public function getCapturePayload($order, $amount)
   {
     $captureChargeReq = new CaptureChargeRequest();
@@ -248,18 +308,11 @@ class Payload extends  AbstractHelper
     return $captureChargeReq;
   }
 
-
-  public function getCaptureCancelPayload($order, $amount)
-  {
-    $captureChargeReq = new CaptureChargeRequest();
-
-    $this->setOrder($order);
-
-    $order = $this->getOrder();
-
-    return $captureChargeReq;
-  }
-
+  /**
+   * Prepares the shopper 
+   *
+   * @return \zipMoney\Model\Shopper
+   */
   public function getShopper()
   {
     $customer = null;
@@ -298,6 +351,11 @@ class Payload extends  AbstractHelper
     return $shopper;
   }
 
+  /**
+   * Prepares the shipping details 
+   *
+   * @return \zipMoney\Model\OrderShipping
+   */
   public function getShippingDetails()
   {    
     $shipping = new OrderShipping;
@@ -334,6 +392,12 @@ class Payload extends  AbstractHelper
     return $shipping;
   }
 
+  /**
+   * Prepares the Order details 
+   * 
+   * @param mixed \zipMoney\Model\CheckoutOrder $reqOrder | \zipMoney\Model\ChargeOrder $reqOrder 
+   * @return mixed \zipMoney\Model\CheckoutOrder | \zipMoney\Model\ChargeOrder 
+   */
   public function getOrderDetails($reqOrder)
   {
     $reference = 0;
@@ -407,6 +471,11 @@ class Payload extends  AbstractHelper
     return $reqOrder;      
   }
 
+  /**
+   * Prepares the Order items 
+   * 
+   * @return \zipMoney\Model\OrderItem[]
+   */
   public function getOrderItems()
   {
     if($quote = $this->getQuote()){
@@ -466,7 +535,11 @@ class Payload extends  AbstractHelper
    return $itemsArray;       
   }
 
-
+  /**
+   * Returns the metadata
+   * 
+   * @return \zipMoney\Model\Metadata
+   */
   public function getMetadata()
   { 
     $metadata = new Metadata;
@@ -474,9 +547,13 @@ class Payload extends  AbstractHelper
     return $metadata;
   }
 
+  /**
+   * Returns the authority
+   * 
+   * @return \zipMoney\Model\Authority
+   */
   public function getAuthority()
   { 
-
     $quoteId = $this->getOrder()->getQuoteId();
 
     $quote = $this->_quoteFactory->create()->load($quoteId);
@@ -491,6 +568,11 @@ class Payload extends  AbstractHelper
     return $authority;
   }
 
+  /**
+   * Returns the checkoutconfiguration
+   * 
+   * @return \zipMoney\Model\CheckoutConfiguration
+   */
   public function getCheckoutConfiguration()
   {
     $checkout_config = new CheckoutConfiguration();
@@ -501,10 +583,13 @@ class Payload extends  AbstractHelper
    return $checkout_config;
 
   }
+
   /**
    * Get customer data for shopper section in json from existing quote if the customer does not exist
    *
-   * @return array|null
+   * @param \zipMoney\Model\Shopper $shopper
+   * @param mixed \Magento\Sales\Model\Order | \Magento\Quote\Model\Quote $order_or_quote
+   * @return \zipMoney\Model\Shopper
    */
   public function getOrderOrQuoteCustomer($shopper,$order_or_quote)
   {
@@ -545,12 +630,12 @@ class Payload extends  AbstractHelper
     return $shopper;
   }
 
-
   /**
-   * Get data for consumer section in json from existing customer
+   * Get data for customer data
    *
-   * @param $customer
-   * @return array|null
+   * @param \zipMoney\Model\Shopper $shopper
+   * @param \Magento\Customer\Model\Customer $customer
+   * @return \zipMoney\Model\Shopper
    */
   public function getCustomer($shopper, $customer)
   {
@@ -639,13 +724,11 @@ class Payload extends  AbstractHelper
     return $shopper;
   }
 
-
   /**
-   * Get data for shipping_address/billing_address section in json from quote_address/order_address which depends on whether the quote is converted to order.
+   * Gets customer address
    *
-   * @param $address
-   * @param $bShippingRates
-   * @return array|null
+   * @param \Magento\Sales\Model\Order\Address $address
+   * @return \zipMoney\Model\Address
    */
   protected function _getAddress($address)
   {
@@ -699,7 +782,12 @@ class Payload extends  AbstractHelper
     return null;
   }
 
-
+  /**
+   * Gets customer address
+   *
+   * @param string $gender
+   * @return string 
+   */
   protected function _getGenderText($gender)
   {
      $genderText = $this->_customerFactory->create()
@@ -709,6 +797,13 @@ class Payload extends  AbstractHelper
       return $genderText;
   }
 
+
+  /**
+   * Returns the child product
+   *
+   * @param mixed \Magento\Quote\Model\ResourceModel\Quote\Item |  \Magento\Sales\Model\Order\Item $item
+   * @return \Magento\Catalog\Model\Product 
+   */
   public function getChildProduct($item)
   {
     if ($option = $item->getOptionByCode('simple_product')) {
@@ -717,6 +812,12 @@ class Payload extends  AbstractHelper
     return $item->getProduct();
   }
 
+  /**
+   * Returns the child product
+   *
+   * @param mixed \Magento\Quote\Model\ResourceModel\Quote\Item |  \Magento\Sales\Model\Order\Item $item
+   * @return string
+   */
   protected function _getProductImage($item)
   {
     $imageUrl = '';
@@ -737,6 +838,13 @@ class Payload extends  AbstractHelper
     return $imageUrl;
   }
 
+  /**
+   * Returns the child product
+   *
+   * @param mixed \Magento\Quote\Model\ResourceModel\Quote\Item |  \Magento\Sales\Model\Order\Item $item
+   * @param int $storeId
+   * @return string
+   */
   private function _getProductShortDescription($item, $storeId)
   {
     $product = $this->getChildProduct($item);
@@ -758,7 +866,6 @@ class Payload extends  AbstractHelper
     return $description;
   }
 
-
   /**
    * Returns the json_encoded string
    *
@@ -768,7 +875,4 @@ class Payload extends  AbstractHelper
   {
     return json_encode(\zipMoney\ObjectSerializer::sanitizeForSerialization($object));
   }
-
-
-
 }

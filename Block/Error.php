@@ -2,10 +2,18 @@
 namespace  ZipMoney\ZipMoneyPayment\Block;
 
 use Magento\Framework\View\Element\Template;
- 
+
+/**
+ * @category  Zipmoney
+ * @package   Zipmoney_ZipmoneyPayment
+ * @author    Sagar Bhandari <sagar.bhandari@zipmoney.com.au>
+ * @copyright 2017 zipMoney Payments Pty Ltd.
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link      http://www.zipmoney.com.au/
+ */
+
 class Error extends Template
 {  
-
   /**
    * @const string
    */
@@ -29,6 +37,11 @@ class Error extends Template
       parent::__construct($context, $data);
   }
 
+  /**
+   * Prepares the layout.
+   *
+   * @return \Magento\Framework\View\Element\AbstractBlock
+   */
   protected function _prepareLayout()
   {
     $text = $this->_config->getStoreConfig(self::ERROR_HEADER);
@@ -43,13 +56,13 @@ class Error extends Template
 
   }
   /**
-   * Returns the error heading text.
+   * Returns the error body text.
    *
    * @return string
    */
   public function getBodyText()
   {    
-    $text = "";
+    $text = null;
     if(!$this->_messageManager->hasMessages()){
 
       $text = $this->_config->getStoreConfig(self::ERROR_BODY);
@@ -67,38 +80,39 @@ class Error extends Template
    */
   public function getErrorTypeText()
   {  
-    $vText = "";
+    $text = null;
     if(!$this->_messageManager->hasMessages()){
       try {
-        $iCode = (int)$this->getRequest()->getParam('code');
+        print_r($this->getRequest());
+        $code = (int)$this->getRequest()->getParam('code');
       } catch (Exception $e) {
-        $iCode = 0;
+        $code = 0;
       }
-      switch($iCode)
+      switch($code)
       {
         case 0:
-          $vText =  __('General Error');
+          $text =  __('General Error');
           break;
         case 400:
-          $vText =  __('400 Bad Request');
+          $text =  __('400 Bad Request');
           break;
         case 401:
-          $vText =  __('401 Unauthorized');
+          $text =  __('401 Unauthorized');
           break;
         case 403:
-          $vText =  __('403 Forbidden');
+          $text =  __('403 Forbidden');
           break;
         case 404:
-          $vText =  __('404 Not Found');
+          $text =  __('404 Not Found');
           break;
         case 409:
-          $vText =  __('409 Conflict');
+          $text =  __('409 Conflict');
           break;
         default:
-          $vText = $this->getRequest()->getParam('code') . __(' General Error');
+          $text = $this->getRequest()->getParam('code') . __(' General Error');
           break;
       }
     }
-    return $vText;
+    return $text;
   }
 }

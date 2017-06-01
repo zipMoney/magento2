@@ -4,7 +4,16 @@ namespace ZipMoney\ZipMoneyPayment\Gateway\Http\Client;
 use Magento\Payment\Gateway\Http\ClientInterface;
 use Magento\Payment\Gateway\Http\ClientException;
 
-use \zipMoney\Configuration;
+
+/**
+ * @category  Zipmoney
+ * @package   Zipmoney_ZipmoneyPayment
+ * @author    Sagar Bhandari <sagar.bhandari@zipmoney.com.au>
+ * @copyright 2017 zipMoney Payments Pty Ltd.
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link      http://www.zipmoney.com.au/
+ */
+
 /**
  * Class TransactionCapture
  */
@@ -30,7 +39,7 @@ class TransactionCapture extends AbstractTransaction implements ClientInterface
 
     /**
      * @param \Magento\Payment\Gateway\Http\TransferInterface $transferObject
-     * @return null
+     * @return array
      */
     public function placeRequest(\Magento\Payment\Gateway\Http\TransferInterface $transferObject)
     {
