@@ -40,18 +40,18 @@ abstract class AbstractAdvert extends \Magento\Framework\View\Element\Template
    * @var array
    */
   protected $_configConstants = [ 'widget' => [
-                                              'product' => Config::MARKETING_WIDGETS_PRODUCT_IMAGE_ACTIVE, 
-                                              'cart'    => Config::MARKETING_WIDGETS_CART_IMAGE_ACTIVE 
+                                              'product' => Config::ADVERTS_PRODUCT_IMAGE_ACTIVE, 
+                                              'cart'    => Config::ADVERTS_CART_IMAGE_ACTIVE 
                                              ],
                                   'tagline' => [
-                                              'product' => Config::MARKETING_WIDGETS_PRODUCT_TAGLINE_ACTIVE, 
-                                              'cart'    => Config::MARKETING_WIDGETS_CART_TAGLINE_ACTIVE 
+                                              'product' => Config::ADVERTS_PRODUCT_TAGLINE_ACTIVE, 
+                                              'cart'    => Config::ADVERTS_CART_TAGLINE_ACTIVE 
                                             ],
                                   'banner' =>[
-                                             'product' => Config::MARKETING_WIDGETS_PRODUCT_BANNER_ACTIVE, 
-                                             'cart'    => Config::MARKETING_WIDGETS_CART_BANNER_ACTIVE,
-                                             'home'    => Config::MARKETING_WIDGETS_HOMEPAGE_BANNER_ACTIVE, 
-                                             'category'=> Config::MARKETING_WIDGETS_CATEGORY_BANNER_ACTIVE 
+                                             'product' => Config::ADVERTS_PRODUCT_BANNER_ACTIVE, 
+                                             'cart'    => Config::ADVERTS_CART_BANNER_ACTIVE,
+                                             'home'    => Config::ADVERTS_HOMEPAGE_BANNER_ACTIVE, 
+                                             'category'=> Config::ADVERTS_CATEGORY_BANNER_ACTIVE 
                                             ]
                                 ];
 
