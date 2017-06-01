@@ -1,0 +1,41 @@
+{
+    "name": "zipMoney/magento2-zipmoneypayment",
+    "description": "zipMoney Payment Module for Magento 2",
+    "require": {
+        "php": "~5.6.0|7.0.2|~7.0.6",
+        "magento/framework": "100.1.*",
+        "magento/magento-composer-installer": "*",
+        "magento/module-config": "100.1.*",
+        "magento/module-payment": "100.1.*",
+        "magento/module-checkout": "100.1.*",
+        "magento/module-sales": "100.1.*",
+        "magento/module-backend": "100.1.*",
+        "magento/module-customer": "100.1.*",
+        "magento/module-catalog": "101.0.*",
+        "magento/module-quote": "100.1.*",
+        "zipmoney/merchantapi-php": "1.0.*"
+    },
+    "suggest": {
+      "magento/module-webapi": "1.0.0-beta"
+    },
+    "type": "magento2-module",
+    "version": "1.0.0-beta",
+    "license": [
+        "OSL-3.0",
+        "AFL-3.0"
+    ],
+    "authors": [
+        {
+            "name": "zipMoney",
+            "email": "sagar.bhandari@zipmoney.com.au"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "ZipMoney\\ZipMoneyPayment\\":"",
+            "ZipMoney\\ZipMoneyPayment\\Tests\\": ""
+        },    
+        "files": [ "registration.php" ]
+    }
+}

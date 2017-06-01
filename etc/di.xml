@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+<!--
+/**
+* ZipMoney_ZipMoneyPayment DI definitions
+*
+* @category    ZipMoney
+* @package     ZipMoney_ZipMoneyPayment
+* @author      Sagar Bhandari
+* @copyright   ZipMoney (http://zipmoney.com.au)
+* @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+*/
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="ZipMoney\ZipMoneyPayment\Logger\Handler">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+    
+    <type name="ZipMoney\ZipMoneyPayment\Logger\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">zipMoneyLog</argument>
+            <argument name="handlers"  xsi:type="array">
+                <item name="system" xsi:type="object">\ZipMoney\ZipMoneyPayment\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Framework\App\Helper\Context">
+        <arguments>
+            <argument name="logger" xsi:type="object">\ZipMoney\ZipMoneyPayment\Logger\Logger</argument>
+        </arguments>
+    </type> 
+
+    <!--  Payment Gateway  -->    
+    <virtualType name="ZipMoneyGatewayFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">\ZipMoney\ZipMoneyPayment\Model\Ui\ConfigProvider::CODE</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\Info</argument>
+            <argument name="valueHandlerPool" xsi:type="object">ZipMoneyGatewayValueHandlerPool</argument>
+            <argument name="commandPool" xsi:type="object">ZipMoneyGatewayCommandPool</argument>
+        </arguments>
+    </virtualType>
+    
+    <!-- Configuration reader -->
+    <virtualType name="ZipMoneyGatewayConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">\ZipMoney\ZipMoneyPayment\Model\Ui\ConfigProvider::CODE</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="ZipMoneyGatewayValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>            
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">ZipMoneyGatewayConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+     <virtualType name="ZipMoneyGatewayConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">ZipMoneyGatewayConfig</argument>
+        </arguments>
+    </virtualType>
+
+
+    <!-- Gateway Command -->
+
+
+    <!-- Command poll contains our commands requests (capture, void and etc), now temporary is empty -->
+    <virtualType name="ZipMoneyGatewayCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+              <item name="initialize" xsi:type="string">\ZipMoney\ZipMoneyPayment\Gateway\Command\InitializeStrategyCommand</item>
+              <item name="capture" xsi:type="string">ZipMoneyGatewayCaptureCommand</item>
+              <item name="refund" xsi:type="string">ZipMoneyGatewayRefundCommand</item>
+              <item name="cancel" xsi:type="string">ZipMoneyGatewayCancelCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    
+
+    <!-- Capture Request -->
+    <virtualType name="ZipMoneyGatewayCaptureCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">ZipMoneyCaptureRequest</argument>            
+            <argument name="handler" xsi:type="object">\ZipMoney\ZipMoneyPayment\Gateway\Response\CaptureHandler</argument>
+            <argument name="transferFactory" xsi:type="object">\ZipMoney\ZipMoneyPayment\Gateway\Http\TransferFactory</argument>
+            <argument name="validator" xsi:type="object">\ZipMoney\ZipMoneyPayment\Gateway\Validator\CaptureResponseValidator</argument>
+            <argument name="client" xsi:type="object">\ZipMoney\ZipMoneyPayment\Gateway\Http\Client\TransactionCapture</argument>
+        </arguments>
+    </virtualType>      
+    <!-- Refund Request -->
+    <virtualType name="ZipMoneyGatewayRefundCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">ZipMoneyRefundRequest</argument>            
+            <argument name="handler" xsi:type="object">\ZipMoney\ZipMoneyPayment\Gateway\Response\RefundHandler</argument>
+            <argument name="transferFactory" xsi:type="object">\ZipMoney\ZipMoneyPayment\Gateway\Http\TransferFactory</argument>
+            <argument name="validator" xsi:type="object">\ZipMoney\ZipMoneyPayment\Gateway\Validator\RefundResponseValidator</argument>
+            <argument name="client" xsi:type="object">\ZipMoney\ZipMoneyPayment\Gateway\Http\Client\TransactionRefund</argument>
+        </arguments>
+    </virtualType>  
+    <!-- Cancel Request -->
+    <virtualType name="ZipMoneyGatewayCancelCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">ZipMoneyCancelRequest</argument>            
+            <argument name="handler" xsi:type="object">\ZipMoney\ZipMoneyPayment\Gateway\Response\CancelHandler</argument>
+            <argument name="transferFactory" xsi:type="object">\ZipMoney\ZipMoneyPayment\Gateway\Http\TransferFactory</argument>
+            <argument name="validator" xsi:type="object">\ZipMoney\ZipMoneyPayment\Gateway\Validator\CancelResponseValidator</argument>
+            <argument name="client" xsi:type="object">\ZipMoney\ZipMoneyPayment\Gateway\Http\Client\TransactionCancel</argument>
+        </arguments>
+    </virtualType>  
+    <!-- Capture Request -->
+    <virtualType name="ZipMoneyCaptureRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="capture" xsi:type="string">\ZipMoney\ZipMoneyPayment\Gateway\Request\CaptureDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType> 
+    <!-- Refund Request -->
+    <virtualType name="ZipMoneyRefundRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="refund" xsi:type="string">\ZipMoney\ZipMoneyPayment\Gateway\Request\RefundDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <!-- Cancel Request -->
+    <virtualType name="ZipMoneyCancelRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="cancel" xsi:type="string">\ZipMoney\ZipMoneyPayment\Gateway\Request\CancelDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- <type name="ZipMoney\ZipMoneyPayment\Gateway\Command\CaptureStrategyCommand">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">ZipMoneyGatewayCommandPool</argument>
+        </arguments>
+    </type>
+    
+    <type name="ZipMoney\ZipMoneyPayment\Gateway\Command\RefundStrategyCommand">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">ZipMoneyGatewayCommandPool</argument>
+        </arguments>
+    </type>
+    
+    <type name="ZipMoney\ZipMoneyPayment\Gateway\Command\CancelStrategyCommand">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">ZipMoneyGatewayCommandPool</argument>
+        </arguments>
+    </type>     -->
+</config>

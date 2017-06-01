@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<!--
+/**
+* ZipMoney_ZipMoneyPayment Admin Interface definitions
+*
+* @category    ZipMoney
+* @package     ZipMoney_ZipMoneyPayment
+* @author      Sagar Bhandari
+* @copyright   ZipMoney (http://zipmoney.com.au)
+* @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+*/
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="payment">            
+        
+            <group id="zipmoneypayment" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>zipMoney</label>                
+                <attribute type="expanded">1</attribute>
+                <fieldset_css>zipmoney-section</fieldset_css>
+                <!--  Basic Settings -->                
+                <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable</label>                   
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="title" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Title</label>                        
+                </field>
+                <field id="merchant_private_key" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Merchant Private Key</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                </field> 
+                <field id="merchant_public_key" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Merchant Public Key</label>                    
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                </field>
+                <field id="product" translate="label" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Product Type</label>                        
+                    <source_model>ZipMoney\ZipMoneyPayment\Model\Config\Source\Product</source_model>
+                </field>
+                <field id="payment_action" translate="label" type="select" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Payment Action</label>                        
+                    <source_model>ZipMoney\ZipMoneyPayment\Model\Config\Source\PaymentAction</source_model>
+                </field>
+                <field id="log_settings" translate="label" type="select" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Log Settings</label>                        
+                    <source_model>ZipMoney\ZipMoneyPayment\Model\Config\Source\LogSettings</source_model>
+                </field>
+                <field id="environment" translate="label" type="select" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Environment</label>
+                    <source_model>ZipMoney\ZipMoneyPayment\Model\Config\Source\Environment</source_model>
+                </field>  
+                <field id="incontext_checkout" translate="label" type="select" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>In-Context Checkout</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>  
+                <field id="min_total" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Minimum Order Value</label>                        
+                </field>
+
+                
+                <!--  Widgets and Banners  Settings -->                
+                <group id="zipmoney_advert" translate="label" type="text" sortOrder="12" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Marketing Banners Widgets and Banners</label>
+                    <group id="homepage" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">                    
+                        <label>Home Page</label>
+                        <field id="banner" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Display Strip Banner</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                    </group>
+                    <group id="productpage" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">                    
+                        <label>Product Page</label>
+                        <field id="banner" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Display Strip Banner</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="widget" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Display Widget</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field> 
+                        <field id="tagline" translate="label" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Display Tagline</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                    </group>
+                    <group id="cartpage" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">                    
+                        <label>Cart Page</label>
+                        <field id="banner" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Display Strip Banner</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                        <field id="widget" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Display Widget</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field> 
+                        <field id="tagline" translate="label" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Display Tagline</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                    </group>
+                    <group id="categorypage" translate="label" type="text" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">                    
+                        <label>Category Page</label>
+                        <field id="banner" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <label>Display Strip Banner</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        </field>
+                    </group>
+                </group>
+            </group>
+        </section>
+    </system>
+</config>
