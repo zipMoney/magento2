@@ -2,13 +2,119 @@
 <project name="magento2-gateway" default="build" basedir=".">
     <property name="vendor-dir" value="${project.basedir}/vendor/"/>
     <property name="global-vendor-dir" value="~/.composer/vendor/"/>
-    <import file="${global-vendor-dir}webgig/magento2-phing-setup/build.xml" />
+
+    <property file="./build.properties" />
+
+  <property name="magento2.base_dir" value="${project.basedir}/magento2" />
+
+  <property name="bin.composer" value="${global-vendor-dir}bin/composer --working-dir=${phing.dir}" />
+  <property name="bin.magento"  value="${magento2.base_dir}/bin/magento" />
+  <property name="bin.phpunit"  value="./vendor/bin/phpunit" />
+
+  <property name="db.safe_name" refid="db.name">
+      <filterchain>
+          <replaceregexp>
+              <regexp pattern="[^0-9a-zA-Z$_]" replace="_" ignoreCase="true"/>
+          </replaceregexp>
+      </filterchain>
+  </property>
+
+  <target name="validate-build-properties" description="Ensure all require properties are defined">
+    <if>
+      <not><isset property="magento2.version"/></not>
+      <then><fail>magento.version is not specified</fail></then>
+    </if>
+    <if>
+      <not><isset property="magento2.base_url"/></not>
+      <then><fail>magento.base_url is not specified</fail></then>
+    </if>   
+    <if>
+      <not><isset property="magento2.language"/></not>
+      <then><fail>db.language is not specified</fail></then>
+    </if> 
+    <if>
+      <not><isset property="magento2.currency"/></not>
+      <then><fail>db.currency is not specified</fail></then>
+    </if> 
+    <if>
+      <not><isset property="magento2.timezone"/></not>
+      <then><fail>db.timezone is not specified</fail></then>
+    </if>
+    <if>
+      <not><isset property="db.name"/></not>
+      <then><fail>db.name is not specified</fail></then>
+    </if>
+    <if>
+      <not><isset property="db.user"/></not>
+      <then><fail>db.user is not specified</fail></then>
+    </if>
+    <if>
+      <not><isset property="db.pass"/></not>
+      <then><fail>db.password is not specified</fail></then>
+    </if>   
+  </target>
+
+  <target name="install" depends="create-db,download-magento2,install-magento2" description="Install Magento 2 and Extension" />
+  
+  <target name="create-db" depends="validate-build-properties" description="Create database ${db.name}">
+    <exec command="mysql -u ${db.user} --password=${db.pass} -h ${db.host} -e 'CREATE DATABASE IF NOT EXISTS ${db.name}' " passthru="true" checkreturn="true" />   
+  </target>
+
+  <target name="download-magento2" depends="validate-build-properties" description="Install Magento2 in the ${magento2.base_dir} directory">
+    <if>
+      <not><available type="dir" file="${magento2.base_dir}" /></not>
+      <then>
+        <exec command="${bin.composer} create-project --repository-url=https://repo.magento.com/ magento/project-community-edition magento2" passthru="true" checkreturn="true" />   
+      </then>
+      <else>
+        <echo message="Magento 2 is already downloaded in ${magento2.base_dir}" />
+      </else>
+    </if>
+  </target>   
+
+
+  <target name="install-magento2" depends="validate-build-properties" description="Install Magento2 in the ${magento2.base_dir} directory">
+      <exec command="php ${bin.magento} setup:install --base-url=${magento2.base_url} --db-host=${db.host} --db-name=${db.name}  --db-user=${db.user}  --db-password=${db.pass} --admin-firstname=Magento --admin-lastname=User --admin-email=user@example.com --admin-user=admin --admin-password=admin123 --language=${magento2.language} --currency=${magento2.currency} --timezone=${magento2.timezone} --use-rewrites=1" passthru="true" checkreturn="true" />   
+      <exec command="php ${bin.magento} deploy:mode:set developer" passthru="true" checkreturn="true" />
+  </target> 
+
+  <target name="install-deps" description="Install all required dependencies">
+        <exec command="${bin.composer} install" passthru="true" checkreturn="true" />
+  </target>
+
+  <target name="install-extension-ecomdev-phpunit">
+    <exec command="${bin.mage-ci} install-module ${magento.base_dir} https://github.com/EcomDev/EcomDev_PHPUnit.git" passthru="true" checkreturn="true" />
+  </target>
+
+  <target name="test-phpunit" depends="install,install-deps,install-extension-ecomdev-phpunit">
+    <exec command="php ${bin.mage-ci} phpunit ${magento.base_dir}" passthru="true" checkreturn="true" />
+  </target>
+
+
+  <target name="cache-clean">
+    <exec command="php ${bin.magento} cache:clean" passthru="true" checkreturn="true" />
+  </target>
+
+  <target name="cache-flush">
+    <exec command="php ${bin.magento} cache:flush" passthru="true" checkreturn="true" />
+  </target>
+
+  <target name="reindexall" depends="cache-clean">
+    <exec command="php ${bin.magento} index:reindex" passthru="true" checkreturn="true" />
+  </target>
+
+  <target name="uninstall-magento" description="Remove composer install dependencies, Magento directory and Magento database">
+    <exec command="php ${bin.magento} uninstall" passthru="true" checkreturn="true" />  
+    <delete dir="${magento2.base_dir}" />
+    <delete dir="${project.basedir}/vendor" />
+  </target>
+
 
     <target name="info">
         <echo message="magento2.base_dir = ${magento2.base_dir} .. ${bin.magento}" />
     </target>
 
-    <target name="clean" depends="install-deps" description="Remove Magento directory">
+    <target name="clean"  description="Remove Magento directory">
         <delete dir="${magento2.base_dir}" />
     </target>  
 
@@ -19,6 +125,7 @@
     <target name="setup-extension" description="Creates symlink in the app/code/">
         <exec command="mkdir -p ${magento2.base_dir}/app/code/ZipMoney/ZipMoneyPayment" passthru="true" checkreturn="true" />
         <exec command="cp -R $(pwd)/Block/ $(pwd)/Controller/ $(pwd)/etc/ $(pwd)/Helper/ $(pwd)/Logger/ $(pwd)/Model/ $(pwd)/Observer/ $(pwd)/Setup/ $(pwd)/Test/ $(pwd)/view/  $(pwd)/registration.php $(pwd)/composer.json ./magento2/app/code/ZipMoney/ZipMoneyPayment/" passthru="true" checkreturn="true" />
+        <exec command="cd ./magento2 &amp;&amp;  ${bin.composer} require zipmoney/zipmoney-php:1.0.*" passthru="true" checkreturn="true" />
         <exec command="php ${magento2.base_dir} module:enable ZipMoney_ZipMoneyPayment" passthru="true" checkreturn="true" />
         <exec command="php ${magento2.base_dir} setup:upgrade" passthru="true" checkreturn="true" />
     </target>  

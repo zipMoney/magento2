@@ -767,8 +767,8 @@ class Payload extends  AbstractHelper
       $reqAddress->setCity($address->getCity());
 
       /**
-       * If region_id is null, the state is saved in region directly, so the state can be got from region.
-       * If region_id is a valid id, the state should be got by getRegionCode.
+       * If region_id is null, the state is saved in region directly, so the state can be retrieved from region.
+       * If region_id is a valid id, the state should be retrieved by getRegionCode.
        */
       if ($address->getRegionId()) {
         $reqAddress->setState($address->getRegionCode());
