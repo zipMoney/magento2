@@ -20,7 +20,6 @@
       "magento/module-webapi": "1.0.0-beta"
     },
     "type": "magento2-module",
-    "version": "1.0.0-beta",
     "license": [
         "OSL-3.0",
         "AFL-3.0"
