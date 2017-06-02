@@ -85,15 +85,14 @@
     <exec command="${bin.mage-ci} install-module ${magento.base_dir} https://github.com/EcomDev/EcomDev_PHPUnit.git" passthru="true" checkreturn="true" />
   </target>
 
-
-  <target name="test-phpunit">
+  <target name="test-phpunit" depends="install,install-deps,install-extension-ecomdev-phpunit">
     <exec command="${bin.phpunit} -c ./magento2/dev/tests/unit/phpunit.xml.dist ./magento2/app/code/ZipMoney/ZipMoneyPayment/Test/" passthru="true" checkreturn="true" />
   </target>
-  
+
   <target name="cache-clean">
     <exec command="php ${bin.magento} cache:clean" passthru="true" checkreturn="true" />
   </target>
-  
+
   <target name="cache-flush">
     <exec command="php ${bin.magento} cache:flush" passthru="true" checkreturn="true" />
   </target>
@@ -124,7 +123,7 @@
     <target name="setup-extension" description="Creates symlink in the app/code/">
         <exec command="mkdir -p ${magento2.base_dir}/app/code/ZipMoney/ZipMoneyPayment" passthru="true" checkreturn="true" />
         <exec command="cp -R $(pwd)/Block/ $(pwd)/Controller/ $(pwd)/etc/ $(pwd)/Helper/ $(pwd)/Logger/ $(pwd)/Model/ $(pwd)/Setup/ $(pwd)/Test/ $(pwd)/view/  $(pwd)/registration.php $(pwd)/composer.json ./magento2/app/code/ZipMoney/ZipMoneyPayment/" passthru="true" checkreturn="true" />
-        <exec command="COMPOSER=${magento2.base_dir}/composer.json ${bin.composer} require zipmoney/merchantapi-php:1.0.*" passthru="true" checkreturn="true" />
+        <exec dir="${magento.base_dir}" command="${bin.composer} require zipmoney/merchantapi-php:1.0.*" passthru="true" checkreturn="true" />
         <exec command="php ${magento2.base_dir} module:enable ZipMoney_ZipMoneyPayment" passthru="true" checkreturn="true" />
         <exec command="php ${magento2.base_dir} setup:upgrade" passthru="true" checkreturn="true" />
     </target>  
@@ -156,9 +155,5 @@
     <target name="really-clean" description="Remove composer install dependencies, Magento directory">
         <delete dir="${magento2.base_dir}" />
         <delete dir="${project.basedir}/vendor" />
-    </target>
-
-    <target name="package" description="Package module into a magento connect package">
-        <exec dir="${magento.base_dir}" command="../build.sh ${build}" passthru="true" checkreturn="true" />
     </target>
 </project>
