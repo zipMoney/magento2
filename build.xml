@@ -123,7 +123,7 @@
     <target name="setup-extension" description="Creates symlink in the app/code/">
         <exec command="mkdir -p ${magento2.base_dir}/app/code/ZipMoney/ZipMoneyPayment" passthru="true" checkreturn="true" />
         <exec command="cp -R $(pwd)/Block/ $(pwd)/Controller/ $(pwd)/etc/ $(pwd)/Helper/ $(pwd)/Logger/ $(pwd)/Model/ $(pwd)/Setup/ $(pwd)/Test/ $(pwd)/view/  $(pwd)/registration.php $(pwd)/composer.json ./magento2/app/code/ZipMoney/ZipMoneyPayment/" passthru="true" checkreturn="true" />
-        <exec dir="${magento.base_dir}" command="${bin.composer} require zipmoney/merchantapi-php:1.0.*" passthru="true" checkreturn="true" />
+        <exec dir="${magento2.base_dir}" command="${bin.composer} require zipmoney/merchantapi-php:1.0.*" passthru="true" checkreturn="true" />
         <exec command="php ${magento2.base_dir} module:enable ZipMoney_ZipMoneyPayment" passthru="true" checkreturn="true" />
         <exec command="php ${magento2.base_dir} setup:upgrade" passthru="true" checkreturn="true" />
     </target>  
