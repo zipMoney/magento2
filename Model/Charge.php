@@ -439,7 +439,7 @@ class Charge extends AbstractCheckout
         }
       }   
 
-      $this->_order->addStatusHistoryComment(__('Notified customer about invoice #%s.', $invoice->getIncrementId()))
+      $this->_order->addStatusHistoryComment($this->_helper->__('Notified customer about invoice #%s.', $invoice->getIncrementId()))
                    ->setIsCustomerNotified(true);
       
       $this->_orderRepository->save($this->_order);                    
@@ -515,8 +515,6 @@ class Charge extends AbstractCheckout
                      ->setZipmoneyChargeId($charge->getId());
         $this->_orderPaymentRepository->save($payment);
       }
-
-      $this->_logger->debug($this->_order->getPayment()->getZipmoneyChargeId());
 
       $this->_chargeResponse($charge,false);
 

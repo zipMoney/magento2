@@ -72,7 +72,6 @@
     </if>
   </target>   
 
-
   <target name="install-magento2" depends="validate-build-properties" description="Install Magento2 in the ${magento2.base_dir} directory">
       <exec command="php ${bin.magento} setup:install --base-url=${magento2.base_url} --db-host=${db.host} --db-name=${db.name}  --db-user=${db.user}  --db-password=${db.pass} --admin-firstname=Magento --admin-lastname=User --admin-email=user@example.com --admin-user=admin --admin-password=admin123 --language=${magento2.language} --currency=${magento2.currency} --timezone=${magento2.timezone} --use-rewrites=1" passthru="true" checkreturn="true" />   
       <exec command="php ${bin.magento} deploy:mode:set developer" passthru="true" checkreturn="true" />
@@ -89,11 +88,11 @@
   <target name="test-phpunit" depends="install,install-deps,install-extension-ecomdev-phpunit">
     <exec command="${bin.phpunit} -c ./magento2/dev/tests/unit/phpunit.xml.dist ./magento2/app/code/ZipMoney/ZipMoneyPayment/Test/" passthru="true" checkreturn="true" />
   </target>
-
+  
   <target name="cache-clean">
     <exec command="php ${bin.magento} cache:clean" passthru="true" checkreturn="true" />
   </target>
-
+  
   <target name="cache-flush">
     <exec command="php ${bin.magento} cache:flush" passthru="true" checkreturn="true" />
   </target>

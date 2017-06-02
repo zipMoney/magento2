@@ -663,7 +663,7 @@ class Payload extends  AbstractHelper
         if ($order->getState() == Order::STATE_COMPLETE) {
             $orderNum++;
             $lifetimeSalesAmount += $order->getGrandTotal();
-            if ($oOrder->getGrandTotal() > $maximumSaleValue) {
+            if ($order->getGrandTotal() > $maximumSaleValue) {
                 $maximumSaleValue = $order->getGrandTotal();
             }
         } else if ($order->getState() == Order::STATE_CLOSED) {

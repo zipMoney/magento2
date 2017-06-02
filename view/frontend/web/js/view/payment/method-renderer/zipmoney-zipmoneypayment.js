@@ -38,9 +38,7 @@ define(
                 template: 'ZipMoney_ZipMoneyPayment/payment/zipmoney'
             },
             setupWidget: function () {                    
-                console.log(11);
                 if(window.$zmJs!=undefined){
-                    console.log(22);
                     window.$zmJs._collectWidgetsEl(window.$zmJs);
                 }
             },
