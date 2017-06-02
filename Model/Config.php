@@ -155,9 +155,9 @@ class Config implements ConfigInterface
    */
   protected $_error_codes_map = array("account_insufficient_funds" => "MG2-0001",
                                  "account_inoperative" => "MG2-0002",
-                                 "account_locked" => "MG3-0003",
-                                 "amount_invalid" => "MG4-0004",
-                                 "fraud_check" => "MG5-0005");
+                                 "account_locked" => "MG2-0003",
+                                 "amount_invalid" => "MG2-0004",
+                                 "fraud_check" => "MG2-0005");
   /**
    * @var string
    */

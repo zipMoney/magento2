@@ -9,7 +9,7 @@
 
   <property name="bin.composer" value="${global-vendor-dir}bin/composer --working-dir=${phing.dir}" />
   <property name="bin.magento"  value="${magento2.base_dir}/bin/magento" />
-  <property name="bin.phpunit"  value="./vendor/bin/phpunit" />
+  <property name="bin.phpunit"  value="${global-vendor-dir}bin/phpunit" />
 
   <property name="db.safe_name" refid="db.name">
       <filterchain>
@@ -87,9 +87,8 @@
   </target>
 
   <target name="test-phpunit" depends="install,install-deps,install-extension-ecomdev-phpunit">
-    <exec command="php ${bin.mage-ci} phpunit ${magento.base_dir}" passthru="true" checkreturn="true" />
+    <exec command="${bin.phpunit} -c ./magento2/dev/tests/unit/phpunit.xml.dist ./magento2/app/code/ZipMoney/ZipMoneyPayment/Test/" passthru="true" checkreturn="true" />
   </target>
-
 
   <target name="cache-clean">
     <exec command="php ${bin.magento} cache:clean" passthru="true" checkreturn="true" />

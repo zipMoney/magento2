@@ -558,9 +558,6 @@ class Payload extends  AbstractHelper
 
     $quote = $this->_quoteFactory->create()->load($quoteId);
     $checkout_id = $quote->getZipmoneyCheckoutId();
-      $this->_logger->debug($quoteId);
-      $this->_logger->debug($checkout_id);
-
     $authority = new Authority;
     $authority->setType('checkout_id')
               ->setValue($checkout_id);
