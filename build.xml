@@ -129,7 +129,7 @@
     </target>  
    
     <target name="create_package" description="Package module into a magento connect package">
-        <exec command="tar -zcvf Magento2_ZipMoneyPayment-v1.0.0-rc1.tar.gz -C ${magento2.base_dir}/app/code/ZipMoney/ZipMoneyPayment ." passthru="true" checkreturn="true" />
+        <exec command="tar -zcvf ${package.name}-v${env.branch}.tar.gz -C ${magento2.base_dir}/app/code/ZipMoney/ZipMoneyPayment ." passthru="true" checkreturn="true" />
     </target>
     
     <target name="publish_to_s3">
