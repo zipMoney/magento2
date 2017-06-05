@@ -18,7 +18,7 @@ define(
         return function (messageContainer) {
             var serviceUrl,
                 payload,
-                method = 'put',
+                method = 'post',
                 paymentData = quote.paymentMethod();
 
             /**
@@ -34,15 +34,17 @@ define(
                     paymentMethod: paymentData,
                     billingAddress: quote.billingAddress()
                 };
-                method = 'post';
+                //method = 'post';
             } else {
-                serviceUrl = urlBuilder.createUrl('/carts/mine/selected-payment-method', {});
+                serviceUrl = urlBuilder.createUrl('/carts/mine/set-payment-information', {});
                 payload = {
                     cartId: quote.getQuoteId(),
-                    method: paymentData,
+                    //method: paymentData,                    
+                    paymentMethod: paymentData,
                     billingAddress: quote.billingAddress()
                 };
             }
+            
             fullScreenLoader.startLoader();
 
             return storage[method](

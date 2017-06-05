@@ -85,7 +85,7 @@
     <exec command="${bin.mage-ci} install-module ${magento.base_dir} https://github.com/EcomDev/EcomDev_PHPUnit.git" passthru="true" checkreturn="true" />
   </target>
 
-  <target name="test-phpunit" depends="install,install-deps,install-extension-ecomdev-phpunit">
+  <target name="test-phpunit">
     <exec command="${bin.phpunit} -c ./magento2/dev/tests/unit/phpunit.xml.dist ./magento2/app/code/ZipMoney/ZipMoneyPayment/Test/" passthru="true" checkreturn="true" />
   </target>
 
@@ -122,14 +122,14 @@
 
     <target name="setup-extension" description="Creates symlink in the app/code/">
         <exec command="mkdir -p ${magento2.base_dir}/app/code/ZipMoney/ZipMoneyPayment" passthru="true" checkreturn="true" />
-        <exec command="cp -R $(pwd)/Block/ $(pwd)/Controller/ $(pwd)/etc/ $(pwd)/Helper/ $(pwd)/Logger/ $(pwd)/Model/ $(pwd)/Setup/ $(pwd)/Test/ $(pwd)/view/  $(pwd)/registration.php $(pwd)/composer.json ./magento2/app/code/ZipMoney/ZipMoneyPayment/" passthru="true" checkreturn="true" />
+        <exec command="cp -R $(pwd)/Block/ $(pwd)/Controller/ $(pwd)/etc/ $(pwd)/Helper/ $(pwd)/Gateway/ $(pwd)/Logger/ $(pwd)/Model/ $(pwd)/Setup/ $(pwd)/Test/ $(pwd)/view/  $(pwd)/registration.php $(pwd)/composer.json ./magento2/app/code/ZipMoney/ZipMoneyPayment/" passthru="true" checkreturn="true" />
         <exec dir="${magento2.base_dir}" command="${bin.composer} require zipmoney/merchantapi-php:1.0.*" passthru="true" checkreturn="true" />
         <exec command="php ${magento2.base_dir} module:enable ZipMoney_ZipMoneyPayment" passthru="true" checkreturn="true" />
         <exec command="php ${magento2.base_dir} setup:upgrade" passthru="true" checkreturn="true" />
     </target>  
    
     <target name="create_package" description="Package module into a magento connect package">
-        <exec command="tar -zcvf ${package.name}-v${env.branch}.tar.gz -C ${magento2.base_dir}/app/code/ZipMoney/ZipMoneyPayment ." passthru="true" checkreturn="true" />
+        <exec command="tar -zcvf Magento2_ZipMoneyPayment-v1.0.0-rc1.tar.gz -C ${magento2.base_dir}/app/code/ZipMoney/ZipMoneyPayment ." passthru="true" checkreturn="true" />
     </target>
     
     <target name="publish_to_s3">
