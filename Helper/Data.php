@@ -35,7 +35,6 @@ class Data extends AbstractHelper
    */
   public function __construct(
     \Magento\Framework\App\Helper\Context $context,         
-    \Magento\Framework\UrlInterface $urlBuilder,
     \Magento\Sales\Model\OrderFactory $orderFactory,           
     \Magento\Framework\App\ProductMetadataInterface $productMetadata,
     \Magento\Framework\Module\ModuleListInterface $moduleList,
@@ -45,7 +44,7 @@ class Data extends AbstractHelper
     $this->_orderFactory = $orderFactory;        
     $this->_productMetadata = $productMetadata;
     $this->_moduleList = $moduleList;
-    parent::__construct($context,$urlBuilder,$config,$logger);
+    parent::__construct($context);
   }
 
   /**

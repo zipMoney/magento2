@@ -162,7 +162,6 @@ abstract class AbstractStandard extends Action
     \Magento\Customer\Model\Session $customerSession,
     \Magento\Sales\Model\OrderFactory $orderFactory,
     \Magento\Framework\Url\Helper\Data $urlHelper,
-    \Magento\Framework\UrlInterface $urlBuilder,
     \Magento\Customer\Model\Url $customerUrl, 
     \Magento\Framework\Json\Helper\Data $jsonHelper,
     \Magento\Checkout\Model\PaymentInformationManagement $paymentInformationManagement,
@@ -181,7 +180,7 @@ abstract class AbstractStandard extends Action
     $this->_quoteRepository = $quoteRepository;
     $this->_quoteCollectionFactory = $quoteCollectionFactory;
     $this->_urlHelper = $urlHelper;
-    $this->_urlBuilder = $urlBuilder;
+    $this->_urlBuilder = $context->getUrl();
     $this->_customerUrl = $customerUrl;
     $this->_jsonHelper = $jsonHelper;
     $this->_paymentInformationManagement = $paymentInformationManagement;

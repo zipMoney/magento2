@@ -75,12 +75,7 @@ class Payload extends  AbstractHelper
    * @var \Magento\Framework\App\Request\Http
    */
   protected $_request;
-  
-  /**
-   * @var \Magento\Framework\UrlInterface
-   */
-  protected $_url;
-  
+    
   /**
    * @var \ZipMoney\ZipMoneyPayment\Model\Config
    */
@@ -133,7 +128,6 @@ class Payload extends  AbstractHelper
       \Magento\Store\Model\StoreManagerInterface $storeManager,
       \Magento\Framework\App\Request\Http $request, 
       \Magento\Quote\Model\QuoteFactory $quoteFactory, 
-      \Magento\Framework\UrlInterface $urlBuilder,     
       \ZipMoney\ZipMoneyPayment\Model\Config $config,    
       \Magento\Sales\Model\ResourceModel\Order\Payment\Transaction\Collection $transactionCollection,
       \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,
@@ -151,7 +145,6 @@ class Payload extends  AbstractHelper
     $this->_customerLogger = $customerLogger;
     $this->_storeManager = $storeManager;
     $this->_request = $request;
-    $this->_url = $context->getUrlBuilder();
     $this->_config = $config;
     $this->_transactionCollection = $transactionCollection;
     $this->_logger = $logger;
@@ -621,7 +614,7 @@ class Payload extends  AbstractHelper
     }
     
     if ($phone = $billing_address->getTelephone()) {      
-      $shopper->setPhone($phone);
+      $shopper->setPhone((int)$phone);
     }
                
     return $shopper;
