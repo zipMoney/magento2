@@ -75,7 +75,7 @@ class Payload extends  AbstractHelper
    * @var \Magento\Framework\App\Request\Http
    */
   protected $_request;
-    
+
   /**
    * @var \ZipMoney\ZipMoneyPayment\Model\Config
    */
@@ -678,7 +678,7 @@ class Payload extends  AbstractHelper
 
       foreach ($customer->getAddresses() as $address) {
         if ($address->getTelephone()) {
-          $shopper->setPhone($address->getTelephone());
+          $shopper->setPhone((int)$address->getTelephone());
           break;
         }
       }
