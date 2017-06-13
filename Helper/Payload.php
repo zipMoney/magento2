@@ -149,7 +149,7 @@ class Payload extends  AbstractHelper
     $this->_transactionCollection = $transactionCollection;
     $this->_logger = $logger;
     $this->_quoteFactory = $quoteFactory;
-    $this->_urlBuilder = $urlBuilder;
+    $this->_urlBuilder = $context->getUrl();
     $this->_helper = $helper;
   }
   
