@@ -105,7 +105,7 @@ class Charge extends AbstractCheckout
     $this->_orderPaymentRepository = $orderPaymentRepository;        
     $this->_objectCopyService = $objectCopyService;
     $this->_dataObjectHelper = $dataObjectHelper;
-    $this->_api = new \zipMoney\Api\CheckoutsApi();
+    $this->_api = new \zipMoney\Api\ChargesApi();
 
     parent::__construct( $customerSession, $checkoutSession, $customerFactory, $quoteRepository, $payloadHelper, $logger, $helper, $config);
 
