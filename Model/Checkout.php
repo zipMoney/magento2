@@ -40,14 +40,12 @@ class Checkout extends AbstractCheckout
     \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,    
     \ZipMoney\ZipMoneyPayment\Helper\Data $helper,
     \ZipMoney\ZipMoneyPayment\Model\Config $config,
-    \zipMoney\Api\CheckoutsApi $api,
     array $data = []
   )
   { 
     $this->_checkoutHelper = $checkoutHelper;
-    $this->_api = $api;
+    $this->_api = new \zipMoney\Api\CheckoutsApi();
 
-   
     if (isset($data['quote'])) {
       if($data['quote'] instanceof \Magento\Quote\Model\Quote){
         $this->setQuote($data['quote']);
@@ -108,7 +106,7 @@ class Checkout extends AbstractCheckout
 
     try {
 
-      $checkout = $this->getApi()->checkoutsCreate($request);
+      $checkout = $this->_apiFactory->create('zipMoney\Api\Checkout')->checkoutsCreate($request);
 
       $this->_logger->debug("Checkout Response:- ".$this->_payloadHelper->jsonEncode($checkout));
 

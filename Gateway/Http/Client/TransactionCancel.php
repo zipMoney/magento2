@@ -27,13 +27,13 @@ class TransactionCancel extends AbstractTransaction implements ClientInterface
         \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,   
         \ZipMoney\ZipMoneyPayment\Helper\Data $helper,
         \ZipMoney\ZipMoneyPayment\Model\Config $config,
-        \zipMoney\Api\ChargesApi $chargesApi,
         array $data = []
     ) {
        
        parent::__construct($context,$encryptor,$payloadHelper,$logger,$helper,$config);
 
-       $this->_service = $chargesApi;
+       $this->_service = new \zipMoney\Api\ChargesApi();
+
     }
 
     /**

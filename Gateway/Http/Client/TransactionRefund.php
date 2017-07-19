@@ -27,13 +27,12 @@ class TransactionRefund extends AbstractTransaction implements ClientInterface
         \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,   
         \ZipMoney\ZipMoneyPayment\Helper\Data $helper,
         \ZipMoney\ZipMoneyPayment\Model\Config $config,
-        \zipMoney\Api\RefundsApi $refundsApi,
         array $data = []
     ) {
        
        parent::__construct($context,$encryptor,$payloadHelper,$logger,$helper,$config);
 
-       $this->_service = $refundsApi;
+       $this->_service = new \zipMoney\Api\RefundsApi();
     }
 
     /**
