@@ -106,7 +106,7 @@ class Checkout extends AbstractCheckout
 
     try {
 
-      $checkout = $this->_apiFactory->create('zipMoney\Api\Checkout')->checkoutsCreate($request);
+      $checkout = $this->getApi()->checkoutsCreate($request);
 
       $this->_logger->debug("Checkout Response:- ".$this->_payloadHelper->jsonEncode($checkout));
 
