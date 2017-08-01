@@ -47,10 +47,10 @@ define(
                 this.createMessagesComponent();
                 return this;
             }, 
-            continueToZipMoney: function () {
+            continueToZipMoney: function (x,event) {
                 var self = this,
                     placeOrder;
-                                
+
                 if (event) {
                     event.preventDefault();
                 }
@@ -68,7 +68,6 @@ define(
                 
             return true;
             },
-           
             getPaymentAcceptanceMarkSrc: function() {
                 return window.checkoutConfig.payment.zipmoneypayment.paymentAcceptanceMarkSrc;
             },
