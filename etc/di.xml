@@ -11,6 +11,47 @@
 */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    
+    <!-- DI Config For external zipMoney Merchant API -->
+
+    <!-- CheckoutsApi -->
+    <virtualType name="checkoutsApi" type="\zipMoney\Api\CheckoutsApi"></virtualType>
+    <!-- ChargesApi -->
+    <virtualType name="chargesApi" type="\zipMoney\Api\ChargesApi"></virtualType>
+    <!-- RefundsApi -->
+    <virtualType name="refundsApi" type="\zipMoney\Api\RefundsApi"></virtualType>
+
+    <type name="ZipMoney\ZipMoneyPayment\Model\Checkout">
+        <arguments>
+            <argument name="checkoutsApi" xsi:type="object">checkoutsApi</argument>
+        </arguments>
+    </type>
+
+    <type name="ZipMoney\ZipMoneyPayment\Model\Charge">
+        <arguments>
+            <argument name="chargesApi" xsi:type="object">chargesApi</argument>
+        </arguments>
+    </type>
+
+     <type name="ZipMoney\ZipMoneyPayment\Gateway\Http\Client\TransactionCapture">
+        <arguments>
+            <argument name="chargesApi" xsi:type="object">chargesApi</argument>
+        </arguments>
+    </type>
+
+    <type name="ZipMoney\ZipMoneyPayment\Gateway\Http\Client\TransactionCancel">
+        <arguments>
+            <argument name="chargesApi" xsi:type="object">chargesApi</argument>
+        </arguments>
+    </type>
+
+     <type name="ZipMoney\ZipMoneyPayment\Gateway\Http\Client\TransactionRefund">
+        <arguments>
+            <argument name="refundsApi" xsi:type="object">refundsApi</argument>
+        </arguments>
+    </type>
+    <!-- ////Di For zipMoney Merchant API -->
+
     <type name="ZipMoney\ZipMoneyPayment\Logger\Handler">
         <arguments>
             <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
@@ -135,22 +176,4 @@
             </argument>
         </arguments>
     </virtualType>
-
-    <!-- <type name="ZipMoney\ZipMoneyPayment\Gateway\Command\CaptureStrategyCommand">
-        <arguments>
-            <argument name="commandPool" xsi:type="object">ZipMoneyGatewayCommandPool</argument>
-        </arguments>
-    </type>
-    
-    <type name="ZipMoney\ZipMoneyPayment\Gateway\Command\RefundStrategyCommand">
-        <arguments>
-            <argument name="commandPool" xsi:type="object">ZipMoneyGatewayCommandPool</argument>
-        </arguments>
-    </type>
-    
-    <type name="ZipMoney\ZipMoneyPayment\Gateway\Command\CancelStrategyCommand">
-        <arguments>
-            <argument name="commandPool" xsi:type="object">ZipMoneyGatewayCommandPool</argument>
-        </arguments>
-    </type>     -->
 </config>

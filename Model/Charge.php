@@ -92,6 +92,7 @@ class Charge extends AbstractCheckout
     \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,
     \ZipMoney\ZipMoneyPayment\Helper\Data $helper,
     \ZipMoney\ZipMoneyPayment\Model\Config $config,
+    \zipMoney\Api\ChargesApi $chargesApi,
     array $data = []
   )
   { 
@@ -105,7 +106,7 @@ class Charge extends AbstractCheckout
     $this->_orderPaymentRepository = $orderPaymentRepository;        
     $this->_objectCopyService = $objectCopyService;
     $this->_dataObjectHelper = $dataObjectHelper;
-    $this->_api = new \zipMoney\Api\ChargesApi();
+    $this->_api = $chargesApi;
 
     parent::__construct( $customerSession, $checkoutSession, $customerFactory, $quoteRepository, $payloadHelper, $logger, $helper, $config);
 

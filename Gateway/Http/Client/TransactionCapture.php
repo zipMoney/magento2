@@ -27,13 +27,14 @@ class TransactionCapture extends AbstractTransaction implements ClientInterface
         \ZipMoney\ZipMoneyPayment\Helper\Payload $payloadHelper,
         \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,   
         \ZipMoney\ZipMoneyPayment\Helper\Data $helper,
-        \ZipMoney\ZipMoneyPayment\Model\Config $config,
+        \ZipMoney\ZipMoneyPayment\Model\Config $config,        
+        \zipMoney\Api\ChargesApi $chargesApi,
         array $data = []
     ) {
        
        parent::__construct($context,$encryptor,$payloadHelper,$logger,$helper,$config);
 
-       $this->_service = new \zipMoney\Api\ChargesApi();
+       $this->_service = $chargesApi;
     }
 
     /**

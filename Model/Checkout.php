@@ -39,12 +39,13 @@ class Checkout extends AbstractCheckout
     \ZipMoney\ZipMoneyPayment\Helper\Payload $payloadHelper,
     \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,    
     \ZipMoney\ZipMoneyPayment\Helper\Data $helper,
-    \ZipMoney\ZipMoneyPayment\Model\Config $config,
+    \ZipMoney\ZipMoneyPayment\Model\Config $config,    
+    \zipMoney\Api\CheckoutsApi $checkoutsApi,
     array $data = []
   )
   { 
     $this->_checkoutHelper = $checkoutHelper;
-    $this->_api = new \zipMoney\Api\CheckoutsApi();
+    $this->_api = $checkoutsApi;
 
     if (isset($data['quote'])) {
       if($data['quote'] instanceof \Magento\Quote\Model\Quote){
@@ -54,7 +55,7 @@ class Checkout extends AbstractCheckout
       }
     }
   
-    parent::__construct( $customerSession,$checkoutSession, $customerFactory,$quoteRepository, $payloadHelper, $logger, $helper, $config);
+    parent::__construct( $customerSession, $checkoutSession, $customerFactory, $quoteRepository, $payloadHelper, $logger, $helper, $config);
   }
 
 
