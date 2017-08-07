@@ -1,4 +1,4 @@
-# magento2-zipmoneypayment 
+# Magento2 zipMoneyPayment 
 ## Installation 
 ### Install using Composer
 To install the extension via [Composer](http://getcomposer.org/), run  
@@ -26,5 +26,3 @@ https://github.com/zipMoney/magento2-zipmoneypayment/releases/latest
 `modman clone https://github.com/zipMoney/magento2-zipmoneypayment.git`
 - Update
 `modman update magento2-zipmoneypayment`
-
-
