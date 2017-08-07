@@ -15,14 +15,14 @@ https://github.com/zipMoney/magento2-zipmoneypayment/releases/latest
 3. Upload the magento2-zipmoneypayment package
 ### Install Using modgit
 - Install
-`cd YOUR-MAGENTO-ROOT/`
-`modgit init`
-`modgit -i extension/:. add magento2-zipmoneypayment https://github.com/zipMoney/magento2-zipmoneypayment.git`
+  - `cd YOUR-MAGENTO-ROOT/`
+  - `modgit init`
+  - `modgit -i extension/:. add magento2-zipmoneypayment https://github.com/zipMoney/magento2-zipmoneypayment.git`
 - Update
-`modgit update magento2-zipmoneypayment`
+  - `modgit update magento2-zipmoneypayment`
 ### Install using modman
 - Install
-`cd YOUR-MAGENTO-ROOT/`
-`modman clone https://github.com/zipMoney/magento2-zipmoneypayment.git`
+  - `cd YOUR-MAGENTO-ROOT/`
+  - `modman clone https://github.com/zipMoney/magento2-zipmoneypayment.git`
 - Update
-`modman update magento2-zipmoneypayment`
+  - `modman update magento2-zipmoneypayment`
