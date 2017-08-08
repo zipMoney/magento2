@@ -13,7 +13,7 @@ class Config implements ConfigInterface
    *
    * @const
    */
-  const METHOD_CODE = 'zipmoneypayment'; 
+  const METHOD_CODE = 'zipmoneypayment';
 
   /**
    * zipMoney Authorised Status
@@ -42,21 +42,21 @@ class Config implements ConfigInterface
    * @const
    */
   const PAYMENT_ZIPMONEY_ENVIRONMENT  = 'environment';
- 
+
   /**
    * Payment Method Title
    *
    * @const
    */
   const PAYMENT_ZIPMONEY_TITLE  = 'title';
-  
+
   /**
    * Product Type
    *
    * @const
    */
   const PAYMENT_ZIPMONEY_PRODUCT  = 'product';
-  
+
   /**
    * Log Setting
    *
@@ -77,9 +77,9 @@ class Config implements ConfigInterface
    * @const
    */
   const PAYMENT_ZIPMONEY_INCONTEXT_CHECKOUT = 'incontext_checkout';
-  
+
   /**
-   * Minimum Order Total 
+   * Minimum Order Total
    *
    * @const
    */
@@ -91,49 +91,49 @@ class Config implements ConfigInterface
    * @const
    */
   const ADVERTS_HOMEPAGE_BANNER_ACTIVE = 'zipmoney_advert/homepage/banner';
-  
+
   /**
    * Product Page Banner Active
    *
    * @const
-   */  
+   */
   const ADVERTS_PRODUCT_BANNER_ACTIVE = 'zipmoney_advert/productpage/banner';
-  
+
   /**
    * Cart Page Banner Active
    *
    * @const
    */
   const ADVERTS_CART_BANNER_ACTIVE = 'zipmoney_advert/cartpage/banner';
-  
+
   /**
    * Cateogyr Page Banner Active
    *
    * @const
    */
   const ADVERTS_CATEGORY_BANNER_ACTIVE = 'zipmoney_advert/categorypage/banner';
-  
+
   /**
    * Product Page Widget Active
    *
    * @const
    */
   const ADVERTS_PRODUCT_IMAGE_ACTIVE = 'zipmoney_advert/productpage/widget';
-  
+
   /**
    * Cart Page Widget Active
    *
    * @const
    */
   const ADVERTS_CART_IMAGE_ACTIVE = 'zipmoney_advert/cartpage/widget';
-  
+
   /**
    * Cart Page Tagline Active
    *
    * @const
    */
   const ADVERTS_PRODUCT_TAGLINE_ACTIVE = 'zipmoney_advert/productpage/tagline';
-  
+
   /**
    * Cart Page Tagline Active
    *
@@ -146,7 +146,7 @@ class Config implements ConfigInterface
    *
    * @const
    */
-  const PAYMENT_METHOD_LOGO_ZIP = "http://d3k1w8lx8mqizo.cloudfront.net/logo/25px/";
+  const PAYMENT_METHOD_LOGO_ZIP = "https://static.zipmoney.com.au/logo/25px/";
 
   /**
    * Error Codes Map
@@ -162,12 +162,12 @@ class Config implements ConfigInterface
    * @var string
    */
   protected $_methodCode;
-  
+
   /**
    * @var int
    */
   protected $_storeId;
-  
+
   /**
    *
    * @var object
@@ -183,12 +183,12 @@ class Config implements ConfigInterface
    * @var \Magento\Store\Model\StoreManagerInterface
    */
   protected $_storeManager;
-  
+
   /**
    * @var \Magento\Config\Model\ResourceModel\Config
    */
   protected $_resourceConfig;
-  
+
   /**
    * @var \ZipMoney\ZipMoneyPayment\Helper\Logger
    */
@@ -207,10 +207,10 @@ class Config implements ConfigInterface
 
   public function __construct(
       \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-      \Magento\Store\Model\StoreManagerInterface $storeManager,   
+      \Magento\Store\Model\StoreManagerInterface $storeManager,
       \Magento\Framework\App\Cache\TypeListInterface $cacheTypeList,
-      \Magento\Config\Model\ResourceModel\Config $resourceConfig,        
-      \Magento\Framework\Message\ManagerInterface $messageManager,      
+      \Magento\Config\Model\ResourceModel\Config $resourceConfig,
+      \Magento\Framework\Message\ManagerInterface $messageManager,
       \Magento\Framework\UrlInterface $urlBuilder,
       \ZipMoney\ZipMoneyPayment\Helper\Logger $logger
   ) {
@@ -219,25 +219,25 @@ class Config implements ConfigInterface
     $this->_logger = $logger;
     $this->_resourceConfig = $resourceConfig;
     $this->_cacheTypeList = $cacheTypeList;
-    $this->_messageManager = $messageManager;    
+    $this->_messageManager = $messageManager;
     $this->_urlBuilder     = $urlBuilder;
 
 
-    $this->setStoreId($this->_storeManager->getStore()->getId());      
+    $this->setStoreId($this->_storeManager->getStore()->getId());
   }
-  
+
   /**
    * Checks whether method is active or not
-   * 
+   *
    * @param $method
    * @param int $storeId
    * @return bool
    */
   public function isMethodActive($method, $storeId = null)
-  {   
+  {
     if (!isset($storeId)) {
       $storeId = $this->_storeId;
-    } 
+    }
 
     $isEnabled = false;
     $isEnabled = $this->_scopeConfig->isSetFlag(
@@ -250,7 +250,7 @@ class Config implements ConfigInterface
 
   /**
    * Returns the payment method title
-   * 
+   *
    * @return int
    */
   public function getTitle()
@@ -260,17 +260,17 @@ class Config implements ConfigInterface
 
   /**
    * Returns Merchant Private Key
-   * 
+   *
    * @return int
    */
   public function getMerchantPrivateKey()
   {
     return $this->getConfigData(self::PAYMENT_ZIPMONEY_PRIVATE_KEY);
   }
-  
+
   /**
    * Returns Merchant Public key
-   * 
+   *
    * @return string
    */
   public function getMerchantPublicKey()
@@ -280,7 +280,7 @@ class Config implements ConfigInterface
 
   /**
    * Returns Api Environment
-   * 
+   *
    * @return string
    */
   public function getEnvironment()
@@ -294,13 +294,13 @@ class Config implements ConfigInterface
    * @return string
    */
   public function getMethodLogo()
-  {   
+  {
     return  self::PAYMENT_METHOD_LOGO_ZIP.strtolower($this->getProduct()).".png";
   }
 
   /**
    * Returns Product
-   * 
+   *
    * @return string
    */
   public function getProduct()
@@ -314,33 +314,33 @@ class Config implements ConfigInterface
    * @return bool
    */
   public function isInContextCheckout()
-  {   
+  {
     return $this->getConfigData(self::PAYMENT_ZIPMONEY_INCONTEXT_CHECKOUT);
   }
- 
+
   /**
    * Returns the minimum order total
    *
    * @return bool
    */
   public function getOrderTotalMinimum()
-  {   
+  {
     return (float)$this->getConfigData(self::PAYMENT_ZIPMONEY_MINIMUM_TOTAL);
   }
-    
+
   /**
    * Is Capture
-   * 
+   *
    * @return bool
    */
   public function isCharge()
   {
     return trim($this->getConfigData(self::PAYMENT_ZIPMONEY_PAYMENT_ACTION)) === "capture";
   }
-  
+
   /**
    * Returns the log setting
-   * 
+   *
    * @return int
    */
   public function getLogSetting($storeId = null)
@@ -350,7 +350,7 @@ class Config implements ConfigInterface
 
   /**
    * Returns the mapped error code
-   * 
+   *
    * @return int
    */
   public function getMappedErrorCode($errorCode)
@@ -375,12 +375,12 @@ class Config implements ConfigInterface
 
     if ('order_place_redirect_url' === $field) {
       return $this->getOrderPlaceRedirectUrl();
-    } 
+    }
 
     if (!$storeId) {
       $storeId = $this->_storeId;
     }
-      
+
     return $this->getValue($field, $storeId);
   }
 
@@ -401,9 +401,9 @@ class Config implements ConfigInterface
     $underscored = strtolower(preg_replace('/(.)([A-Z])/', "$1_$2", $key));
 
     $path = "payment/".self::METHOD_CODE."/".$underscored;
-    
-    $value = $this->_scopeConfig->getValue($path, 
-      ScopeInterface::SCOPE_STORE, 
+
+    $value = $this->_scopeConfig->getValue($path,
+      ScopeInterface::SCOPE_STORE,
       $storeId
     );
 
@@ -432,7 +432,7 @@ class Config implements ConfigInterface
   {
     $this->_methodCode = $methodCode;
   }
-    
+
   /**
    * Sets method code
    *
@@ -507,17 +507,17 @@ class Config implements ConfigInterface
 
   /**
    * Returns the config
-   * 
+   *
    * @param $path
    * @param int $storeId
    * @return mixed
    */
   public function getStoreConfig($path, $storeId = null)
-  {   
+  {
 
     if (!isset($storeId)) {
       $storeId = $this->_storeId;
-    } 
+    }
 
     $value = $this->_scopeConfig->getValue(
           $path,
