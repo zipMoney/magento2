@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+/**
+* ZipMoney_ZipMoneyPayment Routes definitions
+*
+* @category    ZipMoney
+* @package     ZipMoney_ZipMoneyPayment
+* @author      Sagar Bhandari
+* @copyright   ZipMoney (http://zipmoney.com.au)
+* @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+*/
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+    <router id="standard">
+        <route id="zipmoneypayment" frontName="zipmoneypayment">
+            <module name="ZipMoney_ZipMoneyPayment" />
+        </route>
+    </router>
+</config> 

@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!--
+/**
+* ZipMoney_ZipMoneyPayment Config definitions
+*
+* @category    ZipMoney
+* @package     ZipMoney_ZipMoneyPayment
+* @author      Sagar Bhandari
+* @copyright   ZipMoney (http://zipmoney.com.au)
+* @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+*/
+-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default> 
+        <payment>  
+            <zipmoneypayment>                  
+                <debug>1</debug>
+                <active>1</active>
+                <model>ZipMoneyGatewayFacade</model>                
+                <title>zipMoney - Buy Now Pay Later</title>          
+                <merchant_private_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <merchant_public_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <order_status>new</order_status>                
+                <min_order_total>0</min_order_total>                
+                <order_status>pending_payment</order_status>
+                <payment_action>capture</payment_action>                
+                <can_initialize>1</can_initialize>
+                <title>zipMoney - Buy Now Pay Later</title>
+                <currency>AUD</currency>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_refund>1</can_refund>
+                <can_refund_partial_per_invoice>1</can_refund_partial_per_invoice>
+                <can_void>1</can_void>
+                <can_cancel>1</can_cancel>
+                <can_use_checkout>1</can_use_checkout>
+                <is_gateway>1</is_gateway>
+                <sort_order>0</sort_order>
+                <can_use_for_multishipping>0</can_use_for_multishipping>
+        
+                <zipmoney_messages>
+                    <error_header>An error has occurred!</error_header>
+                    <error_body>An error occurred while processing your request.</error_body>
+                    <referred_header>Your application has been referred!</referred_header>
+                    <referred_body>Your application is currently under review by zipMoney and will be processed very shortly. You can contact the customer care at customercare@zipmoney.com.au for any enquiries.</referred_body>                
+                </zipmoney_messages>
+            </zipmoneypayment>
+        </payment> 
+    </default>
+</config>

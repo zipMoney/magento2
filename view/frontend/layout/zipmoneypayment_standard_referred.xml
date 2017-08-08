@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="../../../../../../../lib/internal/Magento/Framework/View/Layout/etc/page_configuration.xsd">
+  <head>
+    <link src="//fonts.googleapis.com/css?family=Noto+Sans" src_type="url" /> 
+    <css  src="ZipMoney_ZipMoneyPayment::css/zipmoney.css" />
+  </head>     
+  <referenceBlock name="content">
+    <block template="standard/referred.phtml" class="ZipMoney\ZipMoneyPayment\Block\Referred" name="zipmoney_referred" cacheable="false"/>
+  </referenceBlock>
+
+</page>   

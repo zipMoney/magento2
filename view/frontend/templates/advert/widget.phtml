@@ -1,0 +1,1 @@
+<div class="widget-product" data-zm-asset="productwidget" data-zm-widget="popup"  data-zm-popup-asset="termsdialog"></div>
