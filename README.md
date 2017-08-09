@@ -3,7 +3,7 @@
 ### Install using Composer
 To install the extension via [Composer](http://getcomposer.org/), run
 - `cd <your Magento install dir>`
-- `composer require zipmoney/magento2-zipmoneypayment`
+- `composer require zipmoney/magento2`
 - `composer update`
 - `php bin/magento setup:upgrade`
 - `php bin/magento setup:di:compile`
