@@ -1,5 +1,5 @@
 {
-    "name": "zipMoney/magento2",
+    "name": "zipmoney/magento2",
     "description": "zipMoney Payment Module for Magento 2",
     "version": "1.0.0", 
     "require": {
