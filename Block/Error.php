@@ -85,7 +85,7 @@ class Error extends Template
       try {
         print_r($this->getRequest());
         $code = (int)$this->getRequest()->getParam('code');
-      } catch (Exception $e) {
+      } catch (\Exception $e) {
         $code = 0;
       }
       switch($code)

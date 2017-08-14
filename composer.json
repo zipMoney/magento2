@@ -3,12 +3,11 @@
     "description": "zipMoney Payment Module for Magento 2",
     "version": "1.0.0", 
     "require": {
-        "php": "~5.6.0|7.0.2|~7.0.6",
+        "php": "~5.5.0|~5.6.0|7.0.2|7.0.4|~7.0.6",
         "magento/module-sales": "100.1.*",
         "magento/module-checkout": "100.1.*",
         "magento/module-payment": "100.1.*",
         "magento/framework": "100.1.*",
-        "magento/magento-composer-installer": "*",
         "zipmoney/merchantapi-php": "1.0.*"
     },
     "type": "magento2-module",

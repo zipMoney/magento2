@@ -25,7 +25,7 @@ class Error extends AbstractStandard
       $page_object =  $this->_pageFactory->create();   
       $message = __('An error occurred.');
       $this->_logger->info($this->_helper->__($message));            
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
       $this->_messageManager->addError($this->_helper->__('An error occurred while redirecting to error page.'));
     }    
 
