@@ -820,7 +820,7 @@ class Payload extends  AbstractHelper
           $product =  $item->getProduct();
       }           
       $imageUrl = (string)$this->_imageHelper->init($product, 'thumbnail')->getUrl();
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
       $this->_logger->warn($this->_helper->__('An error occurred during getting item image for product ' . $product->getId() . '.'));
       $this->_logger->error($e->getMessage());
       $this->_logger->debug($e->getTraceAsString());

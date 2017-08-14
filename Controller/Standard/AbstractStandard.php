@@ -263,7 +263,7 @@ abstract class AbstractStandard extends Action
   /**
    * Sets the Http Headers, Response Code and Responde Body
    */
-  protected function _sendResponse($data, $responseCode = Mage_Api2_Model_Server::HTTP_OK)
+  protected function _sendResponse($data, $responseCode = \Magento\Framework\Webapi\Response::HTTP_OK)
   {
     $this->getResponse()->setHttpResponseCode($responseCode)
                         ->setHeader('Content-type', 'application/json')
@@ -511,7 +511,7 @@ abstract class AbstractStandard extends Action
           ->_initLayoutMessages('customer/session');
       $this->renderLayout();
       $this->_logger->info(__('Successful to redirect to referred page.'));
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
       $this->_logger->error(json_encode($this->getRequest()->getParams()));
       $this->_logger->error($e->getMessage());
       $this->_getCheckoutSession()->addError($this->__('An error occurred during redirecting to referred page.'));
@@ -532,7 +532,7 @@ abstract class AbstractStandard extends Action
           ->_initLayoutMessages('customer/session');
       $this->renderLayout();
       $this->_logger->info(__('Successful to redirect to error page.'));
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
       $this->_logger->error(json_encode($this->getRequest()->getParams()));
       $this->_getCheckoutSession()->addError(__('An error occurred during redirecting to error page.'));
     }

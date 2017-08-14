@@ -400,7 +400,7 @@ class Charge extends AbstractCheckout
         throw new \Magento\Framework\Exception\LocalizedException(__('Cannot find payment authorization transaction.'));
       }
 
-      if ($authorizationTransaction->getTxnType() != Mage_Sales_Model_Order_Payment_Transaction::TYPE_AUTH) {
+      if ($authorizationTransaction->getTxnType() != \Magento\Sales\Model\Order\Payment\Transaction::TYPE_AUTH) {
         throw new \Magento\Framework\Exception\LocalizedException(__('Incorrect payment transaction type.'));
       }
       $parentTxnId = $authorizationTransaction->getTxnId();
@@ -571,7 +571,7 @@ class Charge extends AbstractCheckout
     if ($isNewCustomer) {
       try {
         $this->_involveNewCustomer();
-      } catch (Exception $e) {
+      } catch (\Exception $e) {
         $this->_logger->critical($e);
       }
     }
