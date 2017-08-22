@@ -83,7 +83,6 @@ class Error extends Template
     $text = null;
     if(!$this->_messageManager->hasMessages()){
       try {
-        print_r($this->getRequest());
         $code = (int)$this->getRequest()->getParam('code');
       } catch (\Exception $e) {
         $code = 0;
