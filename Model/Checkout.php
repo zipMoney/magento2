@@ -99,7 +99,11 @@ class Checkout extends AbstractCheckout
     }
 
     $this->_quote->reserveOrderId();
- //   $this->_quoteRepository->save($this->_quote);
+    /* 
+      Commenting out the  following line.
+      Apparantly triggering more than one quote save results in "We don't have as many "Produt Name" as you requested." error when the product has 1 item left.
+    */
+    //$this->_quoteRepository->save($this->_quote);
 
     $request = $this->_payloadHelper->getCheckoutPayload($this->_quote);
 
