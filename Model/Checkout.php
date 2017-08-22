@@ -99,7 +99,7 @@ class Checkout extends AbstractCheckout
     }
 
     $this->_quote->reserveOrderId();
-    $this->_quoteRepository->save($this->_quote);
+ //   $this->_quoteRepository->save($this->_quote);
 
     $request = $this->_payloadHelper->getCheckoutPayload($this->_quote);
 
