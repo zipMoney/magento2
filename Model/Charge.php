@@ -566,7 +566,6 @@ class Charge extends AbstractCheckout
     $this->_ignoreAddressValidation();
     $this->_quote->collectTotals();
     $order = $this->_quoteManagement->submit($this->_quote);
-    $this->_quoteRepository->save($this->_quote);
 
     if ($isNewCustomer) {
       try {

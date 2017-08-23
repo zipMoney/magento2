@@ -93,7 +93,6 @@ class ConfigProvider implements \Magento\Checkout\Model\ConfigProviderInterface
                                    "title"  => $this->_config->getTitle(),
                                    "inContextCheckoutEnabled"  => (bool)$this->_config->isInContextCheckout()
                                   ];
-    $this->_logger->debug(json_encode($config));
     return $config;
   }
 }
