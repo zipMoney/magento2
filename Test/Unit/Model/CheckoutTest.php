@@ -67,14 +67,11 @@ class CheckoutTest extends \PHPUnit\Framework\TestCase
 
         $config->expects(static::any())->method('getLogSetting')->willReturn(10);  
 
-        $monologger = $objManager->getObject("\ZipMoney\ZipMoneyPayment\Logger\Logger");         
-        
-        $logger = $objManager->getObject("\ZipMoney\ZipMoneyPayment\Helper\Logger",[ "_config" => $config, "_logger" => $monologger]); 
-        
+       
         $this->_checkoutsApiMock = $this->getMockBuilder(\zipMoney\Api\CheckoutsApi::class)->getMock();
       
         $this->_checkoutModel = $objManager->getObject("\ZipMoney\ZipMoneyPayment\Model\Checkout", 
-            ['_checkoutHelper' => $checkoutHelperMock, '_logger' => $logger]);
+            ['_checkoutHelper' => $checkoutHelperMock]);
 
         $this->_checkoutModel->setApi($this->_checkoutsApiMock);
         
@@ -83,7 +80,8 @@ class CheckoutTest extends \PHPUnit\Framework\TestCase
 
     public function getQuoteMock()
     {
-        $quoteMock = $this->getMock("\Magento\Quote\Model\Quote" ,
+        $quoteMock = $this->getMockBuilder("\Magento\Quote\Model\Quote")
+            ->setMethods(
             [   'getId',
                 'getCheckoutMethod',
                 'getIsMultiShipping',
@@ -93,10 +91,9 @@ class CheckoutTest extends \PHPUnit\Framework\TestCase
                 'hasNominalItems', 
                 'getGrandTotal', 
                 'setGrandTotal', 
-                'setBaseGrandTotal'],
-            [],
-            '',
-            false);
+                'setBaseGrandTotal']
+            )->disableOriginalConstructor()
+            ->getMock();
 
         $quoteMock->expects(static::any())->method('getId')->willReturn(1);  
         $quoteMock->expects(static::any())->method('getCheckoutMethod')->willReturn('guest'); 
@@ -156,7 +153,8 @@ class CheckoutTest extends \PHPUnit\Framework\TestCase
      * @expectedExceptionMessage The quote does not exist.
      */
     public function testCheckoutStartRaisesExceptionQuoteDoesnotExist()
-    {   $quoteMock = $this->getMock("\Magento\Quote\Model\Quote",[],[],'',false);
+    {   
+        $quoteMock = $this->getMockBuilder("\Magento\Quote\Model\Quote")->disableOriginalConstructor()->getMock();
         $this->_checkoutModel->setQuote($quoteMock);
         $this->_checkoutModel->start();
     }   

@@ -48,50 +48,39 @@ class ChargeTest extends \PHPUnit\Framework\TestCase
        
         $objManager = new ObjectManager($this);
         
-        $checkoutHelperMock = $this->getMockBuilder(CheckoutHelper::class)
-                                    ->disableOriginalConstructor()
-                                    ->getMock();
-        $checkoutHelperMock->expects(static::any())->method('isAllowedGuestCheckout')->willReturn(true);  
-
+      
         $config = $this->getMockBuilder(Config::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $config->expects(static::any())->method('getLogSetting')->willReturn(10);  
 
-        $monologger = $objManager->getObject("\ZipMoney\ZipMoneyPayment\Logger\Logger"); 
-        
-        $logger = $objManager->getObject("\ZipMoney\ZipMoneyPayment\Helper\Logger",[ "_config" => $config, "_logger" => $monologger]); 
-       
         $this->_chargesApiMock = $this->getMockBuilder(\zipMoney\Api\ChargesApi::class)->getMock();
        
-        $quoteManagement = $this->getMock(Magento\Quote\Api\CartManagementInterface::class ,
-            ['submit'],
-            [],
-            '',
-            false);  
+        $quoteManagement = $this->getMockBuilder(Magento\Quote\Api\CartManagementInterface::class)
+                                ->setMethods( ['submit'])
+                                ->getMock();  
 
-        $orderMock = $this->getMock("\Magento\Sales\Model\Order",[],
-            [],
-            '',
-            false);
+        $orderMock = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
+                          ->disableOriginalConstructor()
+                          ->getMock();
 
         $quoteManagement->expects(static::any())->method('submit')->willReturn($orderMock);  
         
         $checkoutSession = $objManager->getObject('\Magento\Checkout\Model\Session');
 
-        $checkoutSession = $this->getMock(\Magento\Checkout\Model\Session::class,
-            ['setLastSuccessQuoteId','setLastQuoteId','clearHelperData','setLastOrderId','setLastRealOrderId','setLastOrderStatus'],
-            [],
-            '',
-            false);  
+        $checkoutSession = $this->getMockBuilder(\Magento\Checkout\Model\Session::class)
+                                ->setMethods(['setLastSuccessQuoteId','setLastQuoteId','clearHelperData','setLastOrderId','setLastRealOrderId','setLastOrderStatus'])
+                                ->disableOriginalConstructor()
+                                ->getMock();  
+
         $checkoutSession->expects(static::any())->method('setLastQuoteId')->willReturn($checkoutSession);  
         $checkoutSession->expects(static::any())->method('setLastSuccessQuoteId')->willReturn($checkoutSession);  
         $checkoutSession->expects(static::any())->method('setLastOrderId')->willReturn($checkoutSession);  
         $checkoutSession->expects(static::any())->method('setLastRealOrderId')->willReturn($checkoutSession);  
  
         $this->_chargeModel = $objManager->getObject("\ZipMoney\ZipMoneyPayment\Model\Charge", 
-            [ '_logger' => $logger, '_quoteManagement' => $quoteManagement,'_checkoutSession' => $checkoutSession]);
+            [ '_quoteManagement' => $quoteManagement,'_checkoutSession' => $checkoutSession]);
 
         $this->_chargeModel->setApi($this->_chargesApiMock);
         
@@ -102,20 +91,18 @@ class ChargeTest extends \PHPUnit\Framework\TestCase
     {   
 
         // Order Invoice
-        $invoiceMock = $this->getMock("\Magento\Sales\Model\Order\Invoice" ,
-            [   'getIncrementId'],
-            [],
-            '',
-            false); 
+        $invoiceMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Invoice::class)
+                            ->setMethods(['getIncrementId'])                                
+                            ->disableOriginalConstructor()
+                            ->getMock(); 
 
         $invoiceMock->expects(static::any())->method('getIncrementId')->willReturn(1);        
 
         // Payment Model
-        $paymentMock = $this->getMock("\Magento\Sales\Model\Order\Payment" ,
-            [   'setZipmoneyChargeId','registerCaptureNotification','registerAuthorizationNotification','getCreatedInvoice'],
-            [],
-            '',
-            false);
+        $paymentMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Payment::class)
+                            ->setMethods([   'setZipmoneyChargeId','registerCaptureNotification','registerAuthorizationNotification','getCreatedInvoice'])
+                            ->disableOriginalConstructor()
+                            ->getMock();
 
         $paymentMock->expects(static::any())->method('setZipmoneyChargeId')->willReturn($paymentMock);        
         $paymentMock->expects(static::any())->method('registerCaptureNotification')->willReturn(true);        
@@ -123,8 +110,8 @@ class ChargeTest extends \PHPUnit\Framework\TestCase
         $paymentMock->expects(static::any())->method('getCreatedInvoice')->willReturn($invoiceMock);        
 
 
-        $orderMock = $this->getMock("\Magento\Sales\Model\Order" ,
-            [   'getId',
+        $orderMock = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
+            ->setMethods(['getId',
                 'getCheckoutMethod',
                 'getIsMultiShipping',
                 'getStoreId',
@@ -135,10 +122,9 @@ class ChargeTest extends \PHPUnit\Framework\TestCase
                 'setGrandTotal', 
                 'setBaseGrandTotal',
                 'getPayment',
-                'getState','canInvoice','getBaseTotalDue','addStatusHistoryComment','setIsCustomerNotified'],
-            [],
-            '',
-            false); 
+                'getState','canInvoice','getBaseTotalDue','addStatusHistoryComment','setIsCustomerNotified'])
+            ->disableOriginalConstructor()
+            ->getMock(); 
 
         $orderMock->expects(static::any())->method('getId')->willReturn(1);  
         $orderMock->expects(static::any())->method('getCheckoutMethod')->willReturn('guest'); 
@@ -159,37 +145,34 @@ class ChargeTest extends \PHPUnit\Framework\TestCase
 
     public function getQuoteMock()
     {
-        $quoteMock = $this->getMock("\Magento\Quote\Model\Quote" ,
-            [   'getId',
-                'getCheckoutMethod',
-                'getIsMultiShipping',
-                'getStoreId',
-                'collectTotals',
-                'reserveOrderId',
-                'hasNominalItems', 
-                'getGrandTotal', 
-                'setGrandTotal', 
-                'setBaseGrandTotal',
-                'getBillingAddress',
-                'getShippingAddress',
-                'getIsVirtual'],
-            [],
-            '',
-            false); 
+        $quoteMock = $this->getMockBuilder(Magento\Quote\Model\Quote::class)
+                            ->setMethods([ 'getId',
+                                'getCheckoutMethod',
+                                'getIsMultiShipping',
+                                'getStoreId',
+                                'collectTotals',
+                                'reserveOrderId',
+                                'hasNominalItems', 
+                                'getGrandTotal', 
+                                'setGrandTotal', 
+                                'setBaseGrandTotal',
+                                'getBillingAddress',
+                                'getShippingAddress',
+                                'getIsVirtual','getCustomerId','setCustomerId','setCustomerEmail','setCustomerIsGuest','setCustomerGroupId'])
+                            ->disableOriginalConstructor()
+                            ->getMock();
 
-        $billingAddress = $this->getMock("\Magento\Quote\Model\Quote\Address" ,
-            ['getEmail','setShouldIgnoreValidation'],
-            [],
-            '',
-            false);
+        $billingAddress = $this->getMockBuilder(Magento\Quote\Model\Quote\Address::class)
+                               ->setMethods(['getEmail','setShouldIgnoreValidation'])
+                               ->disableOriginalConstructor()
+                               ->getMock();
 
         $billingAddress->expects(static::any())->method('getEmail')->willReturn("test@test.cpm");  
 
-        $shippingAddress = $this->getMock("\Magento\Quote\Model\Quote\Address" ,
-            ['setShouldIgnoreValidation'],
-            [],
-            '',
-            false);
+        $shippingAddress = $this->getMockBuilder(\Magento\Quote\Model\Quote\Address::class)
+                                ->setMethods(['setShouldIgnoreValidation'])
+                                ->disableOriginalConstructor()
+                                ->getMock();
 
         $shippingAddress->expects(static::any())->method('setShouldIgnoreValidation')->willReturn(true);  
 
@@ -202,6 +185,10 @@ class ChargeTest extends \PHPUnit\Framework\TestCase
         $quoteMock->expects(static::any())->method('getBillingAddress')->willReturn($billingAddress);        
         $quoteMock->expects(static::any())->method('getShippingAddress')->willReturn($shippingAddress);        
         $quoteMock->expects(static::any())->method('getIsVirtual')->willReturn(false);        
+        $quoteMock->expects(static::any())->method('setCustomerId')->willReturn($quoteMock);        
+        $quoteMock->expects(static::any())->method('setCustomerEmail')->willReturn($quoteMock);        
+        $quoteMock->expects(static::any())->method('setCustomerIsGuest')->willReturn($quoteMock);        
+        $quoteMock->expects(static::any())->method('setCustomerGroupId')->willReturn($quoteMock);        
 
         return $quoteMock;
     }
@@ -248,14 +235,16 @@ class ChargeTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @test
-     * @group Zipmoney_ZipmoneyPayment  
+     * @group Zipmoney_ZipmoneyPayment       
      * @expectedException  Exception
      * @expectedExceptionMessage The order does not exist.
      */
     public function testChargeRaisesOrderDoesnotExistException()
     {  
 
-        $orderMock =  $this->getMock("\Magento\Sales\Model\Order",[],[],'',false);
+        $orderMock =  $this->getMockBuilder(Magento\Sales\Model\Order::class)->setMethods(['getId'])
+                            ->disableOriginalConstructor()
+                            ->getMock();
         
         $this->_chargeModel->setOrder($orderMock);
         $this->_chargeModel->charge();

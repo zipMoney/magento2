@@ -10,7 +10,7 @@
   <property name="bin.composer" value="${global-vendor-dir}bin/composer" />
   <property name="bin.magento"  value="${magento2.base_dir}/bin/magento" />
   <property name="bin.phpunit"  value="${global-vendor-dir}bin/phpunit" />
-  <property name="magento2.phpunit"  value="${magento2.base_dir}vendor/bin/phpunit" />
+  <property name="magento2.phpunit"  value="${magento2.base_dir}/vendor/bin/phpunit" />
 
   <property name="db.safe_name" refid="db.name">
       <filterchain>
