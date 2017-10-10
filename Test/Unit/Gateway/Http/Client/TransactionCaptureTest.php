@@ -29,7 +29,7 @@ use ZipMoney\ZipMoneyPayment\Helper\Data as ZipMoneyDataHelper;
  */
 
 
-class TransactionCaptureTest extends \PHPUnit_Framework_TestCase
+class TransactionCaptureTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Context | \PHPUnit_Framework_MockObject_MockObject

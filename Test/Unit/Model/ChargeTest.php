@@ -28,7 +28,7 @@ use ZipMoney\ZipMoneyPayment\Helper\Data as ZipMoneyDataHelper;
  * @link      http://www.zipmoney.com.au/
  */
 
-class ChargeTest extends \PHPUnit_Framework_TestCase
+class ChargeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Context | \PHPUnit_Framework_MockObject_MockObject

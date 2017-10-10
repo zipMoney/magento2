@@ -19,7 +19,7 @@ use ZipMoney\ZipMoneyPayment\Model\Config;
  * @link      http://www.zipmoney.com.au/
  */
 
-class TransactionRefundTest extends \PHPUnit_Framework_TestCase
+class TransactionRefundTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Context | \PHPUnit_Framework_MockObject_MockObject
