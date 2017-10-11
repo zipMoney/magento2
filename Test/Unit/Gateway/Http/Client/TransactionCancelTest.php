@@ -28,7 +28,7 @@ use ZipMoney\ZipMoneyPayment\Helper\Data as ZipMoneyDataHelper;
  * @link      http://www.zipmoney.com.au/
  */
 
-class TransactionCancelTest extends \PHPUnit_Framework_TestCase
+class TransactionCancelTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Context | \PHPUnit_Framework_MockObject_MockObject
@@ -50,10 +50,6 @@ class TransactionCancelTest extends \PHPUnit_Framework_TestCase
                     ->getMock();
 
         $config->expects(static::any())->method('getLogSetting')->willReturn(10);  
-
-        $monologger = $objManager->getObject("\ZipMoney\ZipMoneyPayment\Logger\Logger");         
-        
-        $logger = $objManager->getObject("\ZipMoney\ZipMoneyPayment\Helper\Logger",[ "_config" => $config, "_logger" => $monologger]); 
         
         $this->_chargesApiMock = $this->getMockBuilder(\zipMoney\Api\ChargesApi::class)->getMock();
         
@@ -70,7 +66,7 @@ class TransactionCancelTest extends \PHPUnit_Framework_TestCase
     public function testPlaceRequest( $expectedRequest, $expectedResponse)
     {          
 
-        $transferObject = $this->getMock("\Magento\Payment\Gateway\Http\TransferInterface");
+        $transferObject = $this->getMockBuilder("\Magento\Payment\Gateway\Http\TransferInterface")->getMock();
 
         $transferObject->expects(static::any())->method('getBody')->willReturn($expectedRequest);
         $this->_chargesApiMock->expects(static::any())->method('chargesCancel')->willReturn( $expectedResponse   );
@@ -97,4 +93,4 @@ class TransactionCancelTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-}
+}   

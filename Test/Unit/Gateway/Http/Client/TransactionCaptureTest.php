@@ -29,7 +29,7 @@ use ZipMoney\ZipMoneyPayment\Helper\Data as ZipMoneyDataHelper;
  */
 
 
-class TransactionCaptureTest extends \PHPUnit_Framework_TestCase
+class TransactionCaptureTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Context | \PHPUnit_Framework_MockObject_MockObject
@@ -54,10 +54,6 @@ class TransactionCaptureTest extends \PHPUnit_Framework_TestCase
 
         $config->expects(static::any())->method('getLogSetting')->willReturn(10);  
 
-        $monologger = $objManager->getObject("\ZipMoney\ZipMoneyPayment\Logger\Logger");         
-        
-        $logger = $objManager->getObject("\ZipMoney\ZipMoneyPayment\Helper\Logger",[ "_config" => $config, "_logger" => $monologger]); 
-        
         $this->_chargesApiMock = $this->getMockBuilder(\zipMoney\Api\ChargesApi::class)->getMock();
         
         $this->_clientMock = $objManager->getObject("\ZipMoney\ZipMoneyPayment\Gateway\Http\Client\TransactionCapture", 
@@ -73,9 +69,10 @@ class TransactionCaptureTest extends \PHPUnit_Framework_TestCase
     public function testPlaceRequest( $expectedRequest, $expectedResponse)
     {          
 
-        $transferObject = $this->getMock("\Magento\Payment\Gateway\Http\TransferInterface");
+        $transferObject = $this->getMockBuilder("\Magento\Payment\Gateway\Http\TransferInterface")->getMock();
 
         $transferObject->expects(static::any())->method('getBody')->willReturn($expectedRequest);
+        
         $this->_chargesApiMock->expects(static::any())->method('chargesCapture')->willReturn( $expectedResponse   );
 
         static::assertEquals(

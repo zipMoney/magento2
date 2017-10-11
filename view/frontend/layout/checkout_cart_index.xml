@@ -12,7 +12,7 @@
     <body>
         
         <referenceBlock name="head.components">
-            <block class="\ZipMoney\ZipMoneyPayment\Block\Advert\RootEl" name="zipmoney.rootel" />                
+            <block class="ZipMoney\ZipMoneyPayment\Block\Advert\RootEl" name="zipmoney.rootel" />                
         </referenceBlock>
         
         <referenceContainer name="page.top">
