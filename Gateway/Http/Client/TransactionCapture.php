@@ -56,13 +56,9 @@ class TransactionCapture extends AbstractTransaction implements ClientInterface
             $this->_logger->debug("Capture Charge Response:- ".$this->_helper->json_encode($charge));
 
         } catch(\zipMoney\ApiException $e){
-            $this->_logger->debug("Error:-".$e->getCode().$e->getMessage()."-".json_encode($e->getResponseBody()));
-            $message = $this->_helper->__("Could not process the payment");
+            
+            list($apiError, $message, $logMessage) = $this->_helper->handleException($e);  
 
-            if($e->getCode() == 402 && 
-                $mapped_error_code = $this->_config->getMappedErrorCode($e->getResponseObject()->getError()->getCode())){
-                $message = $this->_helper->__('The payment was declined by Zip.(%s)',$mapped_error_code);
-            }
             $response['message'] = $message;
         }   finally {
             $log['response'] = $response;

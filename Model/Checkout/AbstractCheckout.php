@@ -241,4 +241,6 @@ abstract class AbstractCheckout
   {
     return uniqid();
   }
+
+  
 }

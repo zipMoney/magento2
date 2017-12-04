@@ -54,13 +54,8 @@ class TransactionRefund extends AbstractTransaction implements ClientInterface
             $this->_logger->debug("Refund Response:- ".$this->_helper->json_encode($refund));
 
         } catch(\zipMoney\ApiException $e){
-            $this->_logger->debug("Error:- ".$e->getCode()." ".$e->getMessage()."-".json_encode($e->getResponseBody()));
-            $message = $this->_helper->__("Could not refund the order");
+            list($apiError, $message, $logMessage) = $this->_helper->handleException($e);  
 
-            if($e->getCode() == 402 && 
-                $mapped_error_code = $this->_config->getMappedErrorCode($e->getResponseObject()->getError()->getCode())){
-                $message = $this->_helper->__('The refund was declined by Zip.(%s)',$mapped_error_code);
-            }
             $response['message'] = $message;
         }   finally {
             $log['response'] = $response;
