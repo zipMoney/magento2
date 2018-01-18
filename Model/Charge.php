@@ -519,17 +519,10 @@ class Charge extends AbstractCheckout
       $this->_chargeResponse($charge,false);
 
     } catch(\zipMoney\ApiException $e){
-      $this->_logger->debug("Error:-".$e->getCode()."-".json_encode($e->getResponseBody()));
-
-      $message = $this->_helper->__("Could not process the payment");
-
-      if($e->getCode() == 402 && 
-        $mapped_error_code = $this->_config->getMappedErrorCode($e->getResponseObject()->getError()->getCode())){
-        $message = $this->_helper->__('The payment was declined by Zip.(%s)',$mapped_error_code);
-      }
+      list($apiError, $message, $logMessage) = $this->_helper->handleException($e);  
 
       // Cancel the order
-      $this->_helper->cancelOrder($this->_order,$e->getResponseObject()->getError()->getMessage());
+      $this->_helper->cancelOrder($this->_order,$apiError);
       throw new \Magento\Framework\Exception\LocalizedException(__($message));
     } 
     return $charge;
