@@ -12,8 +12,9 @@ define(
       'Magento_Customer/js/model/customer',
       'Magento_Checkout/js/model/full-screen-loader',
       'Magento_Ui/js/lib/core/class',
+      'Magento_Customer/js/customer-data'
   ],
-  function ($, quote, urlBuilder, storage, url, errorProcessor, customer, fullScreenLoader,Class) {
+  function ($, quote, urlBuilder, storage, url, errorProcessor, customer, fullScreenLoader, Class, customerData) {
     'use strict';
     return Class.extend({
       paymentData:null,
@@ -30,6 +31,7 @@ define(
       },
       onComplete: function(response){    
         if(response.state == "approved" || response.state == "referred"){
+          customerData.invalidate(['cart']);
           location.href = window.checkoutConfig.payment.zipmoneypayment.redirectUri + "?result="+response.state+"&checkoutId=" + response.checkoutId;
         } else {
           fullScreenLoader.stopLoader();
