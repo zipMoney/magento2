@@ -46,6 +46,11 @@
                     <label>Log Settings</label>                        
                     <source_model>ZipMoney\ZipMoneyPayment\Model\Config\Source\LogSettings</source_model>
                 </field>
+                <field id="order_status_settings" translate="label" type="multiselect" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Order Status Settings</label>
+                    <source_model>ZipMoney\ZipMoneyPayment\Model\Config\Source\OrderStatusSettings</source_model>
+                </field>
+
                 <field id="environment" translate="label" type="select" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Environment</label>
                     <source_model>ZipMoney\ZipMoneyPayment\Model\Config\Source\Environment</source_model>
