@@ -19,6 +19,7 @@ use \zipMoney\Model\OrderItem;
 use \zipMoney\Model\ShopperStatistics;
 use \zipMoney\Model\Metadata;
 use \zipMoney\Model\CheckoutConfiguration;
+use \Magento\Catalog\Api;
 
 /**
  * @category  Zipmoney
@@ -116,6 +117,8 @@ class Payload extends  AbstractHelper
    */
   protected $_isVirtual  = true;
 
+  protected $_productRepositoryFactory;
+
   public function __construct(        
       \Magento\Framework\App\Helper\Context $context,        
       \Magento\Customer\Model\CustomerFactory $customerFactory,
@@ -127,7 +130,8 @@ class Payload extends  AbstractHelper
       \Magento\Customer\Model\Logger $customerLogger,
       \Magento\Store\Model\StoreManagerInterface $storeManager,
       \Magento\Framework\App\Request\Http $request, 
-      \Magento\Quote\Model\QuoteFactory $quoteFactory, 
+      \Magento\Quote\Model\QuoteFactory $quoteFactory,
+      \Magento\Catalog\Api\ProductRepositoryInterfaceFactory $productRepositoryFactory,
       \ZipMoney\ZipMoneyPayment\Model\Config $config,    
       \Magento\Sales\Model\ResourceModel\Order\Payment\Transaction\Collection $transactionCollection,
       \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,
@@ -151,6 +155,7 @@ class Payload extends  AbstractHelper
     $this->_quoteFactory = $quoteFactory;
     $this->_urlBuilder = $context->getUrlBuilder();
     $this->_helper = $helper;
+    $this->_productRepositoryFactory = $productRepositoryFactory;
   }
   
   /**
@@ -512,17 +517,21 @@ class Payload extends  AbstractHelper
 
         $orderItem->setName($item->getName())
                   ->setAmount($item->getPriceInclTax() ? (float)$item->getPriceInclTax() : 0.00)
-                  ->setReference((string)$item->getId())
-                  ->setDescription($description)
-                  ->setQuantity(round($qty))
+                  ->setReference((string)$item->getId());
+          //      ->setDescription($description)
+                 if($description){
+                     $orderItem->setDescription($description);
+                   }
+        $orderItem ->setQuantity(round($qty))
                   ->setType("sku")
                   ->setImageUri($this->_getProductImage($item))
                   ->setItemUri($item->getProduct()->getProductUrl())
-                  ->setProductCode($item->getSku());  
+                  ->setProductCode($item->getSku());
         $itemsArray[] = $orderItem;
     }
 
     $this->_logger->debug($this->_helper->__("Shipping Required:- %s", !$this->_isVirtual ? "Yes" : "No"));
+
 
 
    return $itemsArray;       
@@ -812,14 +821,17 @@ class Payload extends  AbstractHelper
   {
     $imageUrl = '';
     try {
-      $product = $this->getChildProduct($item);
-      if (!$product || !$product->getData('thumbnail')
-          || ($product->getData('thumbnail') == 'no_selection')
-          || ( $this->_config->getStoreConfig("checkout/cart/configurable_product_image") == 'parent')
-          ) {
-          $product =  $item->getProduct();
-      }           
-      $imageUrl = (string)$this->_imageHelper->init($product, 'thumbnail')->getUrl();
+   //       $product = $this->getChildProduct($item);
+   //       if (!$product || !$product->getData('thumbnail')
+   //          || ($product->getData('thumbnail') == 'no_selection')
+   //          || ( $this->_config->getStoreConfig("checkout/cart/configurable_product_image") == 'parent')
+   //          ) {
+   //          $product =  $item->getProduct();
+   //       }
+   //
+         $product = $this->_productRepositoryFactory->create()->getById($item->getProductId());
+   //    $imageUrl = (string)$this->_imageHelper->init($product, 'thumbnail')->getUrl();
+         $imageUrl = (string)($this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA)."catalog/product".$product->getData('thumbnail'));
     } catch (\Exception $e) {
       $this->_logger->warn($this->_helper->__('An error occurred during getting item image for product ' . $product->getId() . '.'));
       $this->_logger->error($e->getMessage());
