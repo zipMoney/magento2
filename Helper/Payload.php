@@ -495,11 +495,12 @@ class Payload extends  AbstractHelper
         } 
         
         $orderItem = new OrderItem;
+
+        $description = $item->getDescription();
         
-        if ($item->getDescription()) {
-          $description = $item->getDescription();
-        } else {
-          $description = $this->_getProductShortDescription($item, $storeId);
+        if (!isset($description) || empty($description)) {       
+          // Check product description
+          $description = $this->_getDescription($item, $storeId);
         }
 
         if($quote){
@@ -507,7 +508,7 @@ class Payload extends  AbstractHelper
         } else if($order){
           $qty = $item->getQtyOrdered();
         }
-        
+              
 
 
         $orderItem->setName($item->getName())
@@ -835,24 +836,53 @@ class Payload extends  AbstractHelper
    * @param int $storeId
    * @return string
    */
-  private function _getProductShortDescription($item, $storeId)
+  private function _getDescription($item, $storeId)
   {
     $product = $this->getChildProduct($item);
     
     if (!$product) {
       $product = $item->getProduct();
-        
-      $description = $product->getShortDescription();
+      $description = $this->_getProductDescription($product, $storeId);
 
-      if (!$description) {
-        $description = $product->getResource()->getAttributeRawValue($product->getId(), 'short_description', $storeId);
-      } 
+      if(!isset($description) ||  empty($description)){
+        return null;
+      }
+
       return $description;
     }    
+
+    $description = $this->_getProductDescription($product, $storeId);
+
+    if(!isset($description) ||  empty($description)){
+      return null;
+    }
+
+    return $description;
+  }
+
+
+/**
+   * Returns the child product
+   *
+   * @param mixed \Magento\Quote\Model\ResourceModel\Quote\Item |  \Magento\Sales\Model\Order\Item $item
+   * @param int $storeId
+   * @return string
+   */
+  private function _getProductDescription($product,$storeId)
+  {
     $description = $product->getShortDescription();
-    if (!$description) {
+    
+
+    if (!isset($description)) {
       $description = $product->getResource()->getAttributeRawValue($product->getId(), 'short_description', $storeId);
-    }  
+      if(!isset($description)){
+        $description = $product->getDescription();
+        if (!isset($description)) {
+          $description = $product->getResource()->getAttributeRawValue($product->getId(), 'description', $storeId);
+        } 
+      }
+    } 
+
     return $description;
   }
 
