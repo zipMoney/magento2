@@ -15,7 +15,7 @@
     <!-- DI Config For external zipMoney Merchant API -->
     <virtualType name="ZipMoneyGatewayFacade" type="Magento\Payment\Model\Method\Adapter">
         <arguments>
-            <argument name="code" xsi:type="const"> ZipMoney\ZipMoneyPayment\Model\Ui\ConfigProvider::CODE </argument>
+            <argument name="code" xsi:type="const">ZipMoney\ZipMoneyPayment\Model\Ui\ConfigProvider::CODE</argument>
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
             <argument name="infoBlockType" xsi:type="string">\ZipMoney\ZipMoneyPayment\Block\Info</argument>
             <argument name="valueHandlerPool" xsi:type="object">ZipMoneyGatewayValueHandlerPool</argument>
