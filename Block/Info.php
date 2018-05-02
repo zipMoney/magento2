@@ -20,6 +20,14 @@ class Info extends ConfigurableInfo
      */
     protected function getLabel($field)
     {
+        if($field == "receipt_number"){
+            return "Receipt Number";
+        }
+
         return __($field);
     }
+
+
+
+
 }

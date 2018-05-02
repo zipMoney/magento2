@@ -38,8 +38,8 @@
                 <is_gateway>1</is_gateway>
                 <sort_order>0</sort_order>
                 <can_use_for_multishipping>0</can_use_for_multishipping>
-                <paymentInfoKeys>Receipt number</paymentInfoKeys>
-                <privateInfoKeys>Receipt number</privateInfoKeys>
+                <paymentInfoKeys>receipt_number</paymentInfoKeys>
+                <privateInfoKeys>receipt_number</privateInfoKeys>
                 <zipmoney_messages>
                     <error_header>An error has occurred!</error_header>
                     <error_body>An error occurred while processing your request.</error_body>
