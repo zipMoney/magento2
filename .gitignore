@@ -8,3 +8,4 @@ Capfile
 /config/
 /log/
 magento2
+.idea/
