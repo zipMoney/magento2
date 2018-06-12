@@ -22,7 +22,7 @@
                 <merchant_private_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
                 <merchant_public_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
                 <order_status>new</order_status>                
-                <min_order_total>0</min_order_total>                
+                <min_order_total>1</min_order_total>                
                 <order_status>pending_payment</order_status>
                 <payment_action>capture</payment_action>                
                 <can_initialize>1</can_initialize>
@@ -46,6 +46,24 @@
                     <referred_header>Your application has been referred!</referred_header>
                     <referred_body>Your application is currently under review by zipMoney and will be processed very shortly. You can contact the customer care at customercare@zipmoney.com.au for any enquiries.</referred_body>                
                 </zipmoney_messages>
+                <zipmoney_advert>
+                    <homepage>
+                        <banner>0</banner>
+                    </homepage>
+                    <productpage>
+                        <banner>0</banner>
+                        <widget>1</widget>
+                        <tagline>0</tagline>
+                    </productpage>
+                    <cartpage>
+                        <banner>0</banner>
+                        <widget>1</widget>
+                        <tagline>0</tagline>
+                    </cartpage>
+                    <categorypage>
+                        <banner>0</banner>
+                    </categorypage>
+                </zipmoney_advert>
             </zipmoneypayment>
         </payment> 
     </default>
