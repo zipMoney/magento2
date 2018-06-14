@@ -18,7 +18,7 @@
                 <debug>1</debug>
                 <active>1</active>
                 <model>ZipMoneyGatewayFacade</model>                
-                <title>zipMoney - Buy Now Pay Later</title>          
+                <title>Zip - Own it now, pay later</title>          
                 <merchant_private_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
                 <merchant_public_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
                 <order_status>new</order_status>                
@@ -26,7 +26,6 @@
                 <order_status>pending_payment</order_status>
                 <payment_action>capture</payment_action>                
                 <can_initialize>1</can_initialize>
-                <title>zipMoney - Buy Now Pay Later</title>
                 <currency>AUD</currency>
                 <can_authorize>1</can_authorize>
                 <can_capture>1</can_capture>
