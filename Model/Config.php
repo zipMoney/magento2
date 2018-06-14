@@ -146,7 +146,7 @@ class Config implements ConfigInterface
    *
    * @const
    */
-  const PAYMENT_METHOD_LOGO_ZIP = "https://static.zipmoney.com.au/logo/25px/zipmoney.png";
+  const PAYMENT_METHOD_LOGO_ZIP = "https://static.zipmoney.com.au/logo/25px/zip.png";
 
   /**
    * Error Codes Map

@@ -6,7 +6,7 @@
                data-bind="attr: {'id': getCode()}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()"/>
         <label data-bind="attr: {'for': getCode()}" class="label">
             <!-- zipMoney Logo -->
-            <img style="width:90px" data-bind="attr: {src: getPaymentAcceptanceMarkSrc(), alt: $t('zipMoney Acceptance Mark')}"
+            <img style="height:26px" data-bind="attr: {src: getPaymentAcceptanceMarkSrc(), alt: $t('zipMoney Acceptance Mark')}"
                  class="payment-icon"/>
             <!-- zipMoney Logo -->
             <span data-bind="text: getTitle()"></span>
