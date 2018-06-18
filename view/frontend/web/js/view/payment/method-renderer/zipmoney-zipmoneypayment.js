@@ -76,7 +76,6 @@ define(
             }, 
             getContinueText:function(){
                 return "Continue";
-                //window.checkoutConfig.payment.zipmoneypayment.product == "zipPay" ? "Continue to zipPay" : "Continue to zipMoney";
             },
             getCode: function() {
                 return window.checkoutConfig.payment.zipmoneypayment.code;

@@ -76,7 +76,7 @@ class InstallData implements InstallDataInterface
     ) {
         $this->salesSetupFactory = $salesSetupFactory;        
         $this->quoteSetupFactory = $quoteSetupFactory;
-        $this->urlRewrite = $urlRewrite;
+        $this->urlRewrite   = $urlRewrite;
 
     }
 
@@ -165,7 +165,7 @@ class InstallData implements InstallDataInterface
           if (!$result) {          
             $new[] = $status;
           }
-      }
+       }
       
 
       if(count($new)>0) {
@@ -175,6 +175,8 @@ class InstallData implements InstallDataInterface
             $new
         );
       }
+
+
 
       $setup->endSetup();
     }

@@ -15,7 +15,7 @@
         <section id="payment">            
         
             <group id="zipmoneypayment" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>zipMoney</label>                
+                <label>Zip - Own it now, pay later</label>                
                 <attribute type="expanded">1</attribute>
                 <fieldset_css>zipmoney-section</fieldset_css>
                 <!--  Basic Settings -->                
@@ -27,23 +27,19 @@
                     <label>Title</label>                        
                 </field>
                 <field id="merchant_private_key" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Merchant Private Key</label>
+                    <label>Private Key</label>
                     <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                 </field> 
                 <field id="merchant_public_key" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Merchant Public Key</label>                    
+                    <label>Public Key</label>                    
                     <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                 </field>
-                <field id="product" translate="label" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Product Type</label>                        
-                    <source_model>ZipMoney\ZipMoneyPayment\Model\Config\Source\Product</source_model>
-                </field>
                 <field id="payment_action" translate="label" type="select" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Payment Action</label>                        
+                    <label>Capture Method</label>                        
                     <source_model>ZipMoney\ZipMoneyPayment\Model\Config\Source\PaymentAction</source_model>
                 </field>
                 <field id="log_settings" translate="label" type="select" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Log Settings</label>                        
+                    <label>Log Setting</label>                        
                     <source_model>ZipMoney\ZipMoneyPayment\Model\Config\Source\LogSettings</source_model>
                 </field>
                 <field id="environment" translate="label" type="select" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="0">

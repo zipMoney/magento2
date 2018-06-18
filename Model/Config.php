@@ -146,7 +146,7 @@ class Config implements ConfigInterface
    *
    * @const
    */
-  const PAYMENT_METHOD_LOGO_ZIP = "https://static.zipmoney.com.au/logo/25px/";
+  const PAYMENT_METHOD_LOGO_ZIP = "https://static.zipmoney.com.au/logo/25px/zip.png";
 
   /**
    * Error Codes Map
@@ -295,18 +295,10 @@ class Config implements ConfigInterface
    */
   public function getMethodLogo()
   {
-    return  self::PAYMENT_METHOD_LOGO_ZIP.strtolower($this->getProduct()).".png";
+    return  self::PAYMENT_METHOD_LOGO_ZIP;
   }
 
-  /**
-   * Returns Product
-   *
-   * @return string
-   */
-  public function getProduct()
-  {
-    return $this->getConfigData(self::PAYMENT_ZIPMONEY_PRODUCT);
-  }
+  
 
   /**
    * Check if in-context checkout is active
@@ -477,7 +469,7 @@ class Config implements ConfigInterface
    */
   public function getPaymentAcceptanceMarkSrc()
   {
-    return self::PAYMENT_METHOD_LOGO_ZIP.$this->getProduct().".png";
+    return self::PAYMENT_METHOD_LOGO_ZIP;
   }
 
    /**
