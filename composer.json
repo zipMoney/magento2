@@ -1,6 +1,6 @@
 {
     "name": "zipmoney/magento2",
-    "description": "zipMoney Payment Module for Magento 2",
+    "description": "Zip Payment Module for Magento 2",
     "version": "1.0.5", 
     "require": {
         "magento/module-sales": "^100.1.0|^101.0.0",
