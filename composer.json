@@ -1,7 +1,7 @@
 {
     "name": "zipmoney/magento2",
     "description": "Zip Payment Module for Magento 2",
-    "version": "1.0.5", 
+    "version": "1.0.6", 
     "require": {
         "magento/module-sales": "^100.1.0|^101.0.0",
         "magento/module-checkout": "^100.1.0|^100.2.0",
@@ -16,7 +16,7 @@
     "authors": [
         {
             "name": "zipMoney",
-            "email": "sagar.bhandari@zipmoney.com.au"
+            "email": "integrations@zip.co"
         }
     ],
     "minimum-stability": "dev",
