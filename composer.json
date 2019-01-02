@@ -1,13 +1,9 @@
 {
     "name": "zipmoney/magento2",
     "description": "Zip Payment Module for Magento 2",
-    "version": "1.0.6", 
+    "version": "1.0.7", 
     "require": {
-        "magento/module-sales": "^100.1.0|^101.0.0",
-        "magento/module-checkout": "^100.1.0|^100.2.0",
-        "magento/module-payment": "^100.1.0|^100.2.0",
-        "magento/framework": "^100.1.0|^101.0.0",
-        "zipmoney/merchantapi-php": "1.0.*"
+        "zipmoney/merchantapi-php": "^1.0"
     },
     "type": "magento2-module",
     "license": [

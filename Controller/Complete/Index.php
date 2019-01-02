@@ -75,13 +75,19 @@ class Index extends AbstractStandard
           $order = $this->_charge->placeOrder();
 
           $this->_charge->charge();
+
+          //update order status when successfully paid fix bug all order is pending deal to order and payment are async
+          $orderState = \Magento\Sales\Model\Order::STATE_PROCESSING;
+          $orderStatus = $order->getConfig()->getStateDefaultStatus($orderState);
+          $this->_logger->debug("Order captured setting order state: " . $orderState . " status: " . $orderStatus);
+          $order->setState($orderState)->setStatus($orderStatus);
+          $order->save();
+
           // Redirect to success page
           return $this->getResponse()->setRedirect($this->getSuccessUrl());
         } catch (\Magento\Framework\Exception\LocalizedException $e) {
-          
           $this->_messageManager->addError($e->getMessage());      
           $this->_logger->debug($e->getMessage());
-       
         } 
         $this->_redirectToCartOrError();
         break;
