@@ -66,7 +66,26 @@ define(
                         });
                 }
                 
-            return true;
+                return true;
+            },
+            placeOrder: function (data, event) {
+                var self = this;
+                if (event) {
+                    event.preventDefault();
+                }
+                if (data.hasOwnProperty('index') && data.index != "zipmoneypayment") {
+                    return false;
+                }
+                if (this.validate() && additionalValidators.validate()) {
+                    this.isPlaceOrderActionAllowed(false);
+                    this.selectPaymentMethod();
+
+                    setPaymentMethodAction(this.messageContainer).success(function(){
+                        placeZipOrderAction(self.getData(),self.messageContainer)
+                    });
+                    return true;
+                }
+                return false;
             },
             getPaymentAcceptanceMarkSrc: function() {
                 return window.checkoutConfig.payment.zipmoneypayment.paymentAcceptanceMarkSrc;
