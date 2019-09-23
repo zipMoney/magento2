@@ -1,54 +1,74 @@
 /**
-* ZipMoney_ZipMoneyPayment JS Component
+* Zip_ZipPayment JS Component
 *
-* @category    ZipMoney
-* @package     ZipMoney_ZipMoneyPayment
-* @author      Zip Co Integration Team
-* @copyright   ZipMoney (http://zipmoney.com.au)
+* @category    Zip
+* @package     Zip_ZipPayment
+* @author      Zip Plugin Team
+* @copyright   Zip (https://zip.co)
 * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 
 /*browser:true*/
 /*global define*/
 
-var isLive = (window.checkoutConfig.payment.zipmoneypayment.environment == "production");
+var isLive = (window.checkoutConfig.payment.zipmoneypayment.environment == "production" );
 var inContextCheckoutEnabled = window.checkoutConfig.payment.zipmoneypayment.inContextCheckoutEnabled;
 
 define(
-    [
-        'Magento_Checkout/js/view/payment/default',
-        'ZipMoney_ZipMoneyPayment/js/action/place-zip-order',
+    [   'Magento_Checkout/js/view/payment/default',
+        'ZipMoney_ZipMoneyPayment/js/action/place-zip-order',        
         'ZipMoney_ZipMoneyPayment/js/action/set-payment-method',
         'Magento_Ui/js/model/messages',
-        'ko',
+        'ko',        
         'Magento_Checkout/js/model/quote',
-        'jquery',
-        'Magento_Checkout/js/model/error-processor',
-        'Magento_Checkout/js/model/full-screen-loader',
+        'jquery',        
+        'Magento_Checkout/js/model/error-processor',        
+        'Magento_Checkout/js/model/full-screen-loader',          
         'Magento_Checkout/js/model/payment/additional-validators',
         'mage/storage',
         'zipMoneyCheckoutJs'
     ],
-    function (Component, placeZipOrderAction, setPaymentMethodAction, Messages, ko, quote, $, errorProcessor, fullScreenLoader, additionalValidators, storage) {
+    function (Component, placeZipOrderAction, setPaymentMethodAction, Messages,ko,quote,$,errorProcessor,fullScreenLoader,additionalValidators,storage) {
         'use strict';
 
-        return Component.extend({
-            isPlaceOrderActionAllowed: ko.observable(quote.billingAddress() != null),
-            redirectAfterPlaceOrder: true,
+        return Component.extend({              
+            isPlaceOrderActionAllowed: ko.observable(quote.billingAddress() != null),             
+            redirectAfterPlaceOrder: true, 
             defaults: {
                 template: 'ZipMoney_ZipMoneyPayment/payment/zipmoney'
             },
-            setupWidget: function () {
-                if (window.$zmJs != undefined) {
+            setupWidget: function () {                    
+                if(window.$zmJs!=undefined){
                     window.$zmJs._collectWidgetsEl(window.$zmJs);
                 }
             },
-            initChildren: function () {
+            initChildren: function () {         
                 this.messageContainer = new Messages();
                 this.createMessagesComponent();
                 return this;
+            }, 
+            continueToZipMoney: function (x,event) {
+                var self = this,
+                    placeOrder;
+
+                if (event) {
+                    event.preventDefault();
+                }
+
+                if (this.validate() && additionalValidators.validate()) {
+
+                    this.isPlaceOrderActionAllowed(false);
+                    this.selectPaymentMethod();
+                    
+                    setPaymentMethodAction(this.messageContainer)
+                        .success(function(){
+                            placeZipOrderAction(self.getData(),self.messageContainer)
+                        });
+                    return true;
+                }
+                return false;
             },
-            continueToZipMoney: function (x, event) {
+            placeOrder: function (x,event) {
                 var self = this,
                     placeOrder;
 
@@ -62,35 +82,15 @@ define(
                     this.selectPaymentMethod();
 
                     setPaymentMethodAction(this.messageContainer)
-                        .success(function () {
-                            placeZipOrderAction(self.getData(), self.messageContainer)
+                        .success(function(){
+                            placeZipOrderAction(self.getData(),self.messageContainer)
                         });
-                }
-
-                return true;
-            },
-            //fix placeorder button move to review issue
-            placeOrder: function (data, event) {
-                var self = this;
-                if (event) {
-                    event.preventDefault();
-                }
-                if (data.hasOwnProperty('index') && data.index != "zipmoneypayment") {
-                    return false;
-                }
-                if (this.validate() && additionalValidators.validate()) {
-                    this.isPlaceOrderActionAllowed(false);
-                    this.selectPaymentMethod();
-
-                    setPaymentMethodAction(this.messageContainer).success(function () {
-                        placeZipOrderAction(self.getData(), self.messageContainer)
-                    });
                     return true;
                 }
                 return false;
             },
             getAgreements: function (data) {
-                var agreementForm = $('.payment-method._active div[data-role=checkout-agreements] input');
+                var agreementForm = $('div[data-role=checkout-agreements] input');
                 if (typeof agreementForm !== 'undefined') {
                     data['extension_attributes'] = {};
                     var agreementData = agreementForm.serializeArray();
@@ -112,19 +112,19 @@ define(
 
                 return data;
             },
-            getPaymentAcceptanceMarkSrc: function () {
+            getPaymentAcceptanceMarkSrc: function() {
                 return window.checkoutConfig.payment.zipmoneypayment.paymentAcceptanceMarkSrc;
             },
-            getTitle: function () {
+            getTitle:function(){
                 return window.checkoutConfig.payment.zipmoneypayment.title;
-            },
-            getContinueText: function () {
+            }, 
+            getContinueText:function(){
                 return "Continue";
             },
-            getCode: function () {
+            getCode: function() {
                 return window.checkoutConfig.payment.zipmoneypayment.code;
             },
-            isActive: function () {
+            isActive: function() {
                 return true;
             }
         });
