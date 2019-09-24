@@ -1,10 +1,10 @@
 /**
-* ZipMoney_ZipMoneyPayment JS Component
+* Zip_ZipPayment JS Component
 *
-* @category    ZipMoney
-* @package     ZipMoney_ZipMoneyPayment
-* @author      Sagar Bhandari
-* @copyright   ZipMoney (http://zipmoney.com.au)
+* @category    Zip
+* @package     Zip_ZipPayment
+* @author      Zip Plugin Team
+* @copyright   Zip (https://zip.co)
 * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 
@@ -64,9 +64,53 @@ define(
                         .success(function(){
                             placeZipOrderAction(self.getData(),self.messageContainer)
                         });
+                    return true;
                 }
-                
-            return true;
+                return false;
+            },
+            placeOrder: function (x,event) {
+                var self = this,
+                    placeOrder;
+
+                if (event) {
+                    event.preventDefault();
+                }
+
+                if (this.validate() && additionalValidators.validate()) {
+
+                    this.isPlaceOrderActionAllowed(false);
+                    this.selectPaymentMethod();
+
+                    setPaymentMethodAction(this.messageContainer)
+                        .success(function(){
+                            placeZipOrderAction(self.getData(),self.messageContainer)
+                        });
+                    return true;
+                }
+                return false;
+            },
+            getAgreements: function (data) {
+                var agreementForm = $('div[data-role=checkout-agreements] input');
+                if (typeof agreementForm !== 'undefined') {
+                    data['extension_attributes'] = {};
+                    var agreementData = agreementForm.serializeArray();
+                    var agreementIds = [];
+                    agreementData.forEach(function (item) {
+                        agreementIds.push(item.value);
+                    });
+                    data['extension_attributes']['agreement_ids'] = agreementIds;
+                }
+                return data;
+            },
+            getData: function () {
+                var data = {
+                    'method': this.getCode(),
+                };
+
+                data['additional_data'] = _.extend(data['additional_data'], this.additionalData);
+                data = this.getAgreements(data);
+
+                return data;
             },
             getPaymentAcceptanceMarkSrc: function() {
                 return window.checkoutConfig.payment.zipmoneypayment.paymentAcceptanceMarkSrc;
