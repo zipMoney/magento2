@@ -21,6 +21,10 @@ define(
                 method = 'post',
                 paymentData = quote.paymentMethod();
 
+            if (typeof(paymentData.__disableTmpl) !== 'undefined') {
+                delete paymentData.__disableTmpl;
+            }
+
             /**
              * Checkout for guest and registered customer.
              */
@@ -34,12 +38,10 @@ define(
                     paymentMethod: paymentData,
                     billingAddress: quote.billingAddress()
                 };
-                //method = 'post';
             } else {
                 serviceUrl = urlBuilder.createUrl('/carts/mine/set-payment-information', {});
                 payload = {
-                    cartId: quote.getQuoteId(),
-                    //method: paymentData,                    
+                    cartId: quote.getQuoteId(),            
                     paymentMethod: paymentData,
                     billingAddress: quote.billingAddress()
                 };
