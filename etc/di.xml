@@ -5,7 +5,7 @@
 *
 * @category    ZipMoney
 * @package     ZipMoney_ZipMoneyPayment
-* @author      Sagar Bhandari
+* @author      Zip Co Team
 * @copyright   ZipMoney (http://zipmoney.com.au)
 * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
@@ -19,6 +19,7 @@
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
             <argument name="infoBlockType" xsi:type="string">\ZipMoney\ZipMoneyPayment\Block\Info</argument>
             <argument name="valueHandlerPool" xsi:type="object">ZipMoneyGatewayValueHandlerPool</argument>
+            <argument name="validatorPool" xsi:type="object">ZipMoneyGatewayValidatorPool</argument>
             <argument name="commandPool" xsi:type="object">ZipMoneyGatewayCommandPool</argument>
         </arguments>
     </virtualType>
@@ -82,7 +83,29 @@
             <argument name="logger" xsi:type="object">\ZipMoney\ZipMoneyPayment\Logger\Logger</argument>
         </arguments>
     </type>
-    <!--  Payment Gateway  -->    
+    <!--  Payment Gateway  -->
+
+    <!-- START zipmoney validators -->
+    <virtualType name="ZipMoneyGatewayCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">ZipMoneyGatewayConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="ZipMoneyGatewayGlobalValidator" type="Magento\Payment\Gateway\Validator\ValidatorComposite">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="country" xsi:type="string">ZipMoneyGatewayCountryValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="ZipMoneyGatewayValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="country" xsi:type="string">ZipMoneyGatewayGlobalValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <!-- END zipmoney validators -->
 
     <!-- Configuration reader -->
     <virtualType name="ZipMoneyGatewayConfig" type="Magento\Payment\Gateway\Config\Config">

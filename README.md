@@ -1,12 +1,23 @@
 # Magento2 zipMoneyPayment
+
 ## Installation
+
 ### Install using Composer
+
 To install the extension via [Composer](http://getcomposer.org/), run
+
 - `cd <your Magento install dir>`
 - `composer require zipmoney/magento2`
-- `composer update`
 - `php bin/magento setup:upgrade`
 - `php bin/magento setup:di:compile`
+- `php bin/magento setup:static-content:deploy en_AU en_US`
+
+To upgrade Existing Modules
+
+- `composer update zipmoney/magento2`
+- `php bin/magento setup:di:compile`
+- `php bin/magento c:c`
+- `php bin/magento setup:static-content:deploy en_AU en_US`
 
 ### Install using Magento Component Manager
 
