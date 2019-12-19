@@ -5,70 +5,77 @@
 *
 * @category    ZipMoney
 * @package     ZipMoney_ZipMoneyPayment
-* @author      Sagar Bhandari
+* @author      Zip Co Team
 * @copyright   ZipMoney (http://zipmoney.com.au)
 * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
-        <section id="payment">            
-        
+        <section id="payment">
             <group id="zipmoneypayment" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Zip - Own it now, pay later</label>                
+                <label>Zip - Own it now, pay later</label>
                 <attribute type="expanded">1</attribute>
                 <fieldset_css>zipmoney-section</fieldset_css>
-                <!--  Basic Settings -->                
+                <!--  Basic Settings -->
                 <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Enable</label>                   
+                    <label>Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="title" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Title</label>                        
+                    <label>Title</label>
                 </field>
                 <field id="merchant_private_key" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Private Key</label>
                     <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
-                </field> 
+                </field>
                 <field id="merchant_public_key" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Public Key</label>                    
+                    <label>Public Key</label>
                     <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                 </field>
                 <field id="payment_action" translate="label" type="select" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Capture Method</label>                        
+                    <label>Capture Method</label>
                     <source_model>ZipMoney\ZipMoneyPayment\Model\Config\Source\PaymentAction</source_model>
                 </field>
                 <field id="log_settings" translate="label" type="select" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Log Setting</label>                        
+                    <label>Log Setting</label>
                     <source_model>ZipMoney\ZipMoneyPayment\Model\Config\Source\LogSettings</source_model>
                 </field>
                 <field id="environment" translate="label" type="select" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Environment</label>
                     <source_model>ZipMoney\ZipMoneyPayment\Model\Config\Source\Environment</source_model>
-                </field>  
+                </field>
                 <field id="incontext_checkout" translate="label" type="select" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>In-Context Checkout</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>  
-                <field id="min_order_total" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Minimum Order Value</label>                        
-                </field> 
-                <field id="sort_order" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Sort Order</label>                        
+                </field>
+                <field id="allowspecific" translate="label" type="allowspecific" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Payment from Applicable Countries</label>
+                    <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
+                </field>
+                <field id="specificcountry" translate="label" type="multiselect" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Payment from Specific Countries</label>
+                    <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                    <can_be_empty>1</can_be_empty>
+                </field>
+                <field id="min_order_total" translate="label" type="text" sortOrder="12" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Minimum Order Value</label>
+                </field>
+                <field id="sort_order" translate="label" type="text" sortOrder="13" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Sort Order</label>
                 </field>
 
-                
-                <!--  Widgets and Banners  Settings -->                
-                <group id="zipmoney_advert" translate="label" type="text" sortOrder="12" showInDefault="1" showInWebsite="1" showInStore="1">
+                <!--  Widgets and Banners  Settings -->
+                <group id="zipmoney_advert" translate="label" type="text" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Marketing Banners Widgets and Banners</label>
-                    <group id="homepage" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">                    
+                    <group id="homepage" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Home Page</label>
                         <field id="banner" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Display Strip Banner</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                     </group>
-                    <group id="productpage" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">                    
+                    <group id="productpage" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Product Page</label>
                         <field id="banner" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Display Strip Banner</label>
@@ -77,13 +84,13 @@
                         <field id="widget" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Display Widget</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                        </field> 
+                        </field>
                         <field id="tagline" translate="label" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Display Tagline</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                     </group>
-                    <group id="cartpage" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">                    
+                    <group id="cartpage" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Cart Page</label>
                         <field id="banner" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Display Strip Banner</label>
@@ -92,13 +99,13 @@
                         <field id="widget" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Display Widget</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                        </field> 
+                        </field>
                         <field id="tagline" translate="label" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Display Tagline</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         </field>
                     </group>
-                    <group id="categorypage" translate="label" type="text" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">                    
+                    <group id="categorypage" translate="label" type="text" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Category Page</label>
                         <field id="banner" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Display Strip Banner</label>
