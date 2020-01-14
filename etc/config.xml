@@ -5,26 +5,25 @@
 *
 * @category    ZipMoney
 * @package     ZipMoney_ZipMoneyPayment
-* @author      Sagar Bhandari
+* @author      Zip Co Team
 * @copyright   ZipMoney (http://zipmoney.com.au)
 * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 -->
-
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
-    <default> 
-        <payment>  
-            <zipmoneypayment>                  
+    <default>
+        <payment>
+            <zipmoneypayment>
                 <debug>1</debug>
                 <active>1</active>
-                <model>ZipMoneyGatewayFacade</model>                
-                <title>Zip - Own it now, pay later</title>          
+                <model>ZipMoneyGatewayFacade</model>
+                <title>Zip - Own it now, pay later</title>
+                <merchant_public_key />
                 <merchant_private_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
-                <merchant_public_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
-                <order_status>new</order_status>                
-                <min_order_total>1</min_order_total>                
+                <order_status>new</order_status>
+                <min_order_total>1</min_order_total>
                 <order_status>pending_payment</order_status>
-                <payment_action>capture</payment_action>                
+                <payment_action>capture</payment_action>
                 <can_initialize>1</can_initialize>
                 <currency>AUD</currency>
                 <can_authorize>1</can_authorize>
@@ -43,7 +42,7 @@
                     <error_header>An error has occurred!</error_header>
                     <error_body>An error occurred while processing your request.</error_body>
                     <referred_header>Your application has been referred!</referred_header>
-                    <referred_body>Your application is currently under review by zipMoney and will be processed very shortly. You can contact the customer care at customercare@zipmoney.com.au for any enquiries.</referred_body>                
+                    <referred_body>Your application is currently under review by zipMoney and will be processed very shortly. You can contact the customer care at customercare@zipmoney.com.au for any enquiries.</referred_body>
                 </zipmoney_messages>
                 <zipmoney_advert>
                     <homepage>
@@ -64,6 +63,6 @@
                     </categorypage>
                 </zipmoney_advert>
             </zipmoneypayment>
-        </payment> 
+        </payment>
     </default>
 </config>
