@@ -211,5 +211,8 @@
             <argument name="config" xsi:type="object">ZipPaymentGatewayConfig</argument>
         </arguments>
     </type>
-
+    <!-- override onepage success because it Wiped Out checkout session for that reason susscess page redirect to empty cart page-->
+    <type name="Magento\Checkout\Controller\Onepage\Success">
+		<plugin name="checkout.success" type="\ZipMoney\ZipMoneyPayment\Plugin\Controller\Onepage\Success" sortOrder="1"/>
+	</type>
 </config>

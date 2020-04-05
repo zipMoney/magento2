@@ -3,6 +3,7 @@ namespace ZipMoney\ZipMoneyPayment\Controller\Complete;
        
 use Magento\Checkout\Model\Type\Onepage;
 use ZipMoney\ZipMoneyPayment\Controller\Standard\AbstractStandard;
+use Magento\Framework\Encryption\EncryptorInterface;
 
 /**
  * @category  Zipmoney
@@ -82,9 +83,13 @@ class Index extends AbstractStandard
           $this->_logger->debug("Order captured setting order state: " . $orderState . " status: " . $orderStatus);
           $order->setState($orderState)->setStatus($orderStatus);
           $order->save();
-
-          // Redirect to success page
-          return $this->getResponse()->setRedirect($this->getSuccessUrl());
+          $resultRedirect = $this->resultRedirectFactory->create();
+          /** @var EncryptorInterface $encryptor */
+          $encryptor = $this->_objectManager->get(EncryptorInterface::class);
+          $orderId = $encryptor->encrypt($order->getId());
+           // Redirect to success page with encrypted order id
+          $resultRedirect->setPath('checkout/onepage/success',['order_id' => $orderId]);
+          return $resultRedirect;
         } catch (\Magento\Framework\Exception\LocalizedException $e) {
           $this->_messageManager->addError($e->getMessage());      
           $this->_logger->debug($e->getMessage());
