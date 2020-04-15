@@ -11,14 +11,13 @@
 */
 -->
 
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
         <css  src="ZipMoney_ZipMoneyPayment::css/zipmoney.css" />
-    </head>    
-    <body> 
-
+    </head>
+    <body>
         <referenceBlock name="head.components">
-            <block class="ZipMoney\ZipMoneyPayment\Block\Advert\RootEl" name="zipmoney.checkout.rootel" />                
+            <block class="ZipMoney\ZipMoneyPayment\Block\Advert\RootEl" name="zipmoney.checkout.rootel" />
         </referenceBlock>
 
         <referenceBlock name="checkout.root">
