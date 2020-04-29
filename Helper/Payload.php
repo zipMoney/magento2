@@ -271,10 +271,9 @@ class Payload extends AbstractHelper
         $this->setOrder($order);
 
         $currency = $order->getOrderCurrencyCode() ? $order->getOrderCurrencyCode() : null;
-
         $chargeReq->setAmount((float)$amount)
             ->setReason($reason)
-            ->setChargeId($order->getPayment()->getZipmoneyChargeId())
+            ->setChargeId($order->getPayment()->getLastTransId())//->setChargeId($order->getPayment()->getZipmoneyChargeId())
             ->setMetadata($this->getMetadata());
 
         return $chargeReq;
@@ -567,7 +566,9 @@ class Payload extends AbstractHelper
         $quoteId = $this->getOrder()->getQuoteId();
 
         $quote = $this->_quoteFactory->create()->load($quoteId);
-        $checkout_id = $quote->getZipmoneyCheckoutId();
+        $addtionalPaymentInfo = $quote->getPayment()->getAdditionalInformation();
+        $checkout_id = $addtionalPaymentInfo['zipmoney_checkout_id'];
+        //$checkout_id = $quote->getZipmoneyCheckoutId();
         $authority = new Authority;
         $authority->setType('checkout_id')
             ->setValue($checkout_id);

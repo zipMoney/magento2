@@ -45,7 +45,7 @@ class TransactionCancel extends AbstractTransaction implements ClientInterface
     public function placeRequest(\Magento\Payment\Gateway\Http\TransferInterface $transferObject)
     {
         $request = $transferObject->getBody();
-        $zipmoney_charge_id = $request['zipmoney_checkout_id'];
+        $zipmoney_charge_id = $request['zipmoney_charge_id'];
         
         $response = null;
 

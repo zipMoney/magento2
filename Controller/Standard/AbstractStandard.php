@@ -16,7 +16,7 @@ use \Magento\Checkout\Controller\Express\RedirectLoginInterface;
 abstract class AbstractStandard extends Action
 {
   /**
-   * Config 
+   * Config
    *
    * @var string
    */
@@ -56,7 +56,7 @@ abstract class AbstractStandard extends Action
   /**
    * @var \Magento\Checkout\Model\Session
    */
-  protected $_checkoutSession; 
+  protected $_checkoutSession;
 
   /**
    * @var \Magento\Customer\Model\Session
@@ -66,11 +66,11 @@ abstract class AbstractStandard extends Action
   /**
    * @var \Magento\Sales\Model\OrderFactory
    */
-  protected $_orderFactory;  
+  protected $_orderFactory;
   /**
    * @var \Magento\Quote\Api\CartRepositoryInterface
    */
-  protected $_quoteRepository;  
+  protected $_quoteRepository;
 
   /**
    * @var \Magento\Framework\Url\Helper
@@ -78,7 +78,7 @@ abstract class AbstractStandard extends Action
   protected $_urlHelper;
 
   /**
-   * @var \Magento\Framework\UrlInterface 
+   * @var \Magento\Framework\UrlInterface
    */
   protected $_urlBuilder;
 
@@ -86,7 +86,7 @@ abstract class AbstractStandard extends Action
    * @var \Magento\Customer\Model\Url
    */
   protected $_customerUrl;
-  
+
   /**
    * @var \ZipMoney\ZipMoneyPayment\Helper\Order
    */
@@ -105,12 +105,12 @@ abstract class AbstractStandard extends Action
    * @var \ZipMoney\ZipMoneyPayment\Helper\Data
    */
   protected $_helper;
-  
+
   /**
    * @var \ZipMoney\ZipMoneyPayment\Model\Standard\
    */
   protected $_checkoutFactory;
-  
+
   /**
    * @var \ZipMoney\ZipMoneyPayment\Model\Checkout
    */
@@ -125,6 +125,11 @@ abstract class AbstractStandard extends Action
    * @var \Magento\Quote\Model\ResourceModel\Quote\CollectionFactory
    */
   protected $_quoteCollectionFactory;
+
+  /**
+   * @var \Magento\Quote\Model\ResourceModel\Quote\Payment\CollectionFactory
+   */
+  protected $_quotePaymentCollectionFactory;
 
   /**
    * @var \Magento\Checkout\Model\PaymentInformationManagement
@@ -147,38 +152,40 @@ abstract class AbstractStandard extends Action
    * @const
    */
   const ZIPMONEY_STANDARD_ROUTE = "zipmoneypayment/standard";
-  
+
   /**
    * Error Route
    *
    * @const
    */
   const ZIPMONEY_ERROR_ROUTE = "zipmoneypayment/standard/error";
- 
+
   public function __construct(
-    \Magento\Framework\App\Action\Context $context,       
+    \Magento\Framework\App\Action\Context $context,
     \Magento\Framework\View\Result\PageFactory $pageFactory,
     \Magento\Checkout\Model\Session $checkoutSession,
     \Magento\Customer\Model\Session $customerSession,
     \Magento\Sales\Model\OrderFactory $orderFactory,
     \Magento\Framework\Url\Helper\Data $urlHelper,
-    \Magento\Customer\Model\Url $customerUrl, 
+    \Magento\Customer\Model\Url $customerUrl,
     \Magento\Framework\Json\Helper\Data $jsonHelper,
     \Magento\Checkout\Model\PaymentInformationManagement $paymentInformationManagement,
     \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
     \Magento\Quote\Model\ResourceModel\Quote\CollectionFactory $quoteCollectionFactory,
+    \Magento\Quote\Model\ResourceModel\Quote\Payment\CollectionFactory $quotePaymentCollectionFactory,
     \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,
     \ZipMoney\ZipMoneyPayment\Helper\Data $helper,
     \ZipMoney\ZipMoneyPayment\Model\Checkout\Factory $checkoutFactory
   ) {
 
-    $this->_pageFactory = $pageFactory;    
+    $this->_pageFactory = $pageFactory;
 
     $this->_checkoutSession = $checkoutSession;
     $this->_customerSession = $customerSession;
     $this->_orderFactory = $orderFactory;
     $this->_quoteRepository = $quoteRepository;
     $this->_quoteCollectionFactory = $quoteCollectionFactory;
+    $this->_quotePaymentCollectionFactory = $quotePaymentCollectionFactory;
     $this->_urlHelper = $urlHelper;
     $this->_urlBuilder = $context->getUrl();
     $this->_customerUrl = $customerUrl;
@@ -191,7 +198,7 @@ abstract class AbstractStandard extends Action
 
     $this->_messageManager = $context->getMessageManager();
 
-    
+
     parent::__construct($context);
   }
 
@@ -202,9 +209,9 @@ abstract class AbstractStandard extends Action
    * @throws \Magento\Framework\Exception\LocalizedException
    */
   protected function _initCheckout()
-  {   
+  {
     $quote = $this->_getQuote();
-  
+
     if(!$quote->getId()){
       throw new \Magento\Framework\Exception\LocalizedException(__('Quote doesnot exist'));
     }
@@ -235,7 +242,7 @@ abstract class AbstractStandard extends Action
     if (!$quote->hasItems() || $quote->getHasError()) {
       throw new \Magento\Framework\Exception\LocalizedException(__('Quote has error or no items.'));
     }
-    
+
     return $this->_charge = $this->_checkoutFactory
                             ->create($this->_chargeModel);
   }
@@ -248,7 +255,7 @@ abstract class AbstractStandard extends Action
   protected function _getCheckoutSession()
   {
     return $this->_checkoutSession;
-  } 
+  }
 
   /**
    * Return checkout customer session object
@@ -289,11 +296,17 @@ abstract class AbstractStandard extends Action
    */
   protected function _getDbQuote($zipmoney_checkout_id)
   {
+    // when magento receive response from zip checkout api 
+    //we store zipmoney checkout id to quote_payment addtional_data 
     if ($zipmoney_checkout_id) {
-      $this->_quote = $this->_quoteCollectionFactory
-                            ->create()
-                            ->addFieldToFilter("zipmoney_checkout_id", $zipmoney_checkout_id)
-                            ->getFirstItem();
+          $quotePayment = $this->_quotePaymentCollectionFactory
+              ->create()
+              ->addFieldToFilter("additional_data", $zipmoney_checkout_id)
+              ->getFirstItem();
+          $this->_quote = $this->_quoteCollectionFactory
+              ->create()
+              ->addFieldToFilter("entity_id", $quotePayment['quote_id'])
+              ->getFirstItem();
       return $this->_quote;
     }
   }
@@ -325,7 +338,7 @@ abstract class AbstractStandard extends Action
     }
     return true;
   }
- 
+
   /**
    * Redirects to the cart page.
    *
@@ -359,20 +372,30 @@ abstract class AbstractStandard extends Action
 
   /**
    * Checks if the Session Quote is valid, if not use the db quote.
-   *   
-   * @return \Magento\Quote\Model\Quote 
+   *
+   * @return \Magento\Quote\Model\Quote
    */
   protected function _retrieveQuote()
   {
     $sessionQuote = $this->_getCheckoutSession()->getQuote();
     $zipMoneyCheckoutId  = $this->getRequest()->getParam('checkoutId');
     $use_db_quote = false;
-
+    $addtionalPaymentInfo = $sessionQuote->getPayment()->getAdditionalInformation();
+    $checkout_id = $addtionalPaymentInfo['zipmoney_checkout_id'];
+      $quotePayment = $this->_quotePaymentCollectionFactory
+          ->create()
+          ->addFieldToFilter("additional_data", $zipMoneyCheckoutId)
+          ->getFirstItem();
+      $quote = $this->_quoteCollectionFactory
+          ->create()
+          ->addFieldToFilter("entity_id", $quotePayment['quote_id'])
+          ->getFirstItem();
+      $this->_logger->info(__("Reserved Order Id:".$quote['reserved_order_id']));
     // Return Session Quote
     if(!$sessionQuote){
       $this->_logger->error(__("Session Quote doesnot exist."));
       $use_db_quote = true;
-    } else if($sessionQuote->getZipmoneyCheckoutId() != $zipMoneyCheckoutId){
+    } else if($checkout_id != $zipMoneyCheckoutId){
       $this->_logger->error(__("Checkout Id doesnot match with the session quote."));
       $use_db_quote = true;
     } else {
@@ -394,8 +417,8 @@ abstract class AbstractStandard extends Action
 
   /**
    * Checks if the Customer is valid for the quote
-   *   
-   * @param \Magento\Quote\Model\Quote $quote 
+   *
+   * @param \Magento\Quote\Model\Quote $quote
    */
   protected function _verifyCustomerForQuote($quote)
   {
@@ -423,12 +446,12 @@ abstract class AbstractStandard extends Action
         $customerSession->renewSession();
       }
     }
-    
+
   }
 
   /**
    * Sets quote for the customer.
-   *   
+   *
    * @throws \Magento\Framework\Exception\LocalizedException
    */
   public function _setCustomerQuote()
@@ -480,8 +503,8 @@ abstract class AbstractStandard extends Action
   }
 
   /**
-   * Deactivates the quote 
-   * 
+   * Deactivates the quote
+   *
    * @param \Magento\Quote\Model\Quote $quote
    * @return bool
    */
@@ -560,7 +583,7 @@ abstract class AbstractStandard extends Action
 
    return $url;
   }
-  
+
   /**
    * Return Success  url
    *

@@ -11,8 +11,6 @@ use Magento\Eav\Setup\EavSetup;
 use Magento\Eav\Setup\EavSetupFactory;
 use Magento\Framework\Setup\InstallDataInterface;
 use Magento\Catalog\Setup\CategorySetupFactory;
-use Magento\Quote\Setup\QuoteSetupFactory;
-use Magento\Sales\Setup\SalesSetupFactory;
 use Magento\UrlRewrite\Model\UrlRewrite;
 /**
  * @category  Zipmoney
@@ -42,40 +40,15 @@ class InstallData implements InstallDataInterface
      */
     protected $categorySetupFactory;
 
-    /**
-     * Quote setup factory
-     *
-     * @var QuoteSetupFactory
-     */
-    protected $quoteSetupFactory;
-
-    /**
-     * Sales setup factory
-     *
-     * @var SalesSetupFactory
-     */
-    protected $salesSetupFactory;
-
-    /**
-     * Sales setup factory
-     *
-     * @var SalesSetupFactory
-     */
     protected $urlRewrite;
 
     /**
      * Init
      *
-     * @param CategorySetupFactory $categorySetupFactory
-     * @param SalesSetupFactory $salesSetupFactory
      */
     public function __construct(
-        SalesSetupFactory $salesSetupFactory,
-        QuoteSetupFactory $quoteSetupFactory,
         UrlRewrite $urlRewrite
     ) {
-        $this->salesSetupFactory = $salesSetupFactory;        
-        $this->quoteSetupFactory = $quoteSetupFactory;
         $this->urlRewrite   = $urlRewrite;
 
     }
@@ -87,17 +60,6 @@ class InstallData implements InstallDataInterface
     public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
         $setup->startSetup();
-        /** @var \Magento\Sales\Setup\SalesSetup $salesSetup */
-        $salesSetup = $this->salesSetupFactory->create(['resourceName' => 'sales_setup', 'setup' => $setup]);
-        $quoteSetup = $this->quoteSetupFactory->create(['setup' => $setup]);
-
-        /**
-         * Add 'NEW_ATTRIBUTE' attributes for order
-         */
-        $salesSetup->addAttribute('order_payment', 'zipmoney_charge_id', 
-            ['label' => 'zipMoney Checkout Id', 'type' => 'varchar', 'visible' => false, 'required' => false]);   
-        $quoteSetup->addAttribute('quote', 'zipmoney_checkout_id', 
-            ['type' => 'varchar', 'visible' => false, 'required' => false]);   
         
         $rewriteCollection = $this->urlRewrite->getCollection()
                                               ->addFieldToFilter('target_path', "zipmoney");
