@@ -47,7 +47,7 @@
 	    public function beforeExecute(\Magento\Checkout\Controller\Onepage\Success $subject)
 	    {
             $order_Id = $subject->getRequest()->getParam('order_id', false);         
-            $orderId = $this->encryptor->decrypt($order_Id);
+            $orderId = $this->encryptor->decrypt(urldecode($order_Id));
             if ($orderId){        
                 $order = $this->_orderFactory->create()->load($orderId);
                 $this->_checkoutSession->setLastQuoteId($order->getQuoteId());

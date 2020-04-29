@@ -86,7 +86,7 @@ class Index extends AbstractStandard
           $resultRedirect = $this->resultRedirectFactory->create();
           /** @var EncryptorInterface $encryptor */
           $encryptor = $this->_objectManager->get(EncryptorInterface::class);
-          $orderId = $encryptor->encrypt($order->getId());
+          $orderId = urlencode($encryptor->encrypt($order->getId()));
            // Redirect to success page with encrypted order id
           $resultRedirect->setPath('checkout/onepage/success',['order_id' => $orderId]);
           return $resultRedirect;
