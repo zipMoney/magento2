@@ -271,9 +271,14 @@ class Payload extends AbstractHelper
         $this->setOrder($order);
 
         $currency = $order->getOrderCurrencyCode() ? $order->getOrderCurrencyCode() : null;
+        $chargeId = $order->getPayment()->getZipmoneyChargeId();
+        if (!$chargeId) {
+            $additionalPaymentInfo = $order->getPayment()->getAdditionalInformation();
+            $chargeId = $additionalPaymentInfo['zipmoney_charge_id'] ;
+        }
         $chargeReq->setAmount((float)$amount)
             ->setReason($reason)
-            ->setChargeId($order->getPayment()->getLastTransId())//->setChargeId($order->getPayment()->getZipmoneyChargeId())
+            ->setChargeId($chargeId)
             ->setMetadata($this->getMetadata());
 
         return $chargeReq;
