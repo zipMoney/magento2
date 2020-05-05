@@ -45,7 +45,7 @@ class TransactionCapture extends AbstractTransaction implements ClientInterface
     {
         $request = $transferObject->getBody();
         $payload = $request['payload'];
-        $zipmoney_charge_id = $request['zipmoney_checkout_id'];
+        $zipmoney_charge_id = $request['zipmoney_charge_id'];
         
         $response = null;
 

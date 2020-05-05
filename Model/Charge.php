@@ -511,9 +511,11 @@ class Charge extends AbstractCheckout
       $this->_logger->debug($this->_helper->__("Charge State:- %s",$charge->getState()));
 
       if($charge->getId()){
-        $payment =  $this->_order->getPayment()
-                     ->setZipmoneyChargeId($charge->getId())
-                     ->setAdditionalInformation(array("receipt_number"=>$charge->getReceiptNumber()));;
+      $additionalPaymentInfo = $this->_order->getPayment()->getAdditionalInformation();
+      $additionalPaymentInfo['receipt_number'] = $charge->getReceiptNumber();
+      $additionalPaymentInfo['zipmoney_charge_id'] = $charge->getId();
+      $payment =  $this->_order->getPayment()
+                     ->setAdditionalInformation($additionalPaymentInfo);
         $this->_orderPaymentRepository->save($payment);
       }
 
