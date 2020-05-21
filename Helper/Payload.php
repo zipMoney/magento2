@@ -19,6 +19,8 @@ use \zipMoney\Model\OrderItem;
 use \zipMoney\Model\ShopperStatistics;
 use \zipMoney\Model\Metadata;
 use \zipMoney\Model\CheckoutConfiguration;
+use \Magento\Store\Model\App\Emulation as AppEmulation;
+use \Magento\Catalog\Helper\ImageFactory as ImageFactory;
 
 /**
  * @category  Zipmoney
@@ -42,9 +44,9 @@ class Payload extends AbstractHelper
     protected $_productFactory;
 
     /**
-     * @var \Magento\Catalog\Helper\Image
+     * @var \Magento\Catalog\Helper\ImageFactory
      */
-    protected $_imageHelper;
+    protected $_imageFactory;
 
     /**
      * @var \Magento\Catalog\Model\CategoryFactory
@@ -116,12 +118,19 @@ class Payload extends AbstractHelper
      */
     protected $_isVirtual  = true;
 
+    /**
+     *@var \Magento\Store\Model\App\Emulation
+     */
+    protected $_appEmulation;
+    /**
+     * @param \Magento\Store\Model\App\Emulation
+     */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Customer\Model\CustomerFactory $customerFactory,
         \Magento\Catalog\Model\ProductFactory $productFactory,
         \Magento\Catalog\Model\CategoryFactory $categoryFactory,
-        \Magento\Catalog\Helper\Image $imageHelper,
+        ImageFactory $imageFactory,
         \Magento\Sales\Model\ResourceModel\Order\CollectionFactory $orderCollectionFactory,
         \Magento\Customer\Model\Session $customerSession,
         \Magento\Customer\Model\Logger $customerLogger,
@@ -131,14 +140,15 @@ class Payload extends AbstractHelper
         \ZipMoney\ZipMoneyPayment\Model\Config $config,
         \Magento\Sales\Model\ResourceModel\Order\Payment\Transaction\Collection $transactionCollection,
         \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,
-        \ZipMoney\ZipMoneyPayment\Helper\Data $helper
+        \ZipMoney\ZipMoneyPayment\Helper\Data $helper,
+        AppEmulation $appEmulation
     ) {
         parent::__construct($context);
 
         $this->_customerFactory = $customerFactory;
         $this->_productFactory = $productFactory;
         $this->_categoryFactory = $categoryFactory;
-        $this->_imageHelper = $imageHelper;
+        $this->_imageFactory = $imageFactory;
         $this->_orderCollectionFactory = $orderCollectionFactory;
         $this->_customerSession = $customerSession;
         $this->_customerLogger = $customerLogger;
@@ -150,6 +160,7 @@ class Payload extends AbstractHelper
         $this->_quoteFactory = $quoteFactory;
         $this->_urlBuilder = $context->getUrlBuilder();
         $this->_helper = $helper;
+        $this->_appEmulation = $appEmulation;
     }
 
     /**
@@ -764,9 +775,9 @@ class Payload extends AbstractHelper
             $reqAddress->setCity($address->getCity());
 
             /**
-       * If region_id is null, the state is saved in region directly, so the state can be retrieved from region.
-       * If region_id is a valid id, the state should be retrieved by getRegionCode.
-       */
+             * If region_id is null, the state is saved in region directly, so the state can be retrieved from region.
+             * If region_id is a valid id, the state should be retrieved by getRegionCode.
+             */
             if ($address->getRegionId()) {
                 $reqAddress->setState($address->getRegionCode());
             } else {
@@ -819,8 +830,12 @@ class Payload extends AbstractHelper
         $imageUrl = '';
         try {
             //only use visible product do not care type $item must be visible cart product
+            $storeId = $this->_storeManager->getStore()->getId();
             $product =  $item->getProduct();
-            $imageUrl = (string)$this->_imageHelper->init($product, 'thumbnail')->getUrl();
+            $this->_appEmulation->startEnvironmentEmulation($storeId, \Magento\Framework\App\Area::AREA_FRONTEND, true);
+            $imageUrl = $this->_imageFactory->create()->init($product, 'product_thumbnail_image')->getUrl();
+
+            $this->_appEmulation->stopEnvironmentEmulation();
         } catch (\Exception $e) {
             $this->_logger->warn('An error occurred during getting item image for product ' . $product->getId());
             $this->_logger->error($e->getMessage());
