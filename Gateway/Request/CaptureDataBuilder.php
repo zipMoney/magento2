@@ -55,7 +55,7 @@ class CaptureDataBuilder extends AbstractDataBuilder
     
         $return['payload'] = $payload;
         $return['txn_id'] = $payment->getLastTransId();
-        $return['zipmoney_checkout_id'] = $payment->getZipmoneyChargeId();
+        $return['zipmoney_charge_id'] = $payment->getLastTransId();
    
         return $return;
     }

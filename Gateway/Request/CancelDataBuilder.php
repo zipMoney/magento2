@@ -48,7 +48,7 @@ class CancelDataBuilder extends AbstractDataBuilder
         }
     
         $return['txn_id'] = $payment->getLastTransId();           
-        $return['zipmoney_checkout_id'] = $payment->getZipmoneyChargeId();
+        $return['zipmoney_charge_id'] = $payment->getAdditionalInformation('zipmoney_charge_id');
 
         return $return;
     }
