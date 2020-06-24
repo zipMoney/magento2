@@ -561,6 +561,12 @@ class Charge extends AbstractCheckout
 
     $this->_ignoreAddressValidation();
     $this->_quote->collectTotals();
+
+    /* set customer email if email is found empty (bug) */
+    if ($this->_quote->getCustomerEmail() === null && $this->_quote->getBillingAddress()->getEmail() !== null) {
+      $this->_quote->setCustomerEmail($this->_quote->getBillingAddress()->getEmail());
+    }
+    
     $order = $this->_quoteManagement->submit($this->_quote);
 
     if ($isNewCustomer) {
