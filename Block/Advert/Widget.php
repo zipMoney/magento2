@@ -29,6 +29,19 @@ class Widget extends  AbstractAdvert implements CatalogBlock\ShortcutInterface
     return '';
   }
 
+  public function getPrice()
+  {
+      $price = 0;
+      if ($this->getPageType() == 'cart'){
+          $price = $this->getCartTotal();
+      }
+      if ($this->getPageType() == 'product'){
+          $price = $this->getProductPrice();
+      }
+
+      return $this->getCurrencyFormat($price);
+
+  }
   /**
    * Get shortcut alias
    *

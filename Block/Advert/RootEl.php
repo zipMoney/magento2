@@ -1,6 +1,9 @@
 <?php
 namespace ZipMoney\ZipMoneyPayment\Block\Advert;
 
+use Magento\Store\Model\ScopeInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+
 /**
  * @category  Zipmoney
  * @package   Zipmoney_ZipmoneyPayment
@@ -26,18 +29,29 @@ class RootEl extends \Magento\Framework\View\Element\Template
   /**
    * @var \ZipMoney\ZipMoneyPayment\Helper\Logger
    */
-  protected $_logger; 
+  protected $_logger;
+
+    /**
+     * Get country path
+     */
+    const COUNTRY_CODE_PATH = 'general/country/default';
+
+    /**
+     * @var ScopeConfigInterface
+     */
+    protected $_scopeConfig;
 
   public function __construct(
     \Magento\Framework\View\Element\Template\Context $context,       
     \ZipMoney\ZipMoneyPayment\Model\Config $config,
     \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,
+    ScopeConfigInterface $scopeConfig,
     $template,
     array $data = []
   ) {
     $this->_config = $config;
     $this->_loggger = $logger;
-    
+    $this->_scopeConfig = $scopeConfig;
     $this->setTemplate("ZipMoney_ZipMoneyPayment::".$template);
 
     parent::__construct($context, $data);
@@ -62,4 +76,16 @@ class RootEl extends \Magento\Framework\View\Element\Template
   {
     return $this->_config->getEnvironment();
   }
+
+    /** Get Country code by website scope
+    *
+    * @return string
+    */
+    public function getCountryByWebsite(): string
+    {
+        return $this->_scopeConfig->getValue(
+            self::COUNTRY_CODE_PATH,
+            ScopeInterface::SCOPE_WEBSITES
+        );
+    }
 }

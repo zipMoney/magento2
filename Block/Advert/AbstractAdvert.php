@@ -4,6 +4,7 @@ namespace ZipMoney\ZipMoneyPayment\Block\Advert;
 use Magento\Catalog\Block as CatalogBlock;
 use Magento\Paypal\Helper\Shortcut\ValidatorInterface;
 use \ZipMoney\ZipMoneyPayment\Model\Config;
+use Magento\Framework\Pricing\PriceCurrencyInterface;
 
 /**
  * @category  Zipmoney
@@ -29,9 +30,21 @@ abstract class AbstractAdvert extends \Magento\Framework\View\Element\Template
   /**
    * @var \Magento\Framework\Registry
    */
-  protected $_registry; 
+  protected $_registry;
 
-  /**
+    /**
+     * Checkout session
+     *
+     * @var \Magento\Checkout\Model\Session
+     */
+    protected $_checkoutSession;
+
+    /**
+     *
+     */
+    protected $_priceCurrency;
+
+    /**
    * @var string
    */
   protected $_alias = '';
@@ -59,7 +72,9 @@ abstract class AbstractAdvert extends \Magento\Framework\View\Element\Template
     \Magento\Framework\View\Element\Template\Context $context,       
     \ZipMoney\ZipMoneyPayment\Model\Config $config,
     \Magento\Framework\Registry $registry,      
-    \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,             
+    \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,
+    \Magento\Checkout\Model\Session $checkoutSession,
+    PriceCurrencyInterface $priceCurrency,
     array $data = []
   ) {
     parent::__construct($context, $data);
@@ -67,6 +82,8 @@ abstract class AbstractAdvert extends \Magento\Framework\View\Element\Template
     $this->_config = $config;
     $this->_registry = $registry;
     $this->_logger   = $logger;
+    $this->_checkoutSession = $checkoutSession;
+    $this->_priceCurrency = $priceCurrency;
 
   }
  
@@ -95,4 +112,32 @@ abstract class AbstractAdvert extends \Magento\Framework\View\Element\Template
       return null;
   }
 
+  public function getProductPrice()
+  {
+        $product = $this->_registry->registry('current_product');
+        $price = $product->getPriceInfo()->getPrice('final_price')->getValue();
+        return $price;
+  }
+
+  public function getCartTotal()
+  {
+      $totals = $this->_checkoutSession->getQuote()->getTotals();
+      $totalAmount = 0;
+      if(isset($totals['grand_total'])) {
+          $totalAmount = $totals['grand_total']->getValueInclTax() ?: $totals['grand_total']->getValue();
+      }
+      return $totalAmount;
+  }
+
+  public function getCurrencyFormat($price)
+  {
+      $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+      $currency = $objectManager->get('Magento\Directory\Model\Currency');
+      return $currency->format($price, ['display'=>\Zend_Currency::NO_SYMBOL], false);
+  }
+
+  public function getCurrencySymbol()
+  {
+      return $this->_priceCurrency->getCurrencySymbol();
+  }
 }
