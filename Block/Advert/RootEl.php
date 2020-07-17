@@ -1,33 +1,39 @@
 <?php
-namespace ZipMoney\ZipMoneyPayment\Block\Advert;
+namespace Zip\ZipPayment\Block\Advert;
 
 use Magento\Store\Model\ScopeInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 
 /**
  * @category  Zipmoney
- * @package   Zipmoney_ZipmoneyPayment
- * @author    Sagar Bhandari <sagar.bhandari@zipmoney.com.au>
- * @copyright 2017 zipMoney Payments Pty Ltd.
+ * @package   Zipmoney_ZipPayment
+ * @author    Zip Plugin Team <integration@zip.co>
+ * @copyright 2020 Zip Co Limited
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @link      http://www.zipmoney.com.au/
  */
 
-class RootEl extends \Magento\Framework\View\Element\Template 
+class RootEl extends \Magento\Framework\View\Element\Template
 {
 
   /**
    * @var boolean
    */
-  protected $_render = false; 
+  protected $_render = false;
 
   /**
-   * @var \ZipMoney\ZipMoneyPayment\Model\Config
+   * @var \Zip\ZipPayment\Model\Config
    */
-  protected $_config; 
-  
+  protected $_config;
+    /**
+     * Object Manager instance
+     *
+     * @var \Magento\Framework\ObjectManagerInterface
+     */
+    protected $_objectManager = null;
+
   /**
-   * @var \ZipMoney\ZipMoneyPayment\Helper\Logger
+   * @var \Zip\ZipPayment\Helper\Logger
    */
   protected $_logger;
 
@@ -40,19 +46,25 @@ class RootEl extends \Magento\Framework\View\Element\Template
      * @var ScopeConfigInterface
      */
     protected $_scopeConfig;
-
+    /**
+     * Factory constructor
+     *
+     * @param \Magento\Framework\ObjectManagerInterface $objectManager
+     */
   public function __construct(
-    \Magento\Framework\View\Element\Template\Context $context,       
-    \ZipMoney\ZipMoneyPayment\Model\Config $config,
-    \ZipMoney\ZipMoneyPayment\Helper\Logger $logger,
+    \Magento\Framework\View\Element\Template\Context $context,
+    \Zip\ZipPayment\Model\Config $config,
+    \Zip\ZipPayment\Helper\Logger $logger,
     ScopeConfigInterface $scopeConfig,
+    \Magento\Framework\ObjectManagerInterface $objectManager,
     $template,
     array $data = []
   ) {
     $this->_config = $config;
     $this->_loggger = $logger;
     $this->_scopeConfig = $scopeConfig;
-    $this->setTemplate("ZipMoney_ZipMoneyPayment::".$template);
+    $this->_objectManager = $objectManager;
+    $this->setTemplate("Zip_ZipPayment::".$template);
 
     parent::__construct($context, $data);
   }
@@ -85,7 +97,8 @@ class RootEl extends \Magento\Framework\View\Element\Template
     {
         return $this->_scopeConfig->getValue(
             self::COUNTRY_CODE_PATH,
-            ScopeInterface::SCOPE_WEBSITES
+            ScopeInterface::SCOPE_STORES,
+            $this->_objectManager->get(\Magento\Store\Model\StoreManagerInterface::class)->getStore()->getId()
         );
     }
 }
