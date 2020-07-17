@@ -18,45 +18,47 @@ define(
     'use strict';
     return Class.extend({
       paymentData:null,
-      initialize:function(paymentData, messageContainer){
+      messageContainer:null,
+      initialize:function(paymentData){
         this.paymentData = paymentData;
         Zip.Checkout.init({
-          redirect: window.checkoutConfig.payment.zipmoneypayment.inContextCheckoutEnabled ? 0 : 1,
-          checkoutUri: window.checkoutConfig.payment.zipmoneypayment.checkoutUri,
-          redirectUri: window.checkoutConfig.payment.zipmoneypayment.redirectUri,
+          redirect: window.checkoutConfig.payment.zippayment.inContextCheckoutEnabled ? 0 : 1,
+          checkoutUri: window.checkoutConfig.payment.zippayment.checkoutUri,
+          redirectUri: window.checkoutConfig.payment.zippayment.redirectUri,
           onComplete: this.onComplete.bind(this),
           onError: this.onError.bind(this),
           onCheckout: this.onCheckout.bind(this)
-        });     
+        });
       },
-      onComplete: function(response){    
+      onComplete: function(response){
         if(response.state == "approved" || response.state == "referred"){
           customerData.invalidate(['cart']);
-          location.href = window.checkoutConfig.payment.zipmoneypayment.redirectUri + "?result="+response.state+"&checkoutId=" + response.checkoutId;
+          location.href = window.checkoutConfig.payment.zippayment.redirectUri + "?result="+response.state+"&checkoutId=" + response.checkoutId;
         } else {
           fullScreenLoader.stopLoader();
         }
       },
-      onError: function(response){                      
+      onError: function(response){
         fullScreenLoader.stopLoader();
         alert("An error occurred while getting the redirect url from zipMoney.");
       },
-      onCheckout: function(resolve, reject, args){            
+      onCheckout: function(resolve, reject, args, messageContainer){
         fullScreenLoader.startLoader();
         var payload = null;
         /** Checkout for guest and registered customer. */
-    
+
         try{
           storage.get(
-              window.checkoutConfig.payment.zipmoneypayment.checkoutUri
+              window.checkoutConfig.payment.zippayment.checkoutUri
           ).done(function (data) {
             resolve({
               data: {redirect_uri: data.redirect_uri}
             });
           }).fail(function (data) {
-            reject();
+              errorProcessor.process(data, messageContainer);
+              fullScreenLoader.stopLoader();
           }).always(function (data) {
-            fullScreenLoader.stopLoader(); 
+            fullScreenLoader.stopLoader();
           });
         } catch(e){
           console.log(e);
