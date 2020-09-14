@@ -19,7 +19,7 @@ To install the extension via [Composer](http://getcomposer.org/), run
 - `composer require zipmoney/magento2`
 - `php bin/magento module:status` (Check if ZipMoney_ZipMoneyPayment module is disabled)
 - `php bin/magento module:enable ZipMoney_ZipMoneyPayment` (enabled plugin if disabled)
-- ~~`php bin/magento setup:upgrade`~~ (we have remove DB dependency so no more this steps)
+- `php bin/magento setup:upgrade`
 - `php bin/magento setup:di:compile`
 - `php bin/magento setup:static-content:deploy en_AU en_US` (specify your website regions, or leave it empty for all)
 
