@@ -377,9 +377,6 @@ class Charge extends AbstractCheckout
         throw new \Magento\Framework\Exception\LocalizedException(__('Invalid order state or status.'));
       }
 
-    } else {
-      // Check if order has valid state and status
-      $this->_verifyOrderState();
     }
 
     // Check if the transaction exists
@@ -431,14 +428,7 @@ class Charge extends AbstractCheckout
     $invoice = $payment->getCreatedInvoice();
     
     if ($invoice) { 
-      if ($this->_order->getCanSendNewEmailFlag()) {
-        try {
-          $this->_orderSender->send($this->_order);
-        } catch (\Exception $e) {
-          $this->_logger->critical($e);
-        }
-      }   
-
+      
       $this->_order->addStatusHistoryComment($this->_helper->__('Notified customer about invoice #%s.', $invoice->getIncrementId()))
                    ->setIsCustomerNotified(true);
       
