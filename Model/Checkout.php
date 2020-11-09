@@ -123,17 +123,14 @@ class Checkout extends AbstractCheckout
       $additionalPaymentInfo = $this->_quote->getPayment()->getAdditionalInformation();
       $additionalPaymentInfo['zipmoney_checkout_id'] = $this->_checkoutId;
       $this->_quote->getPayment()->setAdditionalInformation($additionalPaymentInfo);
-      $this->_quote->getPayment()->setAdditionalData($this->_checkoutId);
-      //$this->_quote->setZipmoneyCheckoutId($this->_checkoutId);
       $this->_quoteRepository->save($this->_quote);
-
       $this->_redirectUrl = $checkout->getUri();      
     } catch(\zipMoney\ApiException $e){
-      $this->_logger->debug("Errors:- ".json_encode($e->getResponseBody()));      
-      $this->_logger->debug("Errors:- ".json_encode($e->getCode()));      
-      $this->_logger->debug("Errors:- ".json_encode($e->getResponseObject()));      
+      $this->_logger->debug("Errors:- ".json_encode($e->getResponseBody()));
+      $this->_logger->debug("Errors:- ".json_encode($e->getCode()));
+      $this->_logger->debug("Errors:- ".json_encode($e->getResponseObject()));
       throw new \Magento\Framework\Exception\LocalizedException(__('An error occurred while to requesting the redirect url.'));
-    } 
+    }
 
     return $checkout;
   }
