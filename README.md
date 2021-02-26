@@ -1,5 +1,15 @@
 # Magento2 zipMoneyPayment
 
+## Updated Module
+
+This version of the Zip payments module has now been superseded by the latest version seen [here](https://github.com/zipMoney/zip.magento2).
+
+This version will still function as expected, though the updated version has improvements and removes some unneeded dependencies:
+
+- More standard install location inside M2
+- Support for Partial Capture
+- Global calculator widgets 
+
 ## Installation
 
 Detail installation please visit <https://zip-magento2.api-docs.io/v1/integration-steps/2-download-zip-extension> for more updated information
